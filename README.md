@@ -50,13 +50,13 @@ composer install
 install mysql, then init database with the provided scripts:
 
 ```bash
-  for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
+for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
 ```
 
 run server:
 
 ```bash
-  php -S localhost:3000
+php -S localhost:3000
 ```
 
 Access it with your webbrowser pointing to http://localhost:3000
