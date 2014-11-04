@@ -1,0 +1,47 @@
+.top-bar-section ul li > a.button.alert:hover, .top-bar-section ul li > a.button.alert:focus {
+    /* restore red hover color on logout button */
+    background-color: #cf2a0e;
+}
+
+/* vertical align of logout button*/
+.button.logout {
+    margin-top: 10px;
+}
+
+.top-bar-section .has-dropdown > a:after {
+    /* restore correct position of dropdown arrows */
+    top:50%;
+}
+
+/* logo styling */
+.top-bar .name h1 a i.fi-shield {
+    font-size:3rem;
+    color:orange;
+}
+
+.top-bar .name h1 a span.title {
+    letter-spacing:-1px;
+    font-size:1.3em;
+    position: relative;
+    top: -8px;
+    left: 7px;
+}
+
+.top-bar .name h1 a span.title span.first {
+    color:orange;
+}
+
+/* align content row with left box */
+.row.content {
+    padding-top:8px;
+}
+
+.row.body {
+    padding-top:8px;
+}
+
+.panel.callout {
+    border-color:#ffa200;
+    background:#FFE9C4;
+}
+
