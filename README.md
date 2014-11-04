@@ -50,7 +50,7 @@ composer install
 install mysql, then init database with the provided scripts:
 
 ```bash
-  for sql_file in app/install/*.sql; do echo mysql -uroot -p < $sql_file; done
+  for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
 ```
 
 run server:
