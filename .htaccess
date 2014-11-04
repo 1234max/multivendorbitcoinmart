@@ -1,0 +1,3 @@
+<Directory app/>
+  Deny from all
+</Directory>

@@ -1,0 +1,21 @@
+{
+    "name": "MatthiasWinzeler/scam",
+    "type": "project",
+    "description": "secure bitcoin market built on php",
+    "homepage": "https://github.com/MatthiasWinzeler/scam",
+    "authors": [
+        {
+            "name": "Matthias Winzeler",
+            "homepage": "https://github.com/MatthiasWinzeler",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/MatthiasWinzeler/scam/issues",
+        "source": "https://github.com/MatthiasWinzeler/scam"
+    },
+    "require": {
+        "php": ">=5.4.34",
+        "ircmaxell/password-compat": "dev-master"
+    }
+}
