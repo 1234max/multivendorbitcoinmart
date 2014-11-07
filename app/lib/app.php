@@ -16,10 +16,14 @@ class App {
 
     /**
      * @var array map of all publicly accessible controller actions,
-     *            in the form ['controllername' => ['availableaction1', 'availableaction2'], 'controller2' => [], ...].
-     *            is used to lookup the responsible controller via $_GET['c'] = controller, $_GET['a'] = action
+     *            in the form ['controllername' => ['availableaction1' => ['REQUEST_METHOD1, 'POST'], 'availableaction2' => ['GET', 'POST']], 'controller2' => [], ...].
+     *            is used to lookup the responsible controller via controller = $_GET['c'], action = $_GET['a']
      */
-    private $routes = ['test' => ['index']];
+    private $routes = [
+        'users' => ['login' => ['GET'], 'doLogin' => ['POST'], 'logout' => ['GET'], 'register' => ['GET'], 'doRegister' => ['POST']],
+        'listings' => ['index' => ['GET']],
+        'orders' => ['index' => ['GET']]
+    ];
 
     private function openDatabaseConnection() {
         $options = [
@@ -32,35 +36,57 @@ class App {
     }
 
     private function dispatchToController($db) {
-        # check that invoked controller & action is in $routes
-        if(isset($_GET['c']) && isset($this->routes[$_GET['c']]) && isset($_GET['a']) && in_array($_GET['a'], $this->routes[$_GET['c']])) {
+        $controllerName = isset($_GET['c']) ? $_GET['c'] : '';
+        # default action = index
+        $actionName = isset($_GET['a']) ? $_GET['a'] : 'index';
+
+        if($this->isValidControllerAndAction($controllerName, $actionName)) {
             # convert controller from param (c=bla) to CamelCase Scam\BlaController
-            $controllerName = "Scam\\" . mb_convert_case($_GET['c'], MB_CASE_TITLE, "UTF-8") . "Controller";
+            $controllerClassName = "Scam\\" . mb_convert_case($controllerName, MB_CASE_TITLE, "UTF-8") . "Controller";
 
-            require '../app/controller/' . $_GET['c'] . '.php';
-
-            $controller = new $controllerName($db);
-
-            $actionName = $_GET['a'];
+            require_once '../app/controller/' . $controllerName . '.php';
+            $controller = new $controllerClassName($db);
             $controller ->{$actionName}();
         }
         # no controller or action given => home page
         elseif(!isset($_GET['c']) && !isset($_GET['a'])) {
-            require '../app/controller/test.php';
-            $controller = new \Scam\TestController($db);
+            require_once '../app/controller/listings.php';
+            $controller = new ListingsController($db);
             $controller->index();
         }
         # not existing controller / action => show 404
         else {
-            require '../app/controller/error.php';
-            $controller = new \Scam\ErrorController($db);
-            $controller->error404();
+            require_once 'exceptions/not_found.php';
+            throw new NotFoundException();
         }
     }
 
+    private function isValidControllerAndAction($controllerName, $actionName){
+        # check that controller & action are in $routes and that request method is offered
+        return isset($this->routes[$controllerName]) && isset($this->routes[$controllerName][$actionName])
+        && in_array($_SERVER['REQUEST_METHOD'], $this->routes[$controllerName][$actionName]);
+    }
+
     public function run() {
-        $db = $this->openDatabaseConnection();
-        $this->dispatchToController($db);
+        try {
+            $db = $this->openDatabaseConnection();
+            $this->dispatchToController($db);
+        }
+        catch(AccessDeniedException $e) {
+            require_once '../app/controller/error.php';
+            $controller = new ErrorController($db);
+            $controller->accessDenied();
+        }
+        catch(NotFoundException $e) {
+            require_once '../app/controller/error.php';
+            $controller = new ErrorController($db);
+            $controller->notFound();
+        }
+        catch(\Exception $e) {
+            require_once '../app/controller/error.php';
+            $controller = new ErrorController($db);
+            $controller->unknown();
+        }
     }
 }
 
