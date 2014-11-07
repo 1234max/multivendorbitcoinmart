@@ -1,16 +1,38 @@
-.top-bar-section ul li > a.button.alert:hover, .top-bar-section ul li > a.button.alert:focus {
-    /* restore red hover color on logout button */
-    background-color: #cf2a0e;
-}
+/* topbar height */
+.fixed.expanded:not(.top-bar) .top-bar-section { margin-top: 60px; }
+.top-bar { height: 60px; line-height: 60px; }
+.top-bar .name { height: 60px; }
+.top-bar .name h1 { line-height: 60px; }
+.top-bar .toggle-topbar a { height: 60px; line-height: 60px; }
+.top-bar-section li:not(.has-form) a:not(.button) { line-height:60px; }
+.top-bar-section li.active:not(.has-form) a:not(.button) { line-height:60px; }
+.top-bar-section .has-dropdown > a:after {top:30px;}
+.top-bar-section .dropdown li a { line-height:60px; }
+.top-bar-section > ul > .divider, .top-bar-section > ul > [role="separator"] { height: 60px; }
+.top-bar-section .has-form { padding: 0 20px; height: 60px; }
 
-/* vertical align of logout button*/
+.top-bar .name h1 a { padding: 0 20px; }
+.top-bar .toggle-topbar a { padding: 0 20px; }
+.top-bar .toggle-topbar.menu-icon a { padding: 0 45px 0 20px; }
+.top-bar-section ul li > a { padding-left:20px; }
+.top-bar-section ul li > a.button { padding-right: 20px; padding-left: 20px; }
+.top-bar-section ul li > button { padding-right: 20px; padding-left: 20px; }
+.top-bar-section .has-form { padding: 20px; }
+.top-bar-section .has-dropdown > a:after { margin-right: 20px; }
+.top-bar-section .dropdown li a { padding: 8px 20px; }
+.top-bar-section .dropdown li.has-form { padding: 8px 20px; }
+.top-bar-section .dropdown label { padding: 8px 20px 2px; }
+.top-bar-section li:not(.has-form) a:not(.button) { padding: 0 20px; }
+.top-bar-section li.active:not(.has-form) a:not(.button) { padding: 0 20px; }
+
+/* vertical align of logout button */
 .button.logout {
-    margin-top: 10px;
+    margin-top: -10px;
 }
 
-.top-bar-section .has-dropdown > a:after {
-    /* restore correct position of dropdown arrows */
-    top:50%;
+/* restore correct position of dropdown arrows */
+.top-bar-section .has-dropdown .dropdown li.has-dropdown > a:after {
+    top:1.35rem;
 }
 
 /* logo styling */
@@ -31,13 +53,8 @@
     color:orange;
 }
 
-/* align content row with left box */
-.row.content {
-    padding-top:8px;
-}
-
 .row.body {
-    padding-top:8px;
+    padding-top:1rem;
 }
 
 .panel.callout {
@@ -45,3 +62,15 @@
     background:#FFE9C4;
 }
 
+footer.row hr {
+    margin-top:0.5rem;
+}
+
+#login-logo-wrapper {
+    text-align:center;
+}
+#login-logo-wrapper i.fi-shield {
+    font-size:10rem;
+    color:orange;
+    line-height: 12rem;
+}
