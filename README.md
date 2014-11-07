@@ -68,3 +68,7 @@ To debug, install xdebug and configure it for your favorite IDE:
 phpbrew ext install xdebug stable
 ```
 
+<!---
+Todo: Requirements (ie PHP, MySQL, ImageMagick, Bitcoin)
+evtl: Notes for production (use Apache & PHP, update php -> how, ..., Bitcoinstuff)
+-->
