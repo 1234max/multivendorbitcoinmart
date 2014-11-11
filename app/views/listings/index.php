@@ -13,7 +13,7 @@
             Don't get scammed - use our highly secure market that never stores any of your valuable bitcoins.
         </h5>
     </div><a href="#">
-        <div class="panel callout radius">
+        <div class="panel callout">
             <h6>99&nbsp; items in your cart</h6>
         </div></a>
 </div>
