@@ -19,6 +19,8 @@ class Controller {
     protected $get = [];
     protected $post = [];
     protected $isPost = false;
+    protected $controller = '';
+    protected $action = '';
     protected $user = null;
     private $flashes = [];
 
@@ -35,6 +37,8 @@ class Controller {
         # shortcuts to use in templates:
         $this->get = $_GET;
         $this->post = $_POST;
+        $this->controller = isset($this->get['c']) ? $this->get['c'] : 'listings';
+        $this->action = isset($this->get['a']) ? $this->get['a'] : 'index';
 
         # fetch user from session
         if(isset($_SESSION['user_id'])){

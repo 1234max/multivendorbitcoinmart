@@ -47,12 +47,13 @@
             <?php if($this->isUserLoggedIn()): ?>
                 <section class="top-bar-section">
                     <ul class="right">
+                        <li><span class="label secondary round account-label"><i class="fi-torso"></i> <?= $this->user->name ?></span></li>
                         <li class="divider"></li>
-                        <li>
+                        <li<?= $this->controller == 'listings' ? ' class="active"' : ''?>>
                             <a href="?c=listings">Listings</a>
                         </li>
                         <li class="divider"></li>
-                        <li>
+                        <li<?= $this->controller == 'orders' ? ' class="active"' : ''?>>
                             <a href="?c=orders">Orders</a>
                         </li>
                         <li class="divider"></li>
@@ -60,17 +61,17 @@
                             <a href="#">Profile</a>
                             <ul class="dropdown">
                                 <li><label>General</label></li>
-                                <li>
-                                    <a href="#">Settings</a>
+                                <li<?= $this->controller == 'profile' && $this->get['a'] == 'settings' ? ' class="active"' : ''?>>
+                                    <a href="?c=profile&a=settings">Settings</a>
                                 </li>
-                                <li>
-                                    <a href="#">Multisig configuration</a>
+                                <li<?= $this->controller == 'profile' && $this->get['a'] == 'multisig' ? ' class="active"' : ''?>>
+                                    <a href="?c=profile&a=multisig">Multisig configuration</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li><label>Vendor profile</label></li>
                                 <?php if($this->user->is_vendor): ?>
                                 <li>
-                                    <a href="#">Settings</a>
+                                    <a href="?c=profile&a=settings">Settings</a>
                                 </li>
                                 <li>
                                     <a href="#">Vendor page</a>
@@ -87,8 +88,8 @@
                                     </ul>
                                 </li>
                                 <?php else: ?>
-                                    <li>
-                                        <a href="#">Become vendor</a>
+                                    <li<?= $this->controller == 'profile' && $this->get['a'] == 'becomeVendor' ? ' class="active"' : ''?>>
+                                        <a href="?c=profile&a=becomeVendor">Become vendor</a>
                                     </li>
                                 <?php endif ?>
                             </ul>
