@@ -50,7 +50,7 @@
 }
 
 .top-bar .name h1 a span.title span.first {
-    color:orange;
+    color:#FFA500;
 }
 
 .row.body {
@@ -58,7 +58,7 @@
 }
 
 .panel.callout {
-    border-color:#ffa200;
+    border-color:#FFD894;
     background:#FFE9C4;
 }
 
@@ -71,6 +71,28 @@ footer.row hr {
 }
 #login-logo-wrapper i.fi-shield {
     font-size:10rem;
-    color:orange;
+    color:#FFA500;
     line-height: 12rem;
+
+}
+
+/* custom colors for active tabs in top bar */
+.top-bar-section li.active:not(.has-form) a:not(.button) {
+    background-color: #ED9A00;
+}
+
+.top-bar-section li.active:not(.has-form) a:not(.button):hover {
+    background-color: #DA8E00;
+}
+
+/* show currently logged in user in top bar */
+.account-label {
+    position: relative;
+    top: 20px;
+    right: 10px;
+    min-width: 4rem;
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
