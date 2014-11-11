@@ -17,7 +17,12 @@
                 <span class="prefix">Username</span>
             </div>
             <div class="large-5 columns end">
-                <input type="text" name="name" placeholder="userxy" required="true">
+                <input type="text" name="name"
+                       placeholder="userxy"
+                       required="true"
+                       autocomplete="off"
+                       pattern=".{3,}"
+                       title="3 characters minimum">
             </div>
         </div>
 
@@ -26,7 +31,13 @@
                 <span class="prefix">Password</span>
             </div>
             <div class="large-5 columns end">
-                <input type="password" name="password" placeholder="Choose a strong one." required="true">
+                <input type="password"
+                       name="password"
+                       placeholder="Choose a strong one."
+                       required="true"
+                       autocomplete="off"
+                       pattern=".{8,}"
+                       title="8 characters minimum">
             </div>
         </div>
         <div class="row collapse">
@@ -34,7 +45,13 @@
                 <span class="prefix">Confirm password</span>
             </div>
             <div class="large-5 columns end">
-                <input type="password" name="password_confirmation" placeholder="" required="true">
+                <input type="password"
+                       name="password_confirmation"
+                       placeholder=""
+                       required="true"
+                       autocomplete="off"
+                       pattern=".{8,}"
+                       title="8 characters minimum">
             </div>
         </div>
 
@@ -43,7 +60,13 @@
                 <span class="prefix">Profile PIN</span>
             </div>
             <div class="large-5 columns end">
-                <input type="password" name="profile_pin" placeholder="Choose a strong one." required="true">
+                <input type="password"
+                       name="profile_pin"
+                       placeholder="Choose a strong one."
+                       required="true"
+                       autocomplete="off"
+                       pattern=".{8,}"
+                       title="8 characters minimum">
             </div>
         </div>
         <div class="row collapse">
@@ -51,7 +74,13 @@
                 <span class="prefix">Confirm profile PIN</span>
             </div>
             <div class="large-5 columns end">
-                <input type="password" name="profile_pin_confirmation" placeholder="" required="true">
+                <input type="password"
+                       name="profile_pin_confirmation"
+                       placeholder=""
+                       required="true"
+                       autocomplete="off"
+                       pattern=".{8,}"
+                       title="8 characters minimum">
             </div>
         </div>
 

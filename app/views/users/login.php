@@ -22,7 +22,7 @@
                 <span class="prefix">Username</span>
             </div>
             <div class="large-6 columns end">
-                <input type="text" name="name" placeholder="userxy" required="true">
+                <input type="text" name="name" placeholder="userxy" required="true" autocomplete="off">
             </div>
         </div>
         <div class="row collapse">
@@ -30,7 +30,7 @@
                 <span class="prefix">Password</span>
             </div>
             <div class="large-6 columns end">
-                <input type="password" name="password" placeholder="high-secure-pw" required="true">
+                <input type="password" name="password" placeholder="high-secure-pw" required="true" autocomplete="off">
             </div>
         </div>
         <div class="row collapse">
