@@ -20,9 +20,10 @@ class App {
      *            is used to lookup the responsible controller via controller = $_GET['c'], action = $_GET['a']
      */
     private $routes = [
-        'users' => ['login' => ['GET'], 'doLogin' => ['POST'], 'logout' => ['GET'], 'register' => ['GET'], 'doRegister' => ['POST']],
-        'listings' => ['index' => ['GET']],
-        'orders' => ['index' => ['GET']]
+        'users' => ['login' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'register' => 'GET', 'doRegister' => 'POST'],
+        'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'multisig' => 'GET', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
+        'listings' => ['index' => 'GET'],
+        'orders' => ['index' => 'GET']
     ];
 
     private function openDatabaseConnection() {
@@ -62,9 +63,9 @@ class App {
     }
 
     private function isValidControllerAndAction($controllerName, $actionName){
-        # check that controller & action are in $routes and that request method is offered
+        # check that controller & action are in $routes and that request method matches
         return isset($this->routes[$controllerName]) && isset($this->routes[$controllerName][$actionName])
-        && in_array($_SERVER['REQUEST_METHOD'], $this->routes[$controllerName][$actionName]);
+        && $_SERVER['REQUEST_METHOD'] === $this->routes[$controllerName][$actionName];
     }
 
     public function run() {

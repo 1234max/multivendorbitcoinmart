@@ -42,4 +42,52 @@ class UserModel extends Model {
             ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
         return $ret;
     }
+
+    public function checkPassword($userId, $password) {
+        require_once '../vendor/ircmaxell/password-compat/lib/password.php';
+
+        $q = $this->db->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
+        $q->execute([':id' => $userId]);
+        $user = $q->fetch();
+
+        if(!$user) {
+            return false;
+        }
+
+        return password_verify($password, $user->password_hash);
+    }
+
+    public function updatePassword($userId, $password) {
+        require_once '../vendor/ircmaxell/password-compat/lib/password.php';
+
+        $sql = 'UPDATE users SET password_hash = :password_hash WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $ret = $query->execute(array(':id' => $userId,
+            ':password_hash' => password_hash($password, PASSWORD_BCRYPT)));
+        return $ret;
+    }
+
+    public function checkProfilePin($userId, $profilePin) {
+        require_once '../vendor/ircmaxell/password-compat/lib/password.php';
+
+        $q = $this->db->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
+        $q->execute([':id' => $userId]);
+        $user = $q->fetch();
+
+        if(!$user) {
+            return false;
+        }
+
+        return password_verify($profilePin, $user->profile_pin_hash);
+    }
+
+    public function updateProfilePin($userId, $profilePin) {
+        require_once '../vendor/ircmaxell/password-compat/lib/password.php';
+
+        $sql = 'UPDATE users SET profile_pin_hash = :profile_pin_hash WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $ret = $query->execute(array(':id' => $userId,
+            ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
+        return $ret;
+    }
 }
