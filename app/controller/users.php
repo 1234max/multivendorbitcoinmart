@@ -77,30 +77,40 @@ class UsersController extends Controller {
 
         $user = $this->getModel('User');
 
-        # check that name is not taken...
-        if($user->isNameFree($this->post['name'])) {
-            # ... that password match
-            if($this->post['password'] === $this->post['password_confirmation']) {
-                # ... profile pins match
-                if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
-                    # save in database
-                    if($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
-                        $success = true;
+        # check that name is not emtpy or taken...
+        if(mb_strlen($this->post['name']) >= 3) {
+            if($user->isNameFree($this->post['name'])) {
+                # ... that password match
+                if($this->post['password'] === $this->post['password_confirmation']) {
+                    # ... profile pins match
+                    if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
+                        # check length
+                        if(mb_strlen($this->post['password']) >= 8 && mb_strlen($this->post['profile_pin']) >= 8) {
+                            # save in database
+                            if ($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
+                                $success = true;
+                            } else {
+                                $errorMessage = 'Could not register due to unknown error.';
+                            }
+                        }
+                        else {
+                            $errorMessage = 'Password and profile pin must be at least 8 characters.';
+                        }
                     }
                     else {
-                        $errorMessage = 'Could not register due to unknown error.';
+                        $errorMessage = 'Profile PINs did not match.';
                     }
                 }
                 else {
-                    $errorMessage = 'Profile PINs did not match.';
+                    $errorMessage = 'Password did not match.';
                 }
             }
             else {
-                $errorMessage = 'Password did not match.';
+                $errorMessage = 'Name already taken.';
             }
         }
         else {
-            $errorMessage = 'Name already taken.';
+            $errorMessage = 'Name must be at least 3 characters.';
         }
 
         if($success) {
