@@ -85,13 +85,31 @@ class ShippingOptionsController extends Controller {
         $option = $shippingOption->getOneOfUser($this->user->id, $this->post['id']);
         $this->notFoundUnless($option);
 
-        if($shippingOption->delete($this->post['id'])) {
+        $sucess = false;
+        $errorMessage = '';
+
+        # check that there are no products using this
+        $usingProducts = $shippingOption->getUsingProducts($this->post['id']);
+
+        if(empty($usingProducts)) {
+            if($shippingOption->delete($this->post['id'])) {
+                $success = true;
+            }
+            else {
+                $errorMessage = 'Unknown error while deleting shipping options';
+            }
+        }
+        else {
+            $productNames = join(array_map(function($v){return $v->name; }, $usingProducts), ', ');
+            $errorMessage = "Shipping option is still in use by products $productNames. Please unassign first.";
+        }
+
+        if($sucess) {
             $this->setFlash('success', 'Successfully deleted shipping option.');
         }
         else {
-            $this->setFlash('success', 'Unknown error, could not delete shipping option.');
+            $this->setFlash('error', $errorMessage);
         }
-
         $this->redirectTo('?c=shippingOptions');
     }
 }

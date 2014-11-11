@@ -56,4 +56,13 @@ class ShippingOptionModel extends Model {
         }
         return [];
     }
+
+    public function getUsingProducts($shippingOptionId) {
+        $q = $this->db->prepare('SELECT products.* FROM products ' .
+            'JOIN products_shipping_options ON products.id = products_shipping_options.product_id ' .
+            'WHERE products_shipping_options.shipping_option_id = :shipping_option_id');
+        $q->execute([':shipping_option_id' => $shippingOptionId]);
+        $products = $q->fetchAll();
+        return $products ? $products : [];
+    }
 }
