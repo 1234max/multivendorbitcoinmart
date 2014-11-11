@@ -47,7 +47,14 @@
             <?php if($this->isUserLoggedIn()): ?>
                 <section class="top-bar-section">
                     <ul class="right">
-                        <li><span class="label secondary round account-label"><i class="fi-torso"></i> <?= $this->user->name ?></span></li>
+                        <li><span class="label secondary round account-label">
+                                <?php if($this->user->is_vendor): ?>
+                                    <i class="fi-pricetag-multiple" title="This account is a vendor account"></i>
+                                <?php endif ?>
+                                <i class="fi-torso" title="Logged in as <?= $this->e($this->user->name) ?>"></i>
+                                <?= $this->e($this->user->name) ?>
+                            </span>
+                        </li>
                         <li class="divider"></li>
                         <li<?= $this->controller == 'listings' ? ' class="active"' : ''?>>
                             <a href="?c=listings">Listings</a>
@@ -61,34 +68,31 @@
                             <a href="#">Profile</a>
                             <ul class="dropdown">
                                 <li><label>General</label></li>
-                                <li<?= $this->controller == 'profile' && $this->get['a'] == 'settings' ? ' class="active"' : ''?>>
+                                <li<?= $this->controller == 'profile' && $this->action == 'settings' ? ' class="active"' : ''?>>
                                     <a href="?c=profile&a=settings">Settings</a>
                                 </li>
-                                <li<?= $this->controller == 'profile' && $this->get['a'] == 'multisig' ? ' class="active"' : ''?>>
+                                <li<?= $this->action == 'multisig' ? ' class="active"' : ''?>>
                                     <a href="?c=profile&a=multisig">Multisig configuration</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li><label>Vendor profile</label></li>
                                 <?php if($this->user->is_vendor): ?>
                                 <li>
-                                    <a href="?c=profile&a=settings">Settings</a>
-                                </li>
-                                <li>
                                     <a href="#">Vendor page</a>
                                 </li>
                                 <li class="has-dropdown not-click">
                                     <a class="" href="#">Listings</a>
                                     <ul class="dropdown">
-                                        <li>
-                                            <a href="#">Products</a>
+                                        <li<?= $this->controller == 'products' ? ' class="active"' : ''?>>
+                                            <a href="?c=products">Products</a>
                                         </li>
-                                        <li>
-                                            <a href="#">Shipping Options</a>
+                                        <li<?= $this->controller == 'shippingOptions' ? ' class="active"' : ''?>>
+                                            <a href="?c=shippingOptions">Shipping options</a>
                                         </li>
                                     </ul>
                                 </li>
                                 <?php else: ?>
-                                    <li<?= $this->controller == 'profile' && $this->get['a'] == 'becomeVendor' ? ' class="active"' : ''?>>
+                                    <li<?= $this->controller == 'profile' && $this->action == 'becomeVendor' ? ' class="active"' : ''?>>
                                         <a href="?c=profile&a=becomeVendor">Become vendor</a>
                                     </li>
                                 <?php endif ?>

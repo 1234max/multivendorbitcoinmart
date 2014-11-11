@@ -96,3 +96,8 @@ footer.row hr {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* buttons can be used in tables */
+table input.button, table a.button {
+    margin-bottom:0;
+}

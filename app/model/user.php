@@ -3,9 +3,9 @@
 namespace Scam;
 
 class UserModel extends Model {
-    public function getUser($user_id) {
+    public function getUser($userId) {
         $q = $this->db->prepare('SELECT * FROM users WHERE id = :user_id LIMIT 1');
-        $q->execute([':user_id' => $user_id]);
+        $q->execute([':user_id' => $userId]);
         $user = $q->fetch();
         return $user ? $user : null;
     }
@@ -37,10 +37,9 @@ class UserModel extends Model {
 
         $sql = 'INSERT INTO users (name, password_hash, profile_pin_hash) VALUES (:name, :password_hash, :profile_pin_hash)';
         $query = $this->db->prepare($sql);
-        $ret = $query->execute(array(':name' => $name,
+        return $query->execute(array(':name' => $name,
             ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
             ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
-        return $ret;
     }
 
     public function checkPassword($userId, $password) {
@@ -62,9 +61,8 @@ class UserModel extends Model {
 
         $sql = 'UPDATE users SET password_hash = :password_hash WHERE id = :id';
         $query = $this->db->prepare($sql);
-        $ret = $query->execute(array(':id' => $userId,
+        return $query->execute(array(':id' => $userId,
             ':password_hash' => password_hash($password, PASSWORD_BCRYPT)));
-        return $ret;
     }
 
     public function checkProfilePin($userId, $profilePin) {
@@ -86,8 +84,13 @@ class UserModel extends Model {
 
         $sql = 'UPDATE users SET profile_pin_hash = :profile_pin_hash WHERE id = :id';
         $query = $this->db->prepare($sql);
-        $ret = $query->execute(array(':id' => $userId,
+        return $query->execute(array(':id' => $userId,
             ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
-        return $ret;
+    }
+
+    public function becomeVendor($userId) {
+        $sql = 'UPDATE users SET is_vendor = 1 WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute(array(':id' => $userId));
     }
 }

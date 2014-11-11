@@ -64,6 +64,10 @@ class Controller {
         return htmlspecialchars($str, ENT_QUOTES, 'utf-8');
     }
 
+    protected function formatPrice($decimal) {
+        return floatval($decimal). ' BTC';
+    }
+
     protected function renderTemplate($template, $vars = [], $options = []) {
         header('Content-Type: text/html; charset=UTF-8');
 
@@ -87,7 +91,7 @@ class Controller {
     }
 
     protected function getModel($modelName) {
-        require_once '../app/model/' . strtolower($modelName) . '.php';
+        require_once '../app/model/' . lcfirst($modelName) . '.php';
         $className = 'Scam\\' . $modelName . 'Model';
         return new $className($this->db);
     }
@@ -101,6 +105,17 @@ class Controller {
 
     protected function accessDeniedUnless($condition) {
         $this->accessDeniedIf(!$condition);
+    }
+
+    protected function notFoundIf($condition) {
+        if($condition) {
+            require_once 'exceptions/not_found_exception.php';
+            throw new NotFoundException();
+        }
+    }
+
+    protected function notFoundUnless($condition) {
+        $this->notFoundIf(!$condition);
     }
 
     protected function redirectTo($url) {

@@ -67,10 +67,10 @@ class UsersController extends Controller {
         }
 
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']));
-        $this->accessDeniedUnless(isset($this->post['password']) && is_string($this->post['password']));
+        $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
+        $this->accessDeniedUnless(isset($this->post['password']) && is_string($this->post['password']) && mb_strlen($this->post['password']) >= 8);
         $this->accessDeniedUnless(isset($this->post['password_confirmation']) && is_string($this->post['password_confirmation']));
-        $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']));
+        $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 8);
         $this->accessDeniedUnless(isset($this->post['profile_pin_confirmation']) && is_string($this->post['profile_pin_confirmation']));
 
         $success = false;
@@ -78,39 +78,28 @@ class UsersController extends Controller {
         $user = $this->getModel('User');
 
         # check that name is not emtpy or taken...
-        if(mb_strlen($this->post['name']) >= 3) {
-            if($user->isNameFree($this->post['name'])) {
-                # ... that password match
-                if($this->post['password'] === $this->post['password_confirmation']) {
-                    # ... profile pins match
-                    if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
-                        # check length
-                        if(mb_strlen($this->post['password']) >= 8 && mb_strlen($this->post['profile_pin']) >= 8) {
-                            # save in database
-                            if ($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
-                                $success = true;
-                            } else {
-                                $errorMessage = 'Could not register due to unknown error.';
-                            }
-                        }
-                        else {
-                            $errorMessage = 'Password and profile pin must be at least 8 characters.';
-                        }
-                    }
-                    else {
-                        $errorMessage = 'Profile PINs did not match.';
+        if($user->isNameFree($this->post['name'])) {
+            # ... that password match
+            if($this->post['password'] === $this->post['password_confirmation']) {
+                # ... profile pins match
+                if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
+                    # save in database
+                    if ($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
+                        $success = true;
+                    } else {
+                        $errorMessage = 'Could not register due to unknown error.';
                     }
                 }
                 else {
-                    $errorMessage = 'Password did not match.';
+                    $errorMessage = 'Profile PINs did not match.';
                 }
             }
             else {
-                $errorMessage = 'Name already taken.';
+                $errorMessage = 'Password did not match.';
             }
         }
         else {
-            $errorMessage = 'Name must be at least 3 characters.';
+            $errorMessage = 'Name already taken.';
         }
 
         if($success) {
