@@ -17,4 +17,10 @@ class Model {
     public function __construct($db) {
         $this->db = $db;
     }
+
+    protected function getModel($modelName) {
+        require_once '../app/model/' . lcfirst($modelName) . '.php';
+        $className = 'Scam\\' . $modelName . 'Model';
+        return new $className($this->db);
+    }
 }

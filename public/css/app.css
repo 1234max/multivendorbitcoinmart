@@ -101,3 +101,7 @@ footer.row hr {
 table input.button, table a.button {
     margin-bottom:0;
 }
+
+.label.orange {
+    background-color: orange;
+}

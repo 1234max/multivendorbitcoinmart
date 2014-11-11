@@ -1,6 +1,12 @@
-<?php $formAction = $this->action == 'build' ? '?c=shippingOptions&a=create' : "?c=shippingOptions&a=update" ?>
+<?php if(isset($error)): ?>
+    <div data-alert class="alert-box alert">
+        <?= $this->e($error) ?>
+    </div>
+<?php endif ?>
+
+<?php $formAction = isset($shippingOption->id) ? '?c=shippingOptions&a=update' : "?c=shippingOptions&a=create" ?>
 <form action="<?= $formAction ?>" method="post">
-    <?php if($this->action == 'edit'): ?>
+    <?php if(isset($shippingOption->id)): ?>
         <input type="hidden" name="id" value="<?= $shippingOption->id ?>"/>
     <?php endif ?>
     <div class="row">
@@ -34,6 +40,7 @@
                            title="Price in bitcoin">
                 </div>
             </div>
+            <hr/>
             <div class="row">
                 <div class="large-9 large-offset-3 columns">
                     <input type="submit" value="Save" class="button small success" />
@@ -42,3 +49,5 @@
         </div>
     </div>
 </form>
+
+<a href="?c=shippingOptions">Back</a>
