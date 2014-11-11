@@ -50,6 +50,29 @@
                               placeholder="Jacket, clothes, winter, coat, ..."
                               title="Comma seperated tags to find the product"><?= $this->e($product->tags) ?></textarea>
                 </div>
+                <div class="large-3 columns">
+                    <label for="hidden" class="right inline">Is hidden</label>
+                </div>
+                <div class="large-9 columns">
+                    <div class="switch">
+                        <input type="checkbox"
+                               name="is_hidden"
+                               id="is_hidden"
+                               value="1"
+                            <?= $product->is_hidden ? 'checked="checked"' : '' ?> />
+                        <label for="is_hidden"></label>
+                        <br/>
+                        <small>
+                            <?php if($product->is_hidden): ?>
+                                <?php if(isset($product->id)): ?>
+                                    This hidden product can only be found by knowing this link: <a href="?c=listings&a=product&code=<?= $product->code ?>">Product page</a>
+                                <?php endif ?>
+                            <?php else: ?>
+                                By default, the product can be found by everyone on the listings page.<br/>
+                            <?php endif ?>
+                        </small>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="large-3 columns">
@@ -63,7 +86,7 @@
                                name="shipping_options[]"
                                id="shipping_option-<?= $shippingOption->id ?>"
                                value="<?= $shippingOption->id ?>"
-                               <?= isset($product->shippingOptions[$shippingOption->id]) ? 'checked="checked"' : '' ?> />
+                            <?= isset($product->shippingOptions[$shippingOption->id]) ? 'checked="checked"' : '' ?> />
                         <label for="shipping_option-<?= $shippingOption->id ?>"><?= $this->e($shippingOption->name) ?></label>
                         <br/>
                     <?php endforeach ?>

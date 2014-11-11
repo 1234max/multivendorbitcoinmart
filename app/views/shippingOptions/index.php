@@ -25,8 +25,8 @@
             <tr>
                 <th>Name</th>
                 <th>Price</th>
-                <th></th>
-                <th></th>
+                <th width="80"></th>
+                <th width="80"></th>
             </tr>
             </thead>
             <tbody>

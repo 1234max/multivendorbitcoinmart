@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS `products` (
   `price` decimal(65,30) NOT NULL,
   `user_id` int(11) NOT NULL,
   `tags` text NOT NULL,
+  `is_hidden` BOOLEAN NOT NULL DEFAULT 0,
+  `code` varchar(12) NOT NULL UNIQUE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 

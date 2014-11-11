@@ -17,7 +17,7 @@ class ProductsController extends Controller {
     }
 
     public function build() {
-        $product = (object)['name' => '', 'price' => '0.0', 'tags' => ''];
+        $product = (object)['name' => '', 'price' => '0.0', 'tags' => '', 'is_hidden' => 0];
         $shippingOptions = $this->getModel('ShippingOption')->getAllOfUser($this->user->id);
 
         $this->renderTemplate('products/build.php', ['product' => $product, 'shippingOptions' => $shippingOptions]);
@@ -42,7 +42,11 @@ class ProductsController extends Controller {
             }
         }
 
-        $product = (object)['name' => $this->post['name'], 'price' => $this->post['price'], 'tags' => $this->post['tags'], 'shippingOptions' => $validShippingOptions];
+        $product = (object)['name' => $this->post['name'],
+            'price' => $this->post['price'],
+            'tags' => $this->post['tags'],
+            'is_hidden' => isset($this->post['is_hidden']) ? 1 : 0,
+            'shippingOptions' => $validShippingOptions];
 
         $success = false;
         $errorMessage = '';
@@ -113,6 +117,7 @@ class ProductsController extends Controller {
         $product->name = $this->post['name'];
         $product->price = $this->post['price'];
         $product->tags = $this->post['tags'];
+        $product->is_hidden = isset($this->post['is_hidden']) ? 1 : 0;
         $product->shippingOptions = $validShippingOptions;
 
         $success = false;

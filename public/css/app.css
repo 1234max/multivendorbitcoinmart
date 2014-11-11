@@ -105,3 +105,12 @@ table input.button, table a.button {
 .label.orange {
     background-color: orange;
 }
+
+/* custom color for switches */
+.switch input:checked + label {
+    background-color:orange;
+}
+
+table.full-width {
+    width:100%;
+}

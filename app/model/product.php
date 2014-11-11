@@ -5,7 +5,7 @@ namespace Scam;
 class ProductModel extends Model {
 
     public function getAllOfUser($userId) {
-        $q = $this->db->prepare('SELECT products.* FROM products WHERE user_id = :user_id ORDER BY name ASC');
+        $q = $this->db->prepare('SELECT * FROM products WHERE user_id = :user_id ORDER BY name ASC');
 
         $q->execute([':user_id' => $userId]);
         $products = $q->fetchAll();
@@ -20,15 +20,32 @@ class ProductModel extends Model {
         return [];
     }
 
+    private function getFreeCode() {
+        $code = null;
+        do {
+            $try = substr(sha1(rand()), 0, 12);
+            $q = $this->db->prepare('SELECT id FROM products WHERE code = :code');
+
+            $q->execute([':code' => $try]);
+            if(!$q->fetch()) {
+                $code = $try;
+            }
+        } while($code == null);
+
+        return $code;
+    }
+
     public function createForUser($userId, $product) {
         $this->db->beginTransaction();
 
         try {
-            $sql = 'INSERT INTO products (name, price, tags, user_id) VALUES (:name, :price, :tags, :user_id)';
+            $sql = 'INSERT INTO products (name, price, tags, is_hidden, code, user_id) VALUES (:name, :price, :tags, :is_hidden, :code, :user_id)';
             $query = $this->db->prepare($sql);
             $result = $query->execute(array(':name' => $product->name,
                 ':price' => floatval($product->price),
                 ':tags' => $product->tags,
+                ':is_hidden' => intval($product->is_hidden),
+                ':code' => $this->getFreeCode(),
                 ':user_id' => $userId));
 
             # create shipping option links
@@ -76,11 +93,12 @@ class ProductModel extends Model {
         $this->db->beginTransaction();
 
         try {
-            $sql = 'UPDATE products SET name = :name, price = :price, tags = :tags WHERE id = :id';
+            $sql = 'UPDATE products SET name = :name, price = :price, tags = :tags, is_hidden = :is_hidden WHERE id = :id';
             $query = $this->db->prepare($sql);
             $result = $query->execute(array(':name' => $product->name,
                 ':price' => floatval($product->price),
                 ':tags' => $product->tags,
+                ':is_hidden' => intval($product->is_hidden),
                 ':id' => $product->id));
 
             # create shipping option links
