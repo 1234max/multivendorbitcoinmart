@@ -48,10 +48,12 @@
                 <div class="large-9 columns">
                     <?php if(isset($product->id)): ?>
                         <?php if($product->hasImage): ?>
-                            <img src="?c=listings&a=productImage&code=<?= $product->code ?>"
-                                 alt="Picture of product <?= $this->e($product->name) ?>"
-                                 title="Picture of product <?= $this->e($product->name) ?>"
-                                 width="100" height="100"/>
+                            <?php $imageUrl = "?c=listings&a=productImage&code=" . $product->code ?>
+                            <a href="<?= $imageUrl ?>" target="_blank">
+                                <img src="<?= $imageUrl ?>"
+                                     alt="Picture of product <?= $this->e($product->name) ?>"
+                                     title="Picture of product <?= $this->e($product->name) ?>"
+                                     width="80"/></a>
                             <a href="?c=products&a=destroyImage&id=<?= $product->id ?>" class="button tiny alert">Delete</a>
                             <br/>
                         <?php else: ?>
@@ -60,7 +62,7 @@
                         <br/>
                     <?php endif ?>
 
-                    <small>Max. 5MB</small>
+                    <small>Max. 5MB, format: JPEG, PNG or GIF.</small>
                     <input type="file" name="image" id="image"/>
                 </div>
             </div>

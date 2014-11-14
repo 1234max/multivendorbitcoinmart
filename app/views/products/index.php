@@ -23,6 +23,7 @@
     <table class="full-width">
         <thead>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Link</th>
             <th>Is hidden</th>
@@ -36,6 +37,10 @@
         <tbody>
         <?php foreach($products as $product): ?>
         <tr>
+            <td><img class="thumbnail" src="?c=listings&a=productImage&code=<?= $product->code ?>"
+                     alt="Picture of product <?= $this->e($product->name) ?>"
+                     title="Picture of product <?= $this->e($product->name) ?>"
+                     width="100"/></td>
             <td><?= $this->e($product->name) ?></td>
             <td><a href="?c=listings&a=product&code=<?= $product->code ?>">Product page</a></td>
             <td>

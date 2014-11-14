@@ -200,15 +200,52 @@ class ProductsController extends Controller {
     }
 
     private function handleImage(&$errorMessage) {
-        if(isset($this->files['image']) && $this->files['image']['tmp_name'] && is_readable($this->files['image']['tmp_name'])) {
+        if(isset($this->files['image']) && isset($this->files['image']['error']) && $this->files['image']['error'] != UPLOAD_ERR_NO_FILE) {
+            if($this->files['image']['error'] == UPLOAD_ERR_FORM_SIZE || $this->files['image']['error'] == UPLOAD_ERR_INI_SIZE) {
+                $errorMessage = 'Image size must not be bigger than 5MB.';
+                return null;
+            }
+
+            # check for php errors
+            if($this->files['image']['error'] != UPLOAD_ERR_OK) {
+                $errorMessage = 'Upload error. Try again.';
+                return null;
+            }
+
             # check size
+            if($this->files['image']['size'] > 5242880) { # 5MB
+                $errorMessage = 'Image size must not be bigger than 5MB.';
+                return null;
+            }
+
+            $tmpPath = $this->files['image']['tmp_name'];
 
             # check type
+            $format = rtrim(shell_exec('identify -format "%m" '.escapeshellarg($tmpPath)));
+            if(!in_array($format, ['JPEG', 'PNG', 'GIF'])) {
+                $errorMessage = 'Image format must be JPEG, PNG or GIF.';
+                return null;
+            }
 
-            # strip
+            # strip metadata & comments
+            $ret = -1;
+            $output = [];
+            exec('mogrify -strip '.escapeshellarg($tmpPath), $output, $ret);
+            if($ret !== 0) {
+                $errorMessage = 'Error while handling image. Please try another or save in other format.';
+                return null;
+            }
 
-            # convert & resize
-            return fopen($this->files['image']['tmp_name'], 'rb');
+            # resize & convert to jpeg (with overwritting file)
+            $ret = -1;
+            $output = [];
+            exec('convert ' . escapeshellarg($tmpPath) . ' -quality 95 -geometry 640x480 jpg:'.escapeshellarg($tmpPath), $output, $ret);
+            if($ret !== 0) {
+                $errorMessage = 'Error while handling image. Please try another or save in other format.';
+                return null;
+            }
+
+            return fopen($tmpPath, 'rb');
         }
         return null;
     }

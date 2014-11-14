@@ -153,7 +153,7 @@ class ProductModel extends Model {
     }
 
     public function getProduct($code) {
-        $q = $this->db->prepare('SELECT name, code, !ISNULL(image) as hasImage FROM products WHERE code = :code LIMIT 1');
+        $q = $this->db->prepare('SELECT name, code FROM products WHERE code = :code LIMIT 1');
         $q->execute([':code' => $code]);
         $product = $q->fetch();
         return $product ? $product : null;

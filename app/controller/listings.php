@@ -17,10 +17,14 @@ class ListingsController extends Controller {
     }
 
     public function productImage(){
+        $this->accessDeniedUnless(isset($this->get['code']) && is_string($this->get['code']));
         $img = $this->getModel('Product')->getImage($this->get['code']);
         if($img) {
-            header("Content-Type: image/png");
+            header("Content-Type: image/jpeg");
             echo $img;
+        }
+        else {
+            $this->redirectTo('/img/no_picture.gif');
         }
     }
 }
