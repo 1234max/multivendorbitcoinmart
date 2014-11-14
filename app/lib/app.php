@@ -25,7 +25,7 @@ class App {
         'vendor' => ['multisig' => 'GET'],
         'shippingOptions' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
         'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroyImage' => 'GET', 'destroy' => 'POST'],
-        'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET'],
+        'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET', 'vendor' => 'GET'],
         'orders' => ['index' => 'GET']
     ];
 
@@ -87,9 +87,15 @@ class App {
             $controller->notFound();
         }
         catch(\Exception $e) {
+            if(PRODUCTION) {
             require_once '../app/controller/error.php';
             $controller = new ErrorController($db);
             $controller->unknown();
+            }
+            else {
+                # show error to developer
+                throw $e;
+            }
         }
     }
 }

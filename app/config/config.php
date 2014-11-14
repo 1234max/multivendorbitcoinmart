@@ -17,6 +17,7 @@ if('127.0.0.1' == $_SERVER["REMOTE_ADDR"]) {
     define('DB_NAME', 'scam');
     define('DB_USER', 'root');
     define('DB_PASS', '');
+    define('PRODUCTION', false);
 }
 # prod env
 else {
@@ -29,4 +30,5 @@ else {
     define('DB_NAME', 'scam');
     define('DB_USER', 'not-root');
     define('DB_PASS', 'mysql');
+    define('PRODUCTION', true);
 }

@@ -82,15 +82,23 @@ class Controller {
         extract($vars, EXTR_SKIP);
 
         # render view
-        ob_start();
-        require '../app/views/' . $template;
-        $content = ob_get_clean();
+        try {
+            ob_start();
+            require '../app/views/' . $template;
+            $content = ob_get_clean();
 
-        # render layout
-        $layout = isset($options['layout']) ? $options['layout'] : 'default.php';
-        require '../app/views/_layout/' . $layout;
+            # render layout
+            $layout = isset($options['layout']) ? $options['layout'] : 'default.php';
+            require '../app/views/_layout/' . $layout;
 
-        $this->prepareFlashesForNextRequest();
+            $this->prepareFlashesForNextRequest();
+        }
+        catch(\Exception $e) {
+            # if exception occurs while rendering the template, we must clean up the already existing output
+            # otherwise it shows up when rendering the error view.
+            ob_end_clean();
+            throw $e;
+        }
     }
 
     protected function getModel($modelName) {
