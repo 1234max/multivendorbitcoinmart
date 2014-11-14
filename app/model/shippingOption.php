@@ -14,9 +14,9 @@ class ShippingOptionModel extends Model {
     public function createForUser($userId, $option) {
         $sql = 'INSERT INTO shipping_options (name, price, user_id) VALUES (:name, :price, :user_id)';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':name' => $option->name,
+        return $query->execute([':name' => $option->name,
             ':price' => floatval($option->price),
-            ':user_id' => $userId));
+            ':user_id' => $userId]);
     }
 
     public function getOneOfUser($userId, $id) {
@@ -29,9 +29,9 @@ class ShippingOptionModel extends Model {
     public function update($option) {
         $sql = 'UPDATE shipping_options SET name = :name, price = :price WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':name' => $option->name,
+        return $query->execute([':name' => $option->name,
             ':price' => floatval($option->price),
-            ':id' => $option->id));
+            ':id' => $option->id]);
     }
 
     public function delete($id) {

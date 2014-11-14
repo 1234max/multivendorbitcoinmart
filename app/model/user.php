@@ -37,9 +37,9 @@ class UserModel extends Model {
 
         $sql = 'INSERT INTO users (name, password_hash, profile_pin_hash) VALUES (:name, :password_hash, :profile_pin_hash)';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':name' => $name,
+        return $query->execute([':name' => $name,
             ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
-            ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
+            ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)]);
     }
 
     public function checkPassword($userId, $password) {
@@ -61,8 +61,8 @@ class UserModel extends Model {
 
         $sql = 'UPDATE users SET password_hash = :password_hash WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':id' => $userId,
-            ':password_hash' => password_hash($password, PASSWORD_BCRYPT)));
+        return $query->execute([':id' => $userId,
+            ':password_hash' => password_hash($password, PASSWORD_BCRYPT)]);
     }
 
     public function checkProfilePin($userId, $profilePin) {
@@ -84,13 +84,13 @@ class UserModel extends Model {
 
         $sql = 'UPDATE users SET profile_pin_hash = :profile_pin_hash WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':id' => $userId,
-            ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)));
+        return $query->execute([':id' => $userId,
+            ':profile_pin_hash' => password_hash($profilePin, PASSWORD_BCRYPT)]);
     }
 
     public function becomeVendor($userId) {
         $sql = 'UPDATE users SET is_vendor = 1 WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute(array(':id' => $userId));
+        return $query->execute([':id' => $userId]);
     }
 }

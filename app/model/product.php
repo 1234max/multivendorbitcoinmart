@@ -58,8 +58,8 @@ class ProductModel extends Model {
                 foreach($product->shippingOptions as $id => $shippingOption) {
                     $sql = 'INSERT INTO products_shipping_options (product_id, shipping_option_id) VALUES (:product_id, :shipping_option_id)';
                     $query = $this->db->prepare($sql);
-                    $res = $query->execute(array(':product_id' => intval($productId),
-                        ':shipping_option_id' => intval($id)));
+                    $res = $query->execute([':product_id' => intval($productId),
+                        ':shipping_option_id' => intval($id)]);
                     if(!$res) {
                         throw new \Exception('Shipping option link couldnt be saved');
                     }
@@ -119,7 +119,7 @@ class ProductModel extends Model {
                 # delete existing first
                 $sql = 'DELETE FROM products_shipping_options WHERE product_id = :product_id';
                 $query = $this->db->prepare($sql);
-                $res = $query->execute(array(':product_id' => $product->id));
+                $res = $query->execute([':product_id' => $product->id]);
                 if(!$res) {
                     throw new \Exception('Shipping option link couldnt be saved');
                 }
@@ -127,8 +127,8 @@ class ProductModel extends Model {
                 foreach($product->shippingOptions as $id => $shippingOption) {
                     $sql = 'INSERT INTO products_shipping_options (product_id, shipping_option_id) VALUES (:product_id, :shipping_option_id)';
                     $query = $this->db->prepare($sql);
-                    $res = $query->execute(array(':product_id' => $product->id,
-                        ':shipping_option_id' => intval($id)));
+                    $res = $query->execute([':product_id' => $product->id,
+                        ':shipping_option_id' => intval($id)]);
                     if(!$res) {
                         throw new \Exception('Shipping option link couldnt be saved');
                     }
