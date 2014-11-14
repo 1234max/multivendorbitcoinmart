@@ -239,7 +239,8 @@ class ProductsController extends Controller {
             # resize & convert to jpeg (with overwritting file)
             $ret = -1;
             $output = [];
-            exec('convert ' . escapeshellarg($tmpPath) . ' -quality 95 -geometry 640x480 jpg:'.escapeshellarg($tmpPath), $output, $ret);
+            # flatten makes png backgrounds white
+            exec('convert ' . escapeshellarg($tmpPath) . ' -flatten -quality 95 -geometry 640x480 jpg:'.escapeshellarg($tmpPath), $output, $ret);
             if($ret !== 0) {
                 $errorMessage = 'Error while handling image. Please try another or save in other format.';
                 return null;

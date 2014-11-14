@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `tags` text NOT NULL,
   `is_hidden` BOOLEAN NOT NULL DEFAULT 0,
   `code` varchar(12) NOT NULL UNIQUE,
-  `image` blob,
+  `image` MEDIUMBLOB,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
