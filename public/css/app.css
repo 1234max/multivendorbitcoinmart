@@ -153,3 +153,7 @@ img.product-image {
     margin-top:15px;
     margin-bottom:15px;
 }
+
+div.product-description {
+    padding-top:10px;
+}

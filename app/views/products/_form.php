@@ -28,6 +28,18 @@
             </div>
             <div class="row">
                 <div class="large-3 columns">
+                    <label for="description" class="right inline">Description</label>
+                </div>
+                <div class="large-9 columns">
+                    <textarea name="description"
+                              rows="6"
+                              placeholder="Please put detailled product description here."
+                              required="true"
+                              title="Will be shown on product page"><?= $this->e($product->description) ?></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-3 columns">
                     <label for="price" class="right inline">Price in BTC</label>
                 </div>
                 <div class="large-9 columns">

@@ -76,9 +76,11 @@ class ProductModel extends Model {
         $this->db->beginTransaction();
 
         try {
-            $sql = 'INSERT INTO products (name, price, tags, is_hidden, code, image, user_id) VALUES (:name, :price, :tags, :is_hidden, :code, :image, :user_id)';
+            $sql = 'INSERT INTO products (name, description, price, tags, is_hidden, code, image, user_id) ' .
+                'VALUES (:name, :description, :price, :tags, :is_hidden, :code, :image, :user_id)';
             $query = $this->db->prepare($sql);
             $query->bindValue(':name', $product->name);
+            $query->bindValue(':description', $product->description);
             $query->bindValue(':price', floatval($product->price));
             $query->bindValue(':tags', $product->tags);
             $query->bindValue(':is_hidden', intval($product->is_hidden));
@@ -116,7 +118,7 @@ class ProductModel extends Model {
     }
 
     public function getOneOfUser($userId, $id) {
-        $q = $this->db->prepare('SELECT id, name, price, user_id, tags, is_hidden, code, !ISNULL(image) as hasImage ' .
+        $q = $this->db->prepare('SELECT id, name, description, price, user_id, tags, is_hidden, code, !ISNULL(image) as hasImage ' .
             'FROM products WHERE user_id = :user_id and id = :id LIMIT 1');
         $q->execute([':user_id' => $userId, ':id' => $id]);
         $product = $q->fetch();
@@ -136,12 +138,13 @@ class ProductModel extends Model {
 
         try {
             # dont update image if not a new one is given
-            $sql = 'UPDATE products SET name = :name, price = :price, tags = :tags, is_hidden = :is_hidden WHERE id = :id';
+            $sql = 'UPDATE products SET name = :name, description = :description, price = :price, tags = :tags, is_hidden = :is_hidden WHERE id = :id';
             if($product->image != null) {
-                $sql = 'UPDATE products SET name = :name, price = :price, tags = :tags, is_hidden = :is_hidden, image = :image WHERE id = :id';
+                $sql = 'UPDATE products SET name = :name, description = :description, price = :price, tags = :tags, is_hidden = :is_hidden, image = :image WHERE id = :id';
             }
             $query = $this->db->prepare($sql);
             $query->bindValue(':name', $product->name);
+            $query->bindValue(':description', $product->description);
             $query->bindValue(':price', floatval($product->price));
             $query->bindValue(':tags', $product->tags);
             $query->bindValue(':is_hidden', intval($product->is_hidden));
@@ -190,7 +193,7 @@ class ProductModel extends Model {
     }
 
     public function getProduct($code) {
-        $q = $this->db->prepare('SELECT p.id, p.name, p.code, p.user_id, p.tags, u.name AS user FROM products p '.
+        $q = $this->db->prepare('SELECT p.id, p.name, p.description, p.code, p.user_id, p.tags, u.name AS user FROM products p '.
             'JOIN users u ON p.user_id = u.id WHERE p.code = :code LIMIT 1');
         $q->execute([':code' => $code]);
         $product = $q->fetch();

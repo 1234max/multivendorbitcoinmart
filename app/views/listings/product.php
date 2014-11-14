@@ -23,8 +23,8 @@
                     />
             </a>
         </div>
-        <div class="small-8 columns">
-
+        <div class="small-8 columns product-description">
+            <?= nl2br($this->e($product->description)) ?>
         </div>
     </div>
     <hr/>

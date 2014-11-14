@@ -18,7 +18,7 @@ class ProductsController extends Controller {
     }
 
     public function build() {
-        $product = (object)['name' => '', 'price' => '0.0', 'tags' => '', 'is_hidden' => 0];
+        $product = (object)['name' => '', 'description' => '', 'price' => '0.0', 'tags' => '', 'is_hidden' => 0];
         $shippingOptions = $this->getModel('ShippingOption')->getAllOfUser($this->user->id);
 
         $this->renderTemplate('products/build.php', ['product' => $product, 'shippingOptions' => $shippingOptions]);
@@ -27,6 +27,7 @@ class ProductsController extends Controller {
     public function create() {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
+        $this->accessDeniedUnless(isset($this->post['description']) && is_string($this->post['description']) && mb_strlen($this->post['description']) >= 0);
         $this->accessDeniedUnless(isset($this->post['price']) && is_string($this->post['price']) && is_numeric($this->post['price']) && $this->post['price'] >= 0.0);
         $this->accessDeniedUnless(isset($this->post['tags']) && is_string($this->post['tags']));
 
@@ -44,6 +45,7 @@ class ProductsController extends Controller {
         }
 
         $product = (object)['name' => $this->post['name'],
+            'description' => $this->post['description'],
             'price' => $this->post['price'],
             'tags' => $this->post['tags'],
             'is_hidden' => isset($this->post['is_hidden']) ? 1 : 0,
@@ -101,6 +103,7 @@ class ProductsController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
+        $this->accessDeniedUnless(isset($this->post['description']) && is_string($this->post['description']) && mb_strlen($this->post['description']) >= 0);
         $this->accessDeniedUnless(isset($this->post['price']) && is_string($this->post['price']) && is_numeric($this->post['price']) && $this->post['price'] >= 0.0);
         $this->accessDeniedUnless(isset($this->post['tags']) && is_string($this->post['tags']));
 
@@ -123,6 +126,7 @@ class ProductsController extends Controller {
         }
 
         $product->name = $this->post['name'];
+        $product->description = $this->post['description'];
         $product->price = $this->post['price'];
         $product->tags = $this->post['tags'];
         $product->is_hidden = isset($this->post['is_hidden']) ? 1 : 0;
