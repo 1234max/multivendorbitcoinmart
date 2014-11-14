@@ -18,6 +18,7 @@ class Controller {
     private $db = null;
     protected $get = [];
     protected $post = [];
+    protected $files = [];
     protected $isPost = false;
     protected $controller = '';
     protected $action = '';
@@ -37,6 +38,8 @@ class Controller {
         # shortcuts to use in templates:
         $this->get = $_GET;
         $this->post = $_POST;
+        $this->files = isset($_FILES) ? $_FILES : [];
+
         $this->controller = isset($this->get['c']) ? $this->get['c'] : 'listings';
         $this->action = isset($this->get['a']) ? $this->get['a'] : 'index';
 

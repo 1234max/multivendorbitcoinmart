@@ -12,8 +12,9 @@ class ProductsController extends Controller {
 
     public function index() {
         $products = $this->getModel('Product')->getAllOfUser($this->user->id);
+        $shippingOptions = $this->getModel('ShippingOption')->getAllOfUser($this->user->id);
 
-        $this->renderTemplate('products/index.php', ['products' => $products]);
+        $this->renderTemplate('products/index.php', ['products' => $products, 'hasShippingOptions' => !empty($shippingOptions)]);
     }
 
     public function build() {
@@ -48,20 +49,27 @@ class ProductsController extends Controller {
             'is_hidden' => isset($this->post['is_hidden']) ? 1 : 0,
             'shippingOptions' => $validShippingOptions];
 
-        $success = false;
+
         $errorMessage = '';
 
-        if(!empty($product->shippingOptions)) {
-            $productModel = $this->getModel('product');
+        # verify image
+        $product->image = $this->handleImage($errorMessage);
 
-            if ($productModel->createForUser($this->user->id, $product)) {
-                $success = true;
-            } else {
-                $errorMessage = 'Could not create product due to unknown error.';
+        $success = false;
+
+        if(empty($errorMessage)){
+            if(!empty($product->shippingOptions)) {
+                $productModel = $this->getModel('product');
+
+                if ($productModel->createForUser($this->user->id, $product)) {
+                    $success = true;
+                } else {
+                    $errorMessage = 'Could not create product due to unknown error.';
+                }
             }
-        }
-        else {
-            $errorMessage = 'Please specify at least one valid shipping option.';
+            else {
+                $errorMessage = 'Please specify at least one valid shipping option.';
+            }
         }
 
         if($success) {
@@ -120,20 +128,26 @@ class ProductsController extends Controller {
         $product->is_hidden = isset($this->post['is_hidden']) ? 1 : 0;
         $product->shippingOptions = $validShippingOptions;
 
-        $success = false;
         $errorMessage = '';
 
-        if(!empty($product->shippingOptions)) {
-            $productModel = $this->getModel('product');
+        # verify image
+        $product->image = $this->handleImage($errorMessage);
 
-            if ($productModel->update($product)) {
-                $success = true;
-            } else {
-                $errorMessage = 'Could not update product due to unknown error.';
+        $success = false;
+
+        if(empty($errorMessage)) {
+            if(!empty($product->shippingOptions)) {
+                $productModel = $this->getModel('product');
+
+                if ($productModel->update($product)) {
+                    $success = true;
+                } else {
+                    $errorMessage = 'Could not update product due to unknown error.';
+                }
             }
-        }
-        else {
-            $errorMessage = 'Please specify at least one valid shipping option.';
+            else {
+                $errorMessage = 'Please specify at least one valid shipping option.';
+            }
         }
 
         if($success) {
@@ -145,8 +159,25 @@ class ProductsController extends Controller {
                 'shippingOptions' => $shippingOptions,
                 'error' => $errorMessage ]);
         }
+    }
 
-        $this->redirectTo('?c=products');
+    public function destroyImage() {
+        # check for existence & format of input params
+        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
+
+        # check that product belongs to user
+        $productModel = $this->getModel('product');
+        $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
+        $this->notFoundUnless($product);
+
+        if($productModel->deleteImage($this->get['id'])) {
+            $this->setFlash('success', 'Successfully deleted product image.');
+        }
+        else {
+            $this->setFlash('success', 'Unknown error, could not delete product image.');
+        }
+
+        $this->redirectTo('?c=products&a=edit&id=' . $this->get['id']);
     }
 
     public function destroy() {
@@ -166,5 +197,19 @@ class ProductsController extends Controller {
         }
 
         $this->redirectTo('?c=products');
+    }
+
+    private function handleImage(&$errorMessage) {
+        if(isset($this->files['image']) && $this->files['image']['tmp_name'] && is_readable($this->files['image']['tmp_name'])) {
+            # check size
+
+            # check type
+
+            # strip
+
+            # convert & resize
+            return fopen($this->files['image']['tmp_name'], 'rb');
+        }
+        return null;
     }
 }

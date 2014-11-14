@@ -24,8 +24,8 @@ class App {
         'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'multisig' => 'GET', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
         'vendor' => ['multisig' => 'GET'],
         'shippingOptions' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
-        'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
-        'listings' => ['index' => 'GET'],
+        'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroyImage' => 'GET', 'destroy' => 'POST'],
+        'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET'],
         'orders' => ['index' => 'GET']
     ];
 

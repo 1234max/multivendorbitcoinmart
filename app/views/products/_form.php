@@ -5,10 +5,11 @@
 <?php endif ?>
 
 <?php $formAction = isset($product->id) ? '?c=products&a=update' : "?c=products&a=create" ?>
-<form action="<?= $formAction ?>" method="post">
+<form action="<?= $formAction ?>" method="post" enctype="multipart/form-data">
     <?php if(isset($product->id)): ?>
         <input type="hidden" name="id" value="<?= $product->id ?>"/>
     <?php endif ?>
+    <input type="hidden" name="MAX_FILE_SIZE" value="5242880" />
     <div class="row">
         <div class="large-8 columns">
             <div class="row">
@@ -42,6 +43,29 @@
             </div>
             <div class="row">
                 <div class="large-3 columns">
+                    <label for="image" class="right inline">Image</label>
+                </div>
+                <div class="large-9 columns">
+                    <?php if(isset($product->id)): ?>
+                        <?php if($product->hasImage): ?>
+                            <img src="?c=listings&a=productImage&code=<?= $product->code ?>"
+                                 alt="Picture of product <?= $this->e($product->name) ?>"
+                                 title="Picture of product <?= $this->e($product->name) ?>"
+                                 width="100" height="100"/>
+                            <a href="?c=products&a=destroyImage&id=<?= $product->id ?>" class="button tiny alert">Delete</a>
+                            <br/>
+                        <?php else: ?>
+                            <small><strong>No image specified.</strong></small>
+                        <?php endif ?>
+                        <br/>
+                    <?php endif ?>
+
+                    <small>Max. 5MB</small>
+                    <input type="file" name="image" id="image"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-3 columns">
                     <label for="tags" class="right inline">Tags</label>
                 </div>
                 <div class="large-9 columns">
@@ -50,6 +74,8 @@
                               placeholder="Jacket, clothes, winter, coat, ..."
                               title="Comma seperated tags to find the product"><?= $this->e($product->tags) ?></textarea>
                 </div>
+            </div>
+            <div class="row">
                 <div class="large-3 columns">
                     <label for="hidden" class="right inline">Is hidden</label>
                 </div>
@@ -92,6 +118,7 @@
                     <?php endforeach ?>
                 </div>
             </div>
+
             <hr/>
             <div class="row">
                 <div class="large-9 large-offset-3 columns">

@@ -69,5 +69,11 @@
     </table>
 <?php endif ?>
 
-    <a href="?c=products&a=build" class="button small success">New product</a>
+    <?php if($hasShippingOptions): ?>
+        <a href="?c=products&a=build" class="button small success">New product</a>
+    <?php else: ?>
+        <div data-alert class="alert-box warning">
+            No shipping options defined, please <a href="?c=shippingOptions">create one first</a>.
+        </div>
+    <?php endif ?>
 </div>
