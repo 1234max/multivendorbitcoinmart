@@ -115,7 +115,9 @@
                                id="shipping_option-<?= $shippingOption->id ?>"
                                value="<?= $shippingOption->id ?>"
                             <?= isset($product->shippingOptions[$shippingOption->id]) ? 'checked="checked"' : '' ?> />
-                        <label for="shipping_option-<?= $shippingOption->id ?>"><?= $this->e($shippingOption->name) ?></label>
+                        <label for="shipping_option-<?= $shippingOption->id ?>">
+                            <?= $this->e($shippingOption->name) ?> (<?= $this->formatPrice($shippingOption->price) ?>)
+                        </label>
                         <br/>
                     <?php endforeach ?>
                 </div>
