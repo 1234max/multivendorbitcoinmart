@@ -4,7 +4,15 @@ namespace Scam;
 
 class ListingsController extends Controller {
     public function index() {
-        $this->renderTemplate('listings/index.php');
+        $query = '';
+        if(isset($this->get['q']) && is_string($this->get['q'])) {
+            $query = $this->get['q'];
+        }
+
+        $sorting = isset($this->get['sort']) ? $this->get['sort'] : 'date-desc';
+
+        $products = $this->getModel('Product')->getAllVisible($query, $sorting);
+        $this->renderTemplate('listings/index.php', ['products' => $products, 'query' => $query, 'sorting' => $sorting]);
     }
 
     public function product() {
@@ -26,5 +34,16 @@ class ListingsController extends Controller {
         else {
             $this->redirectTo('/img/no_picture.gif');
         }
+    }
+
+    public function vendor() {
+        # check for existence & format of input params
+        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
+        $user = $this->getModel('User')->getUser($this->get['id']);
+        $products = $this->getModel('Product')->getAllOfUser($user->id, false);
+
+        $this->notFoundUnless($user && $user->is_vendor);
+
+        $this->renderTemplate('listings/vendor.php', ['vendor' => $user, 'products' => $products]);
     }
 }

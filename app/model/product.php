@@ -4,11 +4,17 @@ namespace Scam;
 
 class ProductModel extends Model {
 
-    public function getAllOfUser($userId) {
-        $q = $this->db->prepare('SELECT * FROM products WHERE user_id = :user_id ORDER BY name ASC');
+    public function getAllOfUser($userId, $withHidden = true) {
+        $q = $this->db->prepare('SELECT id, name, price, user_id, tags, is_hidden, code FROM products ' .
+            'WHERE user_id = :user_id ORDER BY name ASC');
 
         $q->execute([':user_id' => $userId]);
         $products = $q->fetchAll();
+
+        if(!$withHidden) {
+            $products = array_filter($products, function($p) { return !$p->is_hidden; });
+        }
+
         if($products) {
             # include shipping options
             $shippingOption = $this->getModel('ShippingOption');
@@ -17,7 +23,38 @@ class ProductModel extends Model {
             }
             return $products;
         }
+
         return [];
+    }
+
+    public function getAllVisible($query, $sorting) {
+        $sql = 'SELECT p.id, p.name, p.price, p.user_id, p.tags, p.is_hidden, p.code, u.name AS user '
+            .'FROM products p JOIN users u ON p.user_id = u.id WHERE p.is_hidden = 0';
+
+        $params = [];
+
+        if(!empty($query)) {
+            $sql .= ' AND (p.name LIKE :query OR u.name LIKE :query OR p.tags LIKE :query)';
+            $params['query'] = "%$query%";
+        }
+
+        $sortingMap = [
+            'date-asc' => 'p.id ASC',
+            'date-desc' => 'p.id DESC',
+            'price-asc' => 'p.price ASC',
+            'price-desc' => 'p.price DESC',
+            'name-asc' => 'p.name ASC',
+            'name-desc' => 'p.name DESC',
+        ];
+
+        $sortSql = isset($sortingMap[$sorting]) ? $sortingMap[$sorting] : 'p.id DESC';
+
+        $sql .= ' ORDER BY ' . $sortSql;
+
+        $q = $this->db->prepare($sql);
+        $q->execute($params);
+        $products = $q->fetchAll();
+        return $products ? $products : [];
     }
 
     private function getFreeCode() {
@@ -153,9 +190,18 @@ class ProductModel extends Model {
     }
 
     public function getProduct($code) {
-        $q = $this->db->prepare('SELECT name, code FROM products WHERE code = :code LIMIT 1');
+        $q = $this->db->prepare('SELECT p.id, p.name, p.code, p.user_id, p.tags, u.name AS user FROM products p '.
+            'JOIN users u ON p.user_id = u.id WHERE p.code = :code LIMIT 1');
         $q->execute([':code' => $code]);
         $product = $q->fetch();
+        if($product) {
+            # include shipping options
+            $shippingOption = $this->getModel('ShippingOption');
+            $product->shippingOptions = $shippingOption->getOfProduct($product->id);
+            return $product;
+        }
+        return null;
+
         return $product ? $product : null;
     }
 

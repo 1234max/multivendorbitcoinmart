@@ -20,61 +20,41 @@
 
 <div class="large-8 columns">
     <div class="row content">
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/1000x1000&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/500x500&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/500x500&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/500x500&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/500x500&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-        <div class="large-4 small-6 columns">
-            <img src="http://placehold.it/500x500&amp;text=Thumbnail">
-            <div class="panel">
-                <h5>Item Name</h5>
-                <h6 class="subheader">$000.00</h6>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="large-12 columns">
-            <div class="panel">
-                <div class="row">
-                    <div class="large-2 small-6 columns"><img src="http://placehold.it/300x300&amp;text=Site%20Owner"></div>
-                    <div class="large-10 small-6 columns">
-                        <strong>This Site Is Managed By</strong>
-                        <hr>
+        <form action="?" method="get" class="row">
+            <div class="small-4 columns">
+                <div class="row collapse prefix-radius">
+                    <div class="small-4 columns">
+                        <span class="prefix">Sort by</span>
+                    </div>
+                    <div class="small-8 columns">
+                        <select name="sort">
+                            <option value="date-asc" <?= $sorting == 'date-asc' ? 'selected="selected"' : '' ?>>Date ⇡</option>
+                            <option value="date-desc" <?= $sorting == 'date-desc' ? 'selected="selected"' : '' ?>>Date ⇣</option>
+                            <option value="price-asc" <?= $sorting == 'price-asc' ? 'selected="selected"' : '' ?>>Price ⇡</option>
+                            <option value="price-desc" <?= $sorting == 'price-desc' ? 'selected="selected"' : '' ?>>Price ⇣</option>
+                            <option value="name-asc" <?= $sorting == 'name-asc' ? 'selected="selected"' : '' ?>>Name ⇡</option>
+                            <option value="name-desc" <?= $sorting == 'name-desc' ? 'selected="selected"' : '' ?>>Name ⇣</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="small-8 columns">
+                <div class="row collapse postfix-round">
+                    <div class="small-9 columns">
+                        <input type="text" name="q" placeholder="Search" value="<?= $this->e($query) ?>">
+                    </div>
+                    <div class="small-3 columns">
+                        <input type="submit" class="button postfix" value="Go"/>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
-</div>
+    <hr/>
+    <div class="row content">
+        <?php
+        $productsPerRow = 3;
+        $withVendor = true;
+        require '../app/views/listings/_product_list.php';
+        ?>
+    </div>
