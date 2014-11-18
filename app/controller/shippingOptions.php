@@ -85,7 +85,7 @@ class ShippingOptionsController extends Controller {
         $option = $shippingOption->getOneOfUser($this->user->id, $this->post['id']);
         $this->notFoundUnless($option);
 
-        $sucess = false;
+        $success = false;
         $errorMessage = '';
 
         # check that there are no products using this
@@ -104,7 +104,7 @@ class ShippingOptionsController extends Controller {
             $errorMessage = "Shipping option is still in use by products $productNames. Please unassign first.";
         }
 
-        if($sucess) {
+        if($success) {
             $this->setFlash('success', 'Successfully deleted shipping option.');
         }
         else {
