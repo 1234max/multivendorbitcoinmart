@@ -14,6 +14,7 @@ class ProfileController extends Controller {
         $this->accessDeniedUnless(isset($this->post['password_confirmation']) && is_string($this->post['password_confirmation']));
 
         $success = false;
+        $errorMessage = '';
 
         $user = $this->getModel('User');
 
@@ -53,6 +54,7 @@ class ProfileController extends Controller {
         $this->accessDeniedUnless(isset($this->post['profile_pin_confirmation']) && is_string($this->post['profile_pin_confirmation']));
 
         $success = false;
+        $errorMessage = '';
 
         $user = $this->getModel('User');
 
