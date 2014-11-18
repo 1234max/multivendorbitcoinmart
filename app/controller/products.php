@@ -89,7 +89,7 @@ class ProductsController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
 
-        # check that shipping option belongs to user
+        # check that product belongs to user
         $productModel = $this->getModel('product');
         $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
         $this->notFoundUnless($product);
@@ -197,7 +197,7 @@ class ProductsController extends Controller {
             $this->setFlash('success', 'Successfully deleted product.');
         }
         else {
-            $this->setFlash('success', 'Unknown error, could not delete product.');
+            $this->setFlash('error', 'Unknown error, could not delete product.');
         }
 
         $this->redirectTo('?c=products');
