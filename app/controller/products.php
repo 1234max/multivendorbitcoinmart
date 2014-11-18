@@ -61,7 +61,7 @@ class ProductsController extends Controller {
 
         if(empty($errorMessage)){
             if(!empty($product->shippingOptions)) {
-                $productModel = $this->getModel('product');
+                $productModel = $this->getModel('Product');
 
                 if ($productModel->createForUser($this->user->id, $product)) {
                     $success = true;
@@ -90,7 +90,7 @@ class ProductsController extends Controller {
         $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
 
         # check that product belongs to user
-        $productModel = $this->getModel('product');
+        $productModel = $this->getModel('Product');
         $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
         $this->notFoundUnless($product);
 
@@ -108,7 +108,7 @@ class ProductsController extends Controller {
         $this->accessDeniedUnless(isset($this->post['tags']) && is_string($this->post['tags']));
 
         # check that product belongs to user
-        $productModel = $this->getModel('product');
+        $productModel = $this->getModel('Product');
         $product = $productModel->getOneOfUser($this->user->id, $this->post['id']);
         $this->notFoundUnless($product);
 
@@ -141,7 +141,7 @@ class ProductsController extends Controller {
 
         if(empty($errorMessage)) {
             if(!empty($product->shippingOptions)) {
-                $productModel = $this->getModel('product');
+                $productModel = $this->getModel('Product');
 
                 if ($productModel->update($product)) {
                     $success = true;
@@ -170,7 +170,7 @@ class ProductsController extends Controller {
         $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
 
         # check that product belongs to user
-        $productModel = $this->getModel('product');
+        $productModel = $this->getModel('Product');
         $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
         $this->notFoundUnless($product);
 
@@ -189,7 +189,7 @@ class ProductsController extends Controller {
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
 
         # check that product belongs to user
-        $productModel = $this->getModel('product');
+        $productModel = $this->getModel('Product');
         $product = $productModel->getOneOfUser($this->user->id, $this->post['id']);
         $this->notFoundUnless($product);
 

@@ -13,7 +13,7 @@ class ListingsController extends Controller {
 
         $products = $this->getModel('Product')->getAllVisible($query, $sorting);
 
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $unconfirmedOrders = $orderModel->getUnconfirmedOfUser($this->user->id, $this->user->is_vendor);
         $orderNeedingActions = $orderModel->getNeededActionsOfUser($this->user->id, $this->user->is_vendor);
 

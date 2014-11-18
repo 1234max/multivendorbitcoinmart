@@ -4,7 +4,7 @@ namespace Scam;
 
 class OrdersController extends Controller {
     public function index() {
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
 
         $unconfirmedOrders = $orderModel->getUnconfirmedOfUser($this->user->id, $this->user->is_vendor);
         $pendingOrders = $orderModel->getPendingOfUser($this->user->id, $this->user->is_vendor);
@@ -49,7 +49,7 @@ class OrdersController extends Controller {
         $orderId = 0;
 
         if(!$this->user->is_vendor) {
-            if($orderId = $this->getModel('order')->create($order)) {
+            if($orderId = $this->getModel('Order')->create($order)) {
                 $success = true;
             }
             else {
@@ -79,7 +79,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->get['id']);
         $this->notFoundUnless($order);
 
@@ -99,7 +99,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -142,7 +142,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -186,7 +186,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['decline_message']) && is_string($this->post['decline_message']) && mb_strlen($this->post['decline_message']) >= 0);
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -228,7 +228,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -264,7 +264,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -302,7 +302,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order);
 
@@ -345,7 +345,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
 
         # check that order belongs to user
-        $orderModel = $this->getModel('order');
+        $orderModel = $this->getModel('Order');
         $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
         $this->notFoundUnless($order && \Scam\OrderModel::isDeletable($order, $this->user->id));
 
