@@ -18,6 +18,7 @@ if('127.0.0.1' == $_SERVER["REMOTE_ADDR"]) {
     define('DB_USER', 'root');
     define('DB_PASS', '');
     define('PRODUCTION', false);
+    date_default_timezone_set('UTC');
 }
 # prod env
 else {
@@ -31,4 +32,5 @@ else {
     define('DB_USER', 'not-root');
     define('DB_PASS', 'mysql');
     define('PRODUCTION', true);
+    date_default_timezone_set('UTC');
 }

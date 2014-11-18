@@ -21,18 +21,23 @@ class App {
      */
     private $routes = [
         'users' => ['login' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'register' => 'GET', 'doRegister' => 'POST'],
-        'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'multisig' => 'GET', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
+        'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'multisig' => 'GET',
+            'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
         'vendor' => ['multisig' => 'GET'],
         'shippingOptions' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
-        'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroyImage' => 'GET', 'destroy' => 'POST'],
+        'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST',
+            'destroyImage' => 'GET', 'destroy' => 'POST'],
         'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET', 'vendor' => 'GET'],
-        'orders' => ['index' => 'GET']
+        'orders' => ['index' => 'GET', 'create' => 'POST', 'show' => 'GET', 'confirm' => 'POST', 'accept' => 'POST',
+            'decline' => 'POST', 'paid' => 'POST', 'shipped' => 'POST', 'received' => 'POST',
+            'feedback' => 'POST', 'destroy' => 'POST' ]
     ];
 
     private function openDatabaseConnection() {
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+00:00'"
         ];
 
         /* Setting the correct charset for db connection as mentioned here: http://www.phptherightway.com/#php_and_utf8 */

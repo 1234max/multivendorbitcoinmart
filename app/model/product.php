@@ -193,7 +193,7 @@ class ProductModel extends Model {
     }
 
     public function getProduct($code) {
-        $q = $this->db->prepare('SELECT p.id, p.name, p.description, p.code, p.user_id, p.tags, u.name AS user FROM products p '.
+        $q = $this->db->prepare('SELECT p.id, p.name, p.description, p.price, p.code, p.user_id, p.tags, u.name AS user FROM products p '.
             'JOIN users u ON p.user_id = u.id WHERE p.code = :code LIMIT 1');
         $q->execute([':code' => $code]);
         $product = $q->fetch();

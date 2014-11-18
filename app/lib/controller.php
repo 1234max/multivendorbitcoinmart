@@ -71,6 +71,10 @@ class Controller {
         return floatval($decimal). ' BTC';
     }
 
+    protected function formatTimestamp($ts) {
+        return date(DATE_RFC850,strtotime($ts));
+    }
+
     protected function renderTemplate($template, $vars = [], $options = []) {
         header('Content-Type: text/html; charset=UTF-8');
 
@@ -109,7 +113,7 @@ class Controller {
 
     protected function accessDeniedIf($condition) {
         if($condition) {
-            require_once 'exceptions/access_denied.php';
+            require_once '../app/lib/exceptions/access_denied.php';
             throw new AccessDeniedException();
         }
     }
@@ -120,7 +124,7 @@ class Controller {
 
     protected function notFoundIf($condition) {
         if($condition) {
-            require_once 'exceptions/not_found_exception.php';
+            require_once '../app/lib/exceptions/not_found.php';
             throw new NotFoundException();
         }
     }

@@ -143,6 +143,11 @@ div.thumbnail .panel {
     border:none;
 }
 
+div.thumbnail img {
+    /* fixes wrong resizing in firefox */
+    width:100%;
+}
+
 .row .row.content {
     margin-left: -0.3375rem;
     margin-right:0;
@@ -156,4 +161,12 @@ img.product-image {
 
 div.product-description {
     padding-top:10px;
+}
+
+.row.order {
+    margin-top:5px;
+}
+.row.order label.right {
+    font-size: 1rem;
+    color:grey;
 }

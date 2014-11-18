@@ -12,7 +12,16 @@ class ListingsController extends Controller {
         $sorting = isset($this->get['sort']) ? $this->get['sort'] : 'date-desc';
 
         $products = $this->getModel('Product')->getAllVisible($query, $sorting);
-        $this->renderTemplate('listings/index.php', ['products' => $products, 'query' => $query, 'sorting' => $sorting]);
+
+        $orderModel = $this->getModel('order');
+        $unconfirmedOrders = $orderModel->getUnconfirmedOfUser($this->user->id, $this->user->is_vendor);
+        $orderNeedingActions = $orderModel->getNeededActionsOfUser($this->user->id, $this->user->is_vendor);
+
+        $this->renderTemplate('listings/index.php', ['products' => $products,
+            'query' => $query,
+            'sorting' => $sorting,
+            'unconfirmedOrders' => $unconfirmedOrders,
+            'orderNeedingActions' => $orderNeedingActions]);
     }
 
     public function product() {

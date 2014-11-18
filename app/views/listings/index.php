@@ -12,10 +12,20 @@
         <h5 class="subheader">
             Don't get scammed - use our highly secure market that never stores any of your valuable bitcoins.
         </h5>
-    </div><a href="#">
+    </div>
+
+    <?php if(!empty($unconfirmedOrders) || !empty($orderNeedingActions)): ?>
+    <a href="?c=orders">
         <div class="panel callout">
-            <h6>99&nbsp; items in your cart</h6>
-        </div></a>
+            <?php if(!empty($unconfirmedOrders)): ?>
+                <h6>You have <strong><?= count($unconfirmedOrders) ?></strong> unconfirmed order(s).</h6>
+            <?php endif ?>
+            <?php if(!empty($orderNeedingActions)): ?>
+                <h6>You have <strong><?= count($orderNeedingActions) ?> order(s)</strong> that need your interaction.</h6>
+            <?php endif ?>
+        </div>
+    </a>
+    <?php endif ?>
 </div>
 
 <div class="large-8 columns">

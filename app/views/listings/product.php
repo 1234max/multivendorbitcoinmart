@@ -1,6 +1,12 @@
 <?php $title = "Product '" . $this->e($product->name) ."' | SCAM" ?>
 
 <div class="large-12 columns">
+    <?php if(isset($error)): ?>
+        <div data-alert class="alert-box alert">
+            <?= $this->e($error) ?>
+        </div>
+    <?php endif ?>
+
     <h2 class="subheader"><?= $this->e($product->name) ?></h2>
     <a href="?c=listings&a=vendor&id=<?= $product->user_id ?>">
         <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?></span>
@@ -28,14 +34,16 @@
         </div>
     </div>
     <hr/>
-    <form action="#" method="post" class="row">
+    <form action="?c=orders&a=create" method="post" class="row">
+        <input type="hidden" name="product_code" value="<?= $product->code ?>"/>
+
         <div class="small-7 columns">
             <div class="row collapse prefix-radius">
                 <div class="small-4 columns">
                     <span class="prefix">Shipping option</span>
                 </div>
                 <div class="small-8 columns">
-                    <select name="shipping_option">
+                    <select name="shipping_option_id">
                         <?php foreach($product->shippingOptions as $shippingOption): ?>
                             <option value="<?= $shippingOption->id ?>">
                                 <?= $this->e($shippingOption->name) ?> (<?= $this->formatPrice($shippingOption->price) ?>)
