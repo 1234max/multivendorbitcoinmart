@@ -66,8 +66,11 @@ class OrdersController extends Controller {
             $this->setFlash('success', 'Successfully created order.');
             $this->redirectTo('?c=orders&a=show&id=' . $orderId);
         } else {
+            list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($product->user_id);
+
             $this->renderTemplate('listings/product.php', ['product' => $product,
-                'error' => $errorMessage]);
+                'error' => $errorMessage, 'averageRating' => $averageRating,
+                'numberOfDeals' => $numberOfDeals]);
         }
     }
 
