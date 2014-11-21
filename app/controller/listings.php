@@ -29,8 +29,10 @@ class ListingsController extends Controller {
         $this->accessDeniedUnless(isset($this->get['code']) && is_string($this->get['code']));
         $product = $this->getModel('Product')->getProduct($this->get['code']);
         $this->notFoundUnless($product);
+        list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($product->user_id);
 
-        $this->renderTemplate('listings/product.php', ['product' => $product]);
+        $this->renderTemplate('listings/product.php', ['product' => $product,  'averageRating' => $averageRating,
+            'numberOfDeals' => $numberOfDeals]);
     }
 
     public function productImage(){
@@ -50,9 +52,12 @@ class ListingsController extends Controller {
         $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
         $user = $this->getModel('User')->getUser($this->get['id']);
         $products = $this->getModel('Product')->getAllOfUser($user->id, false);
+        list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($user->id);
+        $feedbacks = $this->getModel('VendorFeedback')->getAllOfVendor($user->id);
 
         $this->notFoundUnless($user && $user->is_vendor);
 
-        $this->renderTemplate('listings/vendor.php', ['vendor' => $user, 'products' => $products]);
+        $this->renderTemplate('listings/vendor.php', ['vendor' => $user, 'products' => $products,
+            'averageRating' => $averageRating, 'numberOfDeals' => $numberOfDeals, 'feedbacks' => $feedbacks]);
     }
 }

@@ -25,4 +25,24 @@ class VendorFeedbackModel extends Model {
             ':comment' => $feedback->comment,
             ':id' => $feedback->id]);
     }
+
+    public function getAverageAndDealsOfVendor($userId) {
+        # MySQL's AVG handles null values just fine, so we dont have to exclude feedbacks with rating = NULL
+        $q = $this->db->prepare('SELECT AVG(rating) AS average, COUNT(id) AS deals FROM vendor_feedbacks WHERE vendor_id = :vendor_id;');
+        $q->execute([':vendor_id' => $userId]);
+        $feedback = $q->fetch();
+        return $feedback ? [$feedback->average, $feedback->deals] : [0, 0];
+    }
+
+    public function getAllOfVendor($userId) {
+        $q = $this->db->prepare('SELECT v.rating, v.comment, u.name AS buyer_name, ' .
+            '(SELECT COUNT(v2.id) FROM vendor_feedbacks v2 where v2.buyer_id =v.buyer_id) as buyer_deal_count ' .
+            'FROM vendor_feedbacks v ' .
+            'JOIN users u ON v.buyer_id = u.id ' .
+            'WHERE v.vendor_id = :vendor_id AND comment IS NOT NULL ' .
+            'ORDER BY v.id DESC');
+        $q->execute([':vendor_id' => $userId]);
+        $feedbacks = $q->fetchAll();
+        return $feedbacks ? $feedbacks : [];
+    }
 }

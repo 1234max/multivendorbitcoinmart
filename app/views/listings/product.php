@@ -9,9 +9,13 @@
 
     <h2 class="subheader"><?= $this->e($product->name) ?></h2>
     <a href="?c=listings&a=vendor&id=<?= $product->user_id ?>">
-        <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?></span>
+        <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?>:
+            <?= $numberOfDeals ?> deals
+            <?= $averageRating ? '- rating Ø ' . number_format($averageRating, 2) : '' ?>
+        </span>
     </a>
     <?php if(!empty($product->tags)): ?>
+        <br/>
         <?php foreach(mb_split(',', $product->tags) as $tag): ?>
             <a href="?q=<?= urlencode($tag) ?>">
                 <span class="label orange round"><?= $this->e($tag) ?></span>
