@@ -314,7 +314,7 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        if($orderModel->received($this->post['id'])) {
+        if($orderModel->received($order)) {
             $success = true;
         }
         else {
@@ -334,7 +334,44 @@ class OrdersController extends Controller {
     # valid states: only received
     # buyer can leave/update feedback
     public function feedback() {
+        # check for existence & format of input params
+        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['rating']) && ctype_digit($this->post['rating']) && in_array($this->post['rating'], range(1,5)));
+        $this->accessDeniedUnless(isset($this->post['comment']) && is_string($this->post['comment']));
 
+        # check that order belongs to user
+        $orderModel = $this->getModel('Order');
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $this->notFoundUnless($order);
+
+        # only buyer allowed
+        $this->accessDeniedIf($this->user->is_vendor);
+
+        $feedbackModel = $this->getModel('VendorFeedback');
+        $feedback = $feedbackModel->getForOrder($order->id);
+        # this will only exist when order was finished properly, so no need for state check
+        $this->notFoundUnless($feedback);
+
+        $success = false;
+        $errorMessage = '';
+
+        $feedback->rating = $this->post['rating'];
+        $feedback->comment = $this->post['comment'];
+
+        if($feedbackModel->update($feedback)) {
+            $success = true;
+        }
+        else {
+            $errorMessage = 'Could not leave feedback due to unknown error.';
+        }
+
+        if($success) {
+            $this->setFlash('success', 'Successfully updated feedback.');
+            $this->redirectTo('?c=orders&a=show&id=' . $order->id);
+        }
+        else {
+            $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => $errorMessage]);
+        }
     }
 
     # accessible for: buyer & vendor

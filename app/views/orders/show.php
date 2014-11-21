@@ -119,14 +119,45 @@
     </div>
 
     <?php if($order->shipping_info): ?>
-    <div class="row order">
-        <div class="small-2 columns">
-            <label class="right">Shipping info</label>
+        <div class="row order">
+            <div class="small-2 columns">
+                <label class="right">Shipping info</label>
+            </div>
+            <div class="small-10 columns">
+                <?= nl2br($this->e($order->shipping_info)) ?>
+            </div>
         </div>
-        <div class="small-10 columns">
-            <?= nl2br($this->e($order->shipping_info)) ?>
+    <?php endif ?>
+
+    <?php if($order->finish_text): ?>
+        <div class="row order">
+            <div class="small-2 columns">
+                <label class="right">Finish message</label>
+            </div>
+            <div class="small-10 columns">
+                <?= nl2br($this->e($order->finish_text)) ?>
+            </div>
         </div>
-    </div>
+    <?php endif ?>
+
+    <?php if($order->feedback_id && $this->user->is_vendor): ?>
+        <div class="row order">
+            <div class="small-2 columns">
+                <label class="right">Vendor rating</label>
+            </div>
+            <div class="small-10 columns">
+                <?= $order->rating ?>
+            </div>
+        </div>
+
+        <div class="row order">
+            <div class="small-2 columns">
+                <label class="right">Rating comment</label>
+            </div>
+            <div class="small-10 columns">
+                <?= nl2br($this->e($order->comment)) ?>
+            </div>
+        </div>
     <?php endif ?>
 
     <hr/>

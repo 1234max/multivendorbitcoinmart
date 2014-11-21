@@ -87,10 +87,12 @@ class OrderModel extends Model {
 
     public function getOneOfUser($userId, $isVendor, $orderId) {
         $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
-            'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price FROM orders o ' .
+            'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price, ' .
+            'f.rating, f.comment, f.id AS feedback_id FROM orders o ' .
             'JOIN users v ON o.vendor_id = v.id '.
             'JOIN users b ON o.buyer_id = b.id '.
             'LEFT OUTER JOIN products p ON o.product_id = p.id ' .
+            'LEFT OUTER JOIN vendor_feedbacks f ON o.id = f.order_id ' .
             'WHERE ' . ($isVendor ? 'v' : 'b') . '.id = :user_id AND o.id = :id ' .
             'LIMIT 1';
         $q = $this->db->prepare($sql);
@@ -145,11 +147,32 @@ class OrderModel extends Model {
         return $query->execute([':id' => $orderId, ':state' => self::$STATES['shipped']]);
     }
 
-    public function received($orderId) {
-        $sql = 'UPDATE orders SET state = :state, finish_text = :finish_text WHERE id = :id';
-        $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['finished'],
-            ':finish_text' => "Order successfully finished, funds released at: " . date(DATE_RFC850) ]);
+    public function received($order) {
+        $this->db->beginTransaction();
+
+        try {
+            $sql = 'UPDATE orders SET state = :state, finish_text = :finish_text WHERE id = :id';
+            $query = $this->db->prepare($sql);
+            $result = $query->execute([':id' => $order->id, ':state' => self::$STATES['finished'],
+                ':finish_text' => "Order successfully finished, funds released at: " . date(DATE_RFC850) ]);
+
+            # create (empty) feedback
+            if($result) {
+                if(!$this->getModel('VendorFeedback')->createForOrder($order)) {
+                    throw new \Exception('Feedback couldnt be created');
+                }
+            }
+            else {
+                throw new \Exception('Order couldnt be saved');
+            }
+
+            $this->db->commit();
+            return true;
+        }
+        catch(\Exception $e){
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     public function delete($id) {
