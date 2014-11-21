@@ -1,3 +1,5 @@
+USE scam;
+
 CREATE TABLE IF NOT EXISTS `vendor_feedbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `rating` TINYINT(1),
