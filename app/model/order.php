@@ -142,9 +142,10 @@ class OrderModel extends Model {
     }
 
     public function shipped($orderId) {
-        $sql = 'UPDATE orders SET state = :state WHERE id = :id';
+        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['shipped']]);
+        return $query->execute([':id' => $orderId, ':state' => self::$STATES['shipped'],
+            ':shipping_info' => "Wiped shipping info, shipped at: " . date(DATE_RFC850)]);
     }
 
     public function received($order) {
