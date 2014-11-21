@@ -108,7 +108,7 @@ class OrderModel extends Model {
         $query = $this->db->prepare($sql);
         $req = $query->execute([':title' => $order->title,
             ':price' => floatval($order->price),
-            ':amount' => $order->amount,
+            ':amount' => intval($order->amount),
             ':buyer_id' => $order->buyer_id,
             ':vendor_id' => $order->vendor_id,
             ':product_id' => $order->product_id,
