@@ -35,7 +35,7 @@ class VendorFeedbackModel extends Model {
     }
 
     public function getAllOfVendor($userId) {
-        $q = $this->db->prepare('SELECT v.rating, v.comment, u.name AS buyer_name, ' .
+        $q = $this->db->prepare('SELECT v.rating, v.comment, ' .
             '(SELECT COUNT(v2.id) FROM vendor_feedbacks v2 where v2.buyer_id =v.buyer_id) as buyer_deal_count ' .
             'FROM vendor_feedbacks v ' .
             'JOIN users u ON v.buyer_id = u.id ' .

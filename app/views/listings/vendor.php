@@ -22,7 +22,7 @@
                     <br/>
                     <?= nl2br($this->e($feedback->comment)) ?>
                 <?php endif ?>
-                <cite>A buyer (<?= $feedback->buyer_name ?>)</cite>
+                <cite>A buyer with <?= $feedback->buyer_deal_count ?> deal(s)</cite>
             </blockquote>
         <?php endforeach ?>
     <?php endif ?>
