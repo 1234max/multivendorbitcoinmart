@@ -26,7 +26,7 @@
                                 <br/>
                             <?php endif ?>
 
-                            <a href="?c=listings&a=vendor&u=<?= sha1($product->user) ?>">
+                            <a href="?c=listings&a=vendor&u=<?= $this->h($product->user, false) ?>">
                                 <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?></span>
                             </a>
                         <?php endif ?>

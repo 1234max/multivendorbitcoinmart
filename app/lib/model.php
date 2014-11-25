@@ -23,4 +23,10 @@ class Model {
         $className = 'Scam\\' . $modelName . 'Model';
         return new $className($this->db);
     }
+
+    /* returns a secure random 32 char hex string (128 bit), assuming that /dev/urandom returns proper random values
+    (case on unix derivates */
+    public function getRandomStr() {
+        return bin2hex(file_get_contents('/dev/urandom', 0, null, -1, 16));
+    }
 }

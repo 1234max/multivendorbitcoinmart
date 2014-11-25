@@ -78,7 +78,7 @@
                                 <li><label>Vendor profile</label></li>
                                 <?php if($this->user->is_vendor): ?>
                                 <li>
-                                    <a href="?c=listings&a=vendor&u=<?= sha1($this->user->name) ?>">Vendor page</a>
+                                    <a href="?c=listings&a=vendor&u=<?= $this->h($this->user->name, false) ?>">Vendor page</a>
                                 </li>
                                 <li class="has-dropdown not-click">
                                     <a class="" href="#">Listings</a>

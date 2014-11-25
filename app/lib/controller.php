@@ -75,6 +75,12 @@ class Controller {
         return date(DATE_RFC850,strtotime($ts));
     }
 
+    /* creates a hash from str + session secret (used to hide internals, i.e. primary keys
+    or just a hash without secret (for permalinks, ie vendor page) */
+    protected function h($str, $withSecret=true) {
+        return hash('sha256', $withSecret ? $str . $_SESSION['k'] : $str);
+    }
+
     protected function renderTemplate($template, $vars = [], $options = []) {
         header('Content-Type: text/html; charset=UTF-8');
 

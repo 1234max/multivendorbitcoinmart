@@ -30,6 +30,10 @@ class UsersController extends Controller {
         if($user) {
             $_SESSION['user_id'] = $user->id;
             session_regenerate_id(true);
+
+            # generate a new random key (session secret) that is used to hide IDs from the user
+            $_SESSION['k'] = $this->getModel('User')->getRandomStr();
+
             $this->setFlash('success', 'Successfully logged in.');
             $this->redirectTo('?');
         }

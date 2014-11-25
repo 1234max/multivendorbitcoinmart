@@ -11,7 +11,7 @@ class UserModel extends Model {
     }
 
     public function getWithHash($hash) {
-        $q = $this->db->prepare('SELECT * FROM users WHERE SHA1(name) = :hash LIMIT 1');
+        $q = $this->db->prepare("SELECT * FROM users WHERE SHA2(name, '256') = :hash LIMIT 1");
         $q->execute([':hash' => $hash]);
         $user = $q->fetch();
         return $user ? $user : null;

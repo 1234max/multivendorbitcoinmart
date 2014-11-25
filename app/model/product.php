@@ -60,7 +60,7 @@ class ProductModel extends Model {
     private function getFreeCode() {
         $code = null;
         do {
-            $try = substr(sha1(rand()), 0, 12);
+            $try = substr($this->getRandomStr(), 0, 12);
             $q = $this->db->prepare('SELECT id FROM products WHERE code = :code');
 
             $q->execute([':code' => $try]);
