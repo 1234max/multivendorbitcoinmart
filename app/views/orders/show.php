@@ -76,7 +76,7 @@
             <label class="right">Vendor</label>
         </div>
         <div class="small-10 columns">
-            <a href="?c=listings&a=vendor&id=<?= $order->vendor_id ?>"><?= $this->e($order->vendor_name) ?></a>
+            <a href="?c=listings&a=vendor&u=<?= sha1($order->vendor_name) ?>"><?= $this->e($order->vendor_name) ?></a>
         </div>
     </div>
 

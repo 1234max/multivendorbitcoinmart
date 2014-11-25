@@ -16,7 +16,7 @@
                         <h6 class="price"><?= $this->formatPrice($product->price) ?></h6>
                         <?php if(!empty($product->tags)): ?>
                             <?php foreach(mb_split(',', $product->tags) as $tag): ?>
-                                <a href="?q=<?= urlencode($tag) ?>">
+                                <a href="?q=<?= urlencode(trim($tag)) ?>">
                                     <span class="label orange round"><?= $this->e($tag) ?></span>
                                 </a>
                             <?php endforeach ?>
@@ -26,7 +26,7 @@
                                 <br/>
                             <?php endif ?>
 
-                            <a href="?c=listings&a=vendor&id=<?= $product->user_id ?>">
+                            <a href="?c=listings&a=vendor&u=<?= sha1($product->user) ?>">
                                 <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?></span>
                             </a>
                         <?php endif ?>

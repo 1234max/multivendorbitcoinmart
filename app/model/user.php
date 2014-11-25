@@ -10,6 +10,13 @@ class UserModel extends Model {
         return $user ? $user : null;
     }
 
+    public function getWithHash($hash) {
+        $q = $this->db->prepare('SELECT * FROM users WHERE SHA1(name) = :hash LIMIT 1');
+        $q->execute([':hash' => $hash]);
+        $user = $q->fetch();
+        return $user ? $user : null;
+    }
+
     public function checkLogin($name, $password) {
         require_once '../vendor/ircmaxell/password-compat/lib/password.php';
 

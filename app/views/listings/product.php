@@ -8,7 +8,7 @@
     <?php endif ?>
 
     <h2 class="subheader"><?= $this->e($product->name) ?></h2>
-    <a href="?c=listings&a=vendor&id=<?= $product->user_id ?>">
+    <a href="?c=listings&a=vendor&u=<?= sha1($product->user) ?>">
         <span class="label dark round"><i class="fi-torso"></i> <?= $this->e($product->user) ?>:
             <?= $numberOfDeals ?> deals
             <?= $averageRating ? '- rating Ø ' . number_format($averageRating, 2) : '' ?>

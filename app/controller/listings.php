@@ -49,8 +49,8 @@ class ListingsController extends Controller {
 
     public function vendor() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
-        $user = $this->getModel('User')->getUser($this->get['id']);
+        $this->accessDeniedUnless(isset($this->get['u']) && is_string($this->get['u']));
+        $user = $this->getModel('User')->getWithHash($this->get['u']);
         $products = $this->getModel('Product')->getAllOfUser($user->id, false);
         list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($user->id);
         $feedbacks = $this->getModel('VendorFeedback')->getAllOfVendor($user->id);
