@@ -38,7 +38,7 @@ class ProductsController extends Controller {
 
         if(isset($this->post['shipping_options']) && is_array($this->post['shipping_options'])){
             foreach($shippingOptions as $shippingOption) {
-                if(in_array($shippingOption->id, $this->post['shipping_options'])) {
+                if(in_array($this->h($shippingOption->id), $this->post['shipping_options'])) {
                     $validShippingOptions[$shippingOption->id] = $shippingOption;
                 }
             }
@@ -87,11 +87,11 @@ class ProductsController extends Controller {
 
     public function edit() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
+        $this->accessDeniedUnless(isset($this->get['code']) && is_string($this->get['code']));
 
         # check that product belongs to user
         $productModel = $this->getModel('Product');
-        $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
+        $product = $productModel->getOneOfUser($this->user->id, $this->get['code']);
         $this->notFoundUnless($product);
 
         $shippingOptions = $this->getModel('ShippingOption')->getAllOfUser($this->user->id);
@@ -101,7 +101,7 @@ class ProductsController extends Controller {
 
     public function update() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['code']) && is_string($this->post['code']));
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
         $this->accessDeniedUnless(isset($this->post['description']) && is_string($this->post['description']) && mb_strlen($this->post['description']) >= 0);
         $this->accessDeniedUnless(isset($this->post['price']) && is_string($this->post['price']) && is_numeric($this->post['price']) && $this->post['price'] >= 0.0);
@@ -109,7 +109,7 @@ class ProductsController extends Controller {
 
         # check that product belongs to user
         $productModel = $this->getModel('Product');
-        $product = $productModel->getOneOfUser($this->user->id, $this->post['id']);
+        $product = $productModel->getOneOfUser($this->user->id, $this->post['code']);
         $this->notFoundUnless($product);
 
         $shippingOptions = $this->getModel('ShippingOption')->getAllOfUser($this->user->id);
@@ -119,7 +119,7 @@ class ProductsController extends Controller {
 
         if(isset($this->post['shipping_options']) && is_array($this->post['shipping_options'])){
             foreach($shippingOptions as $shippingOption) {
-                if(in_array($shippingOption->id, $this->post['shipping_options'])) {
+                if(in_array($this->h($shippingOption->id), $this->post['shipping_options'])) {
                     $validShippingOptions[$shippingOption->id] = $shippingOption;
                 }
             }
@@ -167,33 +167,33 @@ class ProductsController extends Controller {
 
     public function destroyImage() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
+        $this->accessDeniedUnless(isset($this->get['code']) && is_string($this->get['code']));
 
         # check that product belongs to user
         $productModel = $this->getModel('Product');
-        $product = $productModel->getOneOfUser($this->user->id, $this->get['id']);
+        $product = $productModel->getOneOfUser($this->user->id, $this->get['code']);
         $this->notFoundUnless($product);
 
-        if($productModel->deleteImage($this->get['id'])) {
+        if($productModel->deleteImage($product->id)) {
             $this->setFlash('success', 'Successfully deleted product image.');
         }
         else {
             $this->setFlash('success', 'Unknown error, could not delete product image.');
         }
 
-        $this->redirectTo('?c=products&a=edit&id=' . $this->get['id']);
+        $this->redirectTo('?c=products&a=edit&code=' . $this->get['code']);
     }
 
     public function destroy() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['code']) && is_string($this->post['code']));
 
         # check that product belongs to user
         $productModel = $this->getModel('Product');
-        $product = $productModel->getOneOfUser($this->user->id, $this->post['id']);
+        $product = $productModel->getOneOfUser($this->user->id, $this->post['code']);
         $this->notFoundUnless($product);
 
-        if($productModel->delete($this->post['id'])) {
+        if($productModel->delete($product->id)) {
             $this->setFlash('success', 'Successfully deleted product.');
         }
         else {

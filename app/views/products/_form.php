@@ -7,7 +7,7 @@
 <?php $formAction = isset($product->id) ? '?c=products&a=update' : "?c=products&a=create" ?>
 <form action="<?= $formAction ?>" method="post" enctype="multipart/form-data">
     <?php if(isset($product->id)): ?>
-        <input type="hidden" name="id" value="<?= $product->id ?>"/>
+        <input type="hidden" name="code" value="<?= $product->code ?>"/>
     <?php endif ?>
     <input type="hidden" name="MAX_FILE_SIZE" value="5242880" />
     <div class="row">
@@ -66,7 +66,7 @@
                                      alt="Picture of product <?= $this->e($product->name) ?>"
                                      title="Picture of product <?= $this->e($product->name) ?>"
                                      width="80"/></a>
-                            <a href="?c=products&a=destroyImage&id=<?= $product->id ?>" class="button tiny alert">Delete</a>
+                            <a href="?c=products&a=destroyImage&code=<?= $product->code ?>" class="button tiny alert">Delete</a>
                             <br/>
                         <?php else: ?>
                             <small><strong>No image specified.</strong></small>
@@ -124,10 +124,9 @@
                     <?php foreach($shippingOptions as $shippingOption): ?>
                         <input type="checkbox"
                                name="shipping_options[]"
-                               id="shipping_option-<?= $shippingOption->id ?>"
-                               value="<?= $shippingOption->id ?>"
+                               value="<?= $this->h($shippingOption->id) ?>"
                             <?= isset($product->shippingOptions[$shippingOption->id]) ? 'checked="checked"' : '' ?> />
-                        <label for="shipping_option-<?= $shippingOption->id ?>">
+                        <label>
                             <?= $this->e($shippingOption->name) ?> (<?= $this->formatPrice($shippingOption->price) ?>)
                         </label>
                         <br/>

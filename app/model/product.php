@@ -117,10 +117,10 @@ class ProductModel extends Model {
         }
     }
 
-    public function getOneOfUser($userId, $id) {
+    public function getOneOfUser($userId, $code) {
         $q = $this->db->prepare('SELECT id, name, description, price, user_id, tags, is_hidden, code, !ISNULL(image) as hasImage ' .
-            'FROM products WHERE user_id = :user_id and id = :id LIMIT 1');
-        $q->execute([':user_id' => $userId, ':id' => $id]);
+            'FROM products WHERE user_id = :user_id and code = :code LIMIT 1');
+        $q->execute([':user_id' => $userId, ':code' => $code]);
         $product = $q->fetch();
         if($product) {
             # include shipping options

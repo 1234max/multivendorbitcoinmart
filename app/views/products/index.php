@@ -61,10 +61,10 @@
             <td>
                 <?= $this->e(join(array_map(function($v){return $v->name; }, $product->shippingOptions), ', ')); ?>
             </td>
-            <td><a href="?c=products&a=edit&id=<?= $product->id ?>" class="button tiny">Edit</a></td>
+            <td><a href="?c=products&a=edit&code=<?= $product->code ?>" class="button tiny">Edit</a></td>
             <td>
                 <form action="?c=products&a=destroy" method="post">
-                    <input type="hidden" name="id" value="<?= $product->id ?>"/>
+                    <input type="hidden" name="code" value="<?= $product->code ?>"/>
                     <input type="submit" value="Delete" class="button tiny alert"/>
                 </form>
             </td>
