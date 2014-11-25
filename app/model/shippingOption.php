@@ -19,9 +19,9 @@ class ShippingOptionModel extends Model {
             ':user_id' => $userId]);
     }
 
-    public function getOneOfUser($userId, $id) {
-        $q = $this->db->prepare('SELECT * FROM shipping_options WHERE user_id = :user_id and id = :id LIMIT 1');
-        $q->execute([':user_id' => $userId, ':id' => $id]);
+    public function getOneOfUser($userId, $id, $sessionSecret) {
+        $q = $this->db->prepare('SELECT * FROM shipping_options WHERE user_id = :user_id and SHA2(CONCAT(id, :session_secret), "256") = :id LIMIT 1');
+        $q->execute([':user_id' => $userId, ':session_secret' => $sessionSecret, ':id' => $id]);
         $option = $q->fetch();
         return $option ? $option : null;
     }
