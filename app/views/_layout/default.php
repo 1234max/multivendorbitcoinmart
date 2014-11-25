@@ -40,9 +40,6 @@
                                 </span>
                         </a></h1>
                 </li>
-                <li class="toggle-topbar menu-icon">
-                    <a href="#"><span>menu</span></a>
-                </li>
             </ul>
             <?php if($this->isUserLoggedIn()): ?>
                 <section class="top-bar-section">
@@ -65,7 +62,7 @@
                         </li>
                         <li class="divider"></li>
                         <li class="has-dropdown not-click">
-                            <a href="#">Profile</a>
+                            <a>Profile</a>
                             <ul class="dropdown">
                                 <li><label>General</label></li>
                                 <li<?= $this->controller == 'profile' && $this->action == 'settings' ? ' class="active"' : ''?>>
@@ -81,7 +78,7 @@
                                     <a href="?c=listings&a=vendor&u=<?= $this->h($this->user->name, false) ?>">Vendor page</a>
                                 </li>
                                 <li class="has-dropdown not-click">
-                                    <a class="" href="#">Listings</a>
+                                    <a>Listings</a>
                                     <ul class="dropdown">
                                         <li<?= $this->controller == 'products' ? ' class="active"' : ''?>>
                                             <a href="?c=products">Products</a>
