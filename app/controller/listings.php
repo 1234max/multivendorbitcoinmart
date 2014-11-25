@@ -51,11 +51,10 @@ class ListingsController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->get['u']) && is_string($this->get['u']));
         $user = $this->getModel('User')->getWithHash($this->get['u']);
+        $this->notFoundUnless($user && $user->is_vendor);
         $products = $this->getModel('Product')->getAllOfUser($user->id, false);
         list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($user->id);
         $feedbacks = $this->getModel('VendorFeedback')->getAllOfVendor($user->id);
-
-        $this->notFoundUnless($user && $user->is_vendor);
 
         $this->renderTemplate('listings/vendor.php', ['vendor' => $user, 'products' => $products,
             'averageRating' => $averageRating, 'numberOfDeals' => $numberOfDeals, 'feedbacks' => $feedbacks]);
