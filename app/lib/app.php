@@ -33,7 +33,12 @@ class App {
             'feedback' => 'POST', 'destroy' => 'POST' ]
     ];
 
-    private function openDatabaseConnection() {
+    public function getJsonRpcClient() {
+        require '../app/lib/jsonRPCClient.php';
+        return new \jsonRPCClient(BITCOIND_URL);
+    }
+
+    public function openDatabaseConnection() {
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
