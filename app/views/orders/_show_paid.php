@@ -5,7 +5,7 @@
         The buyer will complete the transaction once he has received the goods.</div>
 
     <form action="?c=orders&a=shipped" method="post">
-        <input type="hidden" name="id" value="<?= $order->id ?>"/>
+        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
         <div class="row order">
             <div class="small-2 columns">
                 <label class="right">Signed transaction</label>

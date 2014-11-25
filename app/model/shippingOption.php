@@ -45,16 +45,7 @@ class ShippingOptionModel extends Model {
             'WHERE products_shipping_options.product_id = :product_id ORDER BY name ASC');
         $q->execute([':product_id' => $productId]);
         $options = $q->fetchAll();
-
-        if($options) {
-            # index by primary key for easier lookup
-            $indexed = [];
-            foreach($options as $option) {
-                $indexed[$option->id] = $option;
-            }
-            return $indexed;
-        }
-        return [];
+        return $options ? $options : [];
     }
 
     public function getUsingProducts($shippingOptionId) {

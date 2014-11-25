@@ -21,15 +21,16 @@ class OrdersController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['product_code']) && is_string($this->post['product_code']));
         $this->accessDeniedUnless(isset($this->post['amount']) && ctype_digit($this->post['amount']) && $this->post['amount'] > 0);
-        $this->accessDeniedUnless(isset($this->post['shipping_option_id']) && ctype_digit($this->post['shipping_option_id']));
+        $this->accessDeniedUnless(isset($this->post['shipping_option_id']) && is_string($this->post['shipping_option_id']));
 
         # verify product
         $product = $this->getModel('Product')->getProduct($this->post['product_code']);
         $this->notFoundUnless($product);
 
         # verify shipping option
-        $this->notFoundUnless(isset($product->shippingOptions[$this->post['shipping_option_id']]));
-        $shippingOption = $product->shippingOptions[$this->post['shipping_option_id']];
+        $shippingOptions = array_filter($product->shippingOptions, function($s){return $this->h($s->id) == $this->post['shipping_option_id'];});
+        $this->notFoundUnless(count($shippingOptions) == 1);
+        $shippingOption = $shippingOptions[0];
 
         # calculate price & title
         $amount = intval($this->post['amount']);
@@ -64,7 +65,7 @@ class OrdersController extends Controller {
         # create in database
         if ($success) {
             $this->setFlash('success', 'Successfully created order.');
-            $this->redirectTo('?c=orders&a=show&id=' . $orderId);
+            $this->redirectTo('?c=orders&a=show&id=' . $this->h($orderId));
         } else {
             list($averageRating, $numberOfDeals) = $this->getModel('VendorFeedback')->getAverageAndDealsOfVendor($product->user_id);
 
@@ -79,11 +80,11 @@ class OrdersController extends Controller {
     # shows a order.
     public function show() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->get['id']) && ctype_digit($this->get['id']));
+        $this->accessDeniedUnless(isset($this->get['id']) && is_string($this->get['id']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->get['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->get['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # make sure vendor cant access unconfirmed orders
@@ -97,13 +98,13 @@ class OrdersController extends Controller {
     # confirms the order (profile pin & shipping info) required, now the vendor gets notified
     public function confirm() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
         $this->accessDeniedUnless(isset($this->post['shipping_info']) && is_string($this->post['shipping_info']) && mb_strlen($this->post['shipping_info']) >= 0);
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only buyer allowed
@@ -116,7 +117,7 @@ class OrdersController extends Controller {
 
         # check profile pin
         if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-            if($orderModel->confirm($this->post['id'], $this->post['shipping_info'])) {
+            if($orderModel->confirm($order->id, $this->post['shipping_info'])) {
                 $success = true;
             }
             else {
@@ -141,12 +142,12 @@ class OrdersController extends Controller {
     # accepts the order, now the buyer has to pay
     public function accept() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only vendor allowed
@@ -159,7 +160,7 @@ class OrdersController extends Controller {
 
         # check profile pin
         if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-            if($orderModel->accept($this->post['id'])) {
+            if($orderModel->accept($order->id)) {
                 $success = true;
             }
             else {
@@ -184,13 +185,13 @@ class OrdersController extends Controller {
     # declines (& finishes) the order with a decline message.
     public function decline() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
         $this->accessDeniedUnless(isset($this->post['decline_message']) && is_string($this->post['decline_message']) && mb_strlen($this->post['decline_message']) >= 0);
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only vendor allowed
@@ -203,7 +204,7 @@ class OrdersController extends Controller {
 
         # check profile pin
         if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-            if($orderModel->decline($this->post['id'], $this->post['decline_message'])) {
+            if($orderModel->decline($order->id, $this->post['decline_message'])) {
                 $success = true;
             }
             else {
@@ -228,11 +229,11 @@ class OrdersController extends Controller {
     # buyer indicates that he has paid (will be automated via multisig)
     public function paid() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only buyer allowed
@@ -243,7 +244,7 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        if($orderModel->paid($this->post['id'])) {
+        if($orderModel->paid($order->id)) {
             $success = true;
         }
         else {
@@ -264,11 +265,11 @@ class OrdersController extends Controller {
     # vendor indicates that he has shipped
     public function shipped() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only vendor allowed
@@ -280,7 +281,7 @@ class OrdersController extends Controller {
         $errorMessage = '';
 
         # TODO: add signed transaction
-        if($orderModel->shipped($this->post['id'])) {
+        if($orderModel->shipped($order->id)) {
             $success = true;
         }
         else {
@@ -302,11 +303,11 @@ class OrdersController extends Controller {
     # buyer indicates that he has received the order, it is finished now; (will be automated via multisig)
     public function received () {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only buyer allowed
@@ -338,13 +339,13 @@ class OrdersController extends Controller {
     # buyer can leave/update feedback
     public function feedback() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
         $this->accessDeniedUnless(isset($this->post['rating']) && ctype_digit($this->post['rating']) && in_array($this->post['rating'], range(1,5)));
         $this->accessDeniedUnless(isset($this->post['comment']) && is_string($this->post['comment']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order);
 
         # only buyer allowed
@@ -370,7 +371,7 @@ class OrdersController extends Controller {
 
         if($success) {
             $this->setFlash('success', 'Successfully updated feedback.');
-            $this->redirectTo('?c=orders&a=show&id=' . $order->id);
+            $this->redirectTo('?c=orders&a=show&id=' . $this->post['id']);
         }
         else {
             $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => $errorMessage]);
@@ -382,14 +383,14 @@ class OrdersController extends Controller {
     # order with its history is deleted
     public function destroy() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && ctype_digit($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id']);
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['id'], $_SESSION['k']);
         $this->notFoundUnless($order && \Scam\OrderModel::isDeletable($order, $this->user->id));
 
-        if($orderModel->delete($this->post['id'])) {
+        if($orderModel->delete($order->id)) {
             $this->setFlash('success', 'Successfully deleted order.');
             $this->redirectTo('?c=orders');
         }

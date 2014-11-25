@@ -1,7 +1,6 @@
 <table class="full-width">
     <thead>
     <tr>
-        <th>ID</th>
         <th>Title</th>
         <th>Price</th>
         <th>
@@ -20,7 +19,6 @@
     <tbody>
     <?php foreach($orders as $order): ?>
         <tr>
-            <td># <?= $order->id ?></td>
             <td><?= $this->e($order->title) ?></td>
             <td><?= $this->formatPrice($order->price) ?></td>
             <td>
@@ -39,12 +37,12 @@
                 </span>
             </td>
             <td>
-                <a href="?c=orders&a=show&id=<?= $order->id ?>" class="button tiny">Show</a>
+                <a href="?c=orders&a=show&id=<?= $this->h($order->id) ?>" class="button tiny">Show</a>
             </td>
             <td>
                 <?php if(\Scam\OrderModel::isDeletable($order, $this->user->id)): ?>
                     <form action="?c=orders&a=destroy" method="post">
-                        <input type="hidden" name="id" value="<?= $order->id ?>"/>
+                        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
                         <input type="submit" value="Delete" class="button tiny alert"/>
                     </form>
                 <?php endif ?>

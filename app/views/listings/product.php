@@ -49,7 +49,7 @@
                 <div class="small-8 columns">
                     <select name="shipping_option_id">
                         <?php foreach($product->shippingOptions as $shippingOption): ?>
-                            <option value="<?= $shippingOption->id ?>">
+                            <option value="<?= $this->h($shippingOption->id) ?>">
                                 <?= $this->e($shippingOption->name) ?> (<?= $this->formatPrice($shippingOption->price) ?>)
                             </option>
                         <?php endforeach ?>

@@ -4,7 +4,7 @@
 </div>
 
 <form action="?c=orders&a=confirm" method="post">
-    <input type="hidden" name="id" value="<?= $order->id ?>"/>
+    <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
     <div class="row order">
         <div class="small-2 columns">
             <label class="right">Shipping info</label>

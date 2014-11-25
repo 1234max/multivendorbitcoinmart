@@ -1,4 +1,4 @@
-<?php $title = 'Order #' . $order->id . ' | SCAM' ?>
+<?php $title = 'Order view | SCAM' ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
@@ -13,7 +13,7 @@
         </div>
     <?php endif ?>
 
-    <h3 class="subheader">Order #<?= $order->id ?></h3>
+    <h3 class="subheader">Order view</h3>
 
     <?php if($order->product_code): ?>
         <div class="row order">
