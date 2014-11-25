@@ -37,12 +37,12 @@
                 </span>
             </td>
             <td>
-                <a href="?c=orders&a=show&id=<?= $this->h($order->id) ?>" class="button tiny">Show</a>
+                <a href="?c=orders&a=show&h=<?= $this->h($order->id) ?>" class="button tiny">Show</a>
             </td>
             <td>
                 <?php if(\Scam\OrderModel::isDeletable($order, $this->user->id)): ?>
                     <form action="?c=orders&a=destroy" method="post">
-                        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+                        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
                         <input type="submit" value="Delete" class="button tiny alert"/>
                     </form>
                 <?php endif ?>

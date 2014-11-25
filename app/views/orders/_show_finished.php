@@ -1,7 +1,7 @@
 <?php if(!$this->user->is_vendor && $order->feedback_id): ?>
     <div class="callout panel">Please rate the vendor:</div>
     <form action="?c=orders&a=feedback" method="post">
-        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
         <div class="row order">
             <div class="small-2 columns">
                 <label class="right" for="rating">Rating</label>
@@ -45,7 +45,7 @@
         Please leave feedback before deleting since it's not possible afterwards.</div>
 
     <form action="?c=orders&a=destroy" method="post">
-        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
         <input type="submit" value="Delete" class="button small alert" />
     </form>
 <?php else: ?>

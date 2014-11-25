@@ -41,11 +41,11 @@ class ShippingOptionsController extends Controller {
 
     public function edit() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->get['id']) && is_string($this->get['id']));
+        $this->accessDeniedUnless(isset($this->get['h']) && is_string($this->get['h']));
 
         # check that shipping option belongs to user
         $shippingOption = $this->getModel('ShippingOption');
-        $option = $shippingOption->getOneOfUser($this->user->id, $this->get['id'], $_SESSION['k']);
+        $option = $shippingOption->getOneOfUser($this->user->id, $this->get['h'], $_SESSION['k']);
         $this->notFoundUnless($option);
 
         $this->renderTemplate('shippingOptions/edit.php', ['shippingOption' => $option]);
@@ -53,13 +53,13 @@ class ShippingOptionsController extends Controller {
 
     public function update() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
         $this->accessDeniedUnless(isset($this->post['price']) && is_string($this->post['price']) && is_numeric($this->post['price']) && $this->post['price'] >= 0.0);
 
         # check that shipping option belongs to user
         $shippingOption = $this->getModel('ShippingOption');
-        $option = $shippingOption->getOneOfUser($this->user->id, $this->post['id'], $_SESSION['k']);
+        $option = $shippingOption->getOneOfUser($this->user->id, $this->post['h'], $_SESSION['k']);
         $this->notFoundUnless($option);
 
         $option->name = $this->post['name'];
@@ -78,11 +78,11 @@ class ShippingOptionsController extends Controller {
 
     public function destroy() {
         # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['id']) && is_string($this->post['id']));
+        $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
 
         # check that shipping option belongs to user
         $shippingOption = $this->getModel('ShippingOption');
-        $option = $shippingOption->getOneOfUser($this->user->id, $this->post['id'], $_SESSION['k']);
+        $option = $shippingOption->getOneOfUser($this->user->id, $this->post['h'], $_SESSION['k']);
         $this->notFoundUnless($option);
 
         $success = false;

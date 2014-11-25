@@ -7,7 +7,7 @@
 <?php $formAction = isset($shippingOption->id) ? '?c=shippingOptions&a=update' : "?c=shippingOptions&a=create" ?>
 <form action="<?= $formAction ?>" method="post">
     <?php if(isset($shippingOption->id)): ?>
-        <input type="hidden" name="id" value="<?= $this->h($shippingOption->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($shippingOption->id) ?>"/>
     <?php endif ?>
     <div class="row">
         <div class="large-8 columns">

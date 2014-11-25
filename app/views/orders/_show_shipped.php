@@ -7,7 +7,7 @@
         This will release the funds and mark the order as finished.</div>
 
     <form action="?c=orders&a=received" method="post">
-        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
         <input type="submit" value="Received" class="button success small" />
     </form>
 <?php endif ?>

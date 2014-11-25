@@ -8,7 +8,7 @@
 
 <?php if($this->user->is_vendor): ?>
     <form action="?c=orders&a=accept" method="post">
-        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
 
         <div class="row order">
             <div class="small-2 columns">
@@ -33,7 +33,7 @@
     <hr/>
 
     <form action="?c=orders&a=decline" method="post">
-        <input type="hidden" name="id" value="<?= $this->h($order->id) ?>"/>
+        <input type="hidden" name="h" value="<?= $this->h($order->id) ?>"/>
         <div class="row order">
             <div class="small-2 columns">
                 <label class="right">Message</label>

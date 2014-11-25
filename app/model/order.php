@@ -85,7 +85,7 @@ class OrderModel extends Model {
         return $orders ? $orders : [];
     }
 
-    public function getOneOfUser($userId, $isVendor, $orderId, $sessionSecret) {
+    public function getOneOfUser($userId, $isVendor, $idHash, $sessionSecret) {
         $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
             'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price, ' .
             'f.rating, f.comment, f.id AS feedback_id FROM orders o ' .
@@ -93,11 +93,11 @@ class OrderModel extends Model {
             'JOIN users b ON o.buyer_id = b.id '.
             'LEFT OUTER JOIN products p ON o.product_id = p.id ' .
             'LEFT OUTER JOIN vendor_feedbacks f ON o.id = f.order_id ' .
-            'WHERE ' . ($isVendor ? 'v' : 'b') . '.id = :user_id AND SHA2(CONCAT(o.id, :session_secret), "256") = :id ' .
+            'WHERE ' . ($isVendor ? 'v' : 'b') . '.id = :user_id AND SHA2(CONCAT(o.id, :session_secret), "256") = :id_hash ' .
             'LIMIT 1';
         $q = $this->db->prepare($sql);
 
-        $q->execute([':user_id' => $userId, ':id' => $orderId, ':session_secret' => $sessionSecret]);
+        $q->execute([':user_id' => $userId, ':id_hash' => $idHash, ':session_secret' => $sessionSecret]);
         $order = $q->fetch();
         return $order ? $order : null;
     }

@@ -47,7 +47,7 @@
                     <span class="prefix">Shipping option</span>
                 </div>
                 <div class="small-8 columns">
-                    <select name="shipping_option_id">
+                    <select name="shipping_option_h">
                         <?php foreach($product->shippingOptions as $shippingOption): ?>
                             <option value="<?= $this->h($shippingOption->id) ?>">
                                 <?= $this->e($shippingOption->name) ?> (<?= $this->formatPrice($shippingOption->price) ?>)

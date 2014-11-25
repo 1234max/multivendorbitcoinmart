@@ -34,10 +34,10 @@
                 <tr>
                     <td><?= $this->e($shippingOption->name) ?></td>
                     <td><?= $this->formatPrice($shippingOption->price) ?></td>
-                    <td><a href="?c=shippingOptions&a=edit&id=<?= $this->h($shippingOption->id) ?>" class="button tiny">Edit</a></td>
+                    <td><a href="?c=shippingOptions&a=edit&h=<?= $this->h($shippingOption->id) ?>" class="button tiny">Edit</a></td>
                     <td>
                         <form action="?c=shippingOptions&a=destroy" method="post">
-                            <input type="hidden" name="id" value="<?= $this->h($shippingOption->id) ?>"/>
+                            <input type="hidden" name="h" value="<?= $this->h($shippingOption->id) ?>"/>
                             <input type="submit" value="Delete" class="button tiny alert"/>
                         </form>
                     </td>
