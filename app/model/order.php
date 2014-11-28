@@ -86,7 +86,10 @@ class OrderModel extends Model {
     }
 
     public function getOneOfUser($userId, $isVendor, $idHash, $sessionSecret) {
-        $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
+        $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, ' .
+            'o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
+            'o.buyer_public_key, o.vendor_public_key, o.vendor_payout_address, o.multisig_address, o.redeem_script, ' .
+            'o.unsigned_transaction, o.partially_signed_transaction, ' .
             'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price, ' .
             'f.rating, f.comment, f.id AS feedback_id FROM orders o ' .
             'JOIN users v ON o.vendor_id = v.id '.
@@ -116,16 +119,72 @@ class OrderModel extends Model {
         return $req ? $this->db->lastInsertId() : false;
     }
 
-    public function confirm($orderId, $shippingInfo) {
-        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info WHERE id = :id';
+    public function confirm($orderId, $shippingInfo, $buyerPublicKey) {
+        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, buyer_public_key = :buyer_public_key WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['confirmed'], ':shipping_info' => $shippingInfo]);
+        return $query->execute([':id' => $orderId,
+            ':state' => self::$STATES['confirmed'],
+            ':shipping_info' => $shippingInfo, ':buyer_public_key' => $buyerPublicKey]);
     }
 
-    public function accept($orderId) {
-        $sql = 'UPDATE orders SET state = :state WHERE id = :id';
+    public function accept($orderId, $vendorPublicKey, $vendorPayoutAddress, $buyerPublicKey) {
+        # create multisig address
+        try {
+            list($multisigAddress, $redeemScript) = $this->createMultisigAddress($vendorPublicKey, $buyerPublicKey);
+        }
+        catch(\Exception $e) {
+            return false;
+        }
+
+        $sql = 'UPDATE orders SET state = :state, vendor_public_key = :vendor_public_key, ' .
+            'vendor_payout_address = :vendor_payout_address, multisig_address = :multisig_address, redeem_script = :redeem_script '.
+            'WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['accepted']]);
+        return $query->execute([':id' => $orderId,
+            ':state' => self::$STATES['accepted'],
+            ':vendor_public_key' => $vendorPublicKey,
+            ':vendor_payout_address' => $vendorPayoutAddress,
+            ':multisig_address' => $multisigAddress,
+            ':redeem_script' => $redeemScript]);
+    }
+
+    private function createMultisigAddress($vendorPublicKey, $buyerPublicKey) {
+        $c = $this->getBitcoinClient();
+
+        # return if no bitcoin server is running
+        if(!$c->getinfo()) {
+            throw new Exception('No bitcoind running');
+        }
+
+        $adminPublicKey = '022710e6fd81b88079fa1f1ca969e4244ab50c64d6c96858a814b26a20ba58c610';
+
+        $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, $adminPublicKey]);
+        return [$ret['address'], $ret['redeemScript']];
+    }
+
+    /* returns multisig address that we need to watch for incoming transactions:
+     * - orders that are accepted and need to be paid
+     * - orders that are shipped and buyer signs & broadcasts the funding transaction
+     */
+    public function getWatchedAddresses() {
+        $sql = 'SELECT multisig_address FROM orders WHERE state = :accepted OR state = :shipped';
+        $q = $this->db->prepare($sql);
+
+        $q->execute([':accepted' => self::$STATES['accepted'], ':shipped' => self::$STATES['accepted']]);
+        $orders = $q->fetchAll();
+        return $orders ? array_map(function($order){return $order->multisig_address;}, $orders) : [];
+    }
+
+    /* get all accepted orders who have bit coin payments fulfilling their price */
+    public function GetNowPaidOrders() {
+        $sql = 'SELECT o.id, o.price, o.vendor_payout_address, SUM(p.value) as total FROM orders o ' .
+            'JOIN bitcoin_payments p ON o.multisig_address=p.address ' .
+            'WHERE o.state = :state ' .
+            'HAVING SUM(p.value) >= o.price;';
+        $q = $this->db->prepare($sql);
+        $q->execute([':state' => self::$STATES['accepted']]);
+        $orders = $q->fetchAll();
+        return $orders ? $orders : [];
     }
 
     public function decline($orderId, $message) {
@@ -135,10 +194,37 @@ class OrderModel extends Model {
             ':finish_text' => "Vendor declined order with message: \n" . $message]);
     }
 
-    public function paid($orderId) {
-        $sql = 'UPDATE orders SET state = :state WHERE id = :id';
+    public function paid($orderId, $toAddress) {
+        # create transaction for vendor
+        $unsignedTransaction = $this->createUnsignedTransaction($orderId, $toAddress);
+
+        $sql = 'UPDATE orders SET state = :state, unsigned_transaction = :unsigned_transaction WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['paid']]);
+        return $query->execute([':id' => $orderId,
+            ':state' => self::$STATES['paid'],
+            ':unsigned_transaction' => $unsignedTransaction]);
+    }
+
+    private function createUnsignedTransaction($orderId, $toAddress) {
+        $c = $this->getBitcoinClient();
+
+        # return if no bitcoin server is running
+        if(!$c->getinfo()) {
+            throw new Exception('No bitcoind running');
+        }
+
+        # get all bit coin payments that went to the multisig address and construct the transaction paying the vendor
+        $totalPrice = 0.0; # for now, we just pay the vendor all funds that were coming to the multisig address (even if it's more)
+        $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
+        foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
+            $inputs[] = [
+                'txid' => $payment->tx_id,
+                'vout' => intval($payment->vout)];
+                # we could embed redeemscript & pk_script here, but it's not possible without
+                # manually decoding transaction since createrawtransaction cant take additional params.
+            $totalPrice += $payment->value;
+        }
+        return $c->createrawtransaction($inputs, [$toAddress => $totalPrice]);
     }
 
     public function shipped($orderId) {

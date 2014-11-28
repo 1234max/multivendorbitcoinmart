@@ -29,4 +29,10 @@ class Model {
     public function getRandomStr() {
         return bin2hex(file_get_contents('/dev/urandom', 0, null, -1, 16));
     }
+
+    /* provides access to bitcoind API */
+    public function getBitcoinClient() {
+        require_once '../app/lib/jsonRPCClient.php';
+        return new \jsonRPCClient(BITCOIND_URL);
+    }
 }

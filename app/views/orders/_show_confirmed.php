@@ -12,6 +12,35 @@
 
         <div class="row order">
             <div class="small-2 columns">
+                <label class="right">Bitcoin public key (compressed)</label>
+            </div>
+            <div class="small-8 columns end">
+                <input name="public_key"
+                       type="text"
+                       placeholder="bitcoin public key, compressed (66 hex chars)"
+                       required="true"
+                       title="Please put your compressed bitcoin public key here."
+                       value="<?= isset($this->post['public_key']) ? $this->e($this->post['public_key']) : '' ?>">
+            </div>
+        </div>
+
+        <div class="row order">
+            <div class="small-2 columns">
+                <label class="right">Bitcoin payout address</label>
+            </div>
+            <div class="small-6 columns end">
+                <input name="payout_address"
+                       type="text"
+                       maxlength="40"
+                       placeholder="bitcoin payout address (26-35 hex chars)"
+                       required="true"
+                       title="Please put your payout address (where the funds should be transferred)"
+                       value="<?= isset($this->post['payout_address']) ? $this->e($this->post['payout_address']) : '' ?>">
+            </div>
+        </div>
+
+        <div class="row order">
+            <div class="small-2 columns">
                 <label class="right">Profile pin</label>
             </div>
             <div class="small-6 columns end">

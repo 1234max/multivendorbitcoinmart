@@ -3,6 +3,18 @@
 namespace Scam;
 
 class OrdersController extends Controller {
+    private function isValidBitcoinAddress($p) {
+        /* base58 encoded, 26-35 chars length
+        https://en.bitcoin.it/wiki/Address */
+        return preg_match('/^[a-km-zA-HJ-NP-Z0-9]{26,35}$/', $p);
+    }
+
+    private function isValidBitcoinPublicKey($p) {
+        /* base58 encoded, 66 chars length (compressed),
+        http://bitcoin.stackexchange.com/questions/3041/what-is-a-130-hex-character-public-key#3057 */
+        return preg_match('/^[a-km-zA-HJ-NP-Z0-9]{66}$/', $p);
+    }
+
     public function index() {
         $orderModel = $this->getModel('Order');
 
@@ -100,6 +112,7 @@ class OrdersController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
         $this->accessDeniedUnless(isset($this->post['shipping_info']) && is_string($this->post['shipping_info']) && mb_strlen($this->post['shipping_info']) >= 0);
+        $this->accessDeniedUnless(isset($this->post['public_key']) && is_string($this->post['public_key']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
@@ -115,17 +128,24 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        # check profile pin
-        if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-            if($orderModel->confirm($order->id, $this->post['shipping_info'])) {
-                $success = true;
+        # validate public key
+        if($this->isValidBitcoinPublicKey(trim($this->post['public_key']))){
+            # check profile pin
+            if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                if($orderModel->confirm($order->id, $this->post['shipping_info'], trim($this->post['public_key']))) {
+                    $success = true;
+                }
+                else {
+                    $errorMessage = 'Could not confirm order due to unknown error.';
+                }
             }
             else {
-                $errorMessage = 'Could not confirm order due to unknown error.';
+                $errorMessage = 'Profile pin wrong.';
             }
         }
         else {
-            $errorMessage = 'Profile pin wrong.';
+            $errorMessage = 'Not a valid bitcoin public key (compressed, 66 hex chars length).';
+
         }
 
         if($success) {
@@ -143,6 +163,8 @@ class OrdersController extends Controller {
     public function accept() {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
+        $this->accessDeniedUnless(isset($this->post['public_key']) && is_string($this->post['public_key']));
+        $this->accessDeniedUnless(isset($this->post['payout_address']) && is_string($this->post['payout_address']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
@@ -158,17 +180,30 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        # check profile pin
-        if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-            if($orderModel->accept($order->id)) {
-                $success = true;
+        # validate bitcoin pk
+        if ($this->isValidBitcoinPublicKey(trim($this->post['public_key']))) {
+            # validate payout address
+            if ($this->isValidBitcoinAddress(trim($this->post['payout_address']))) {
+                # check profile pin
+                if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                    if ($orderModel->accept($order->id, trim($this->post['public_key']), trim($this->post['payout_address']), $order->buyer_public_key)) {
+                        $success = true;
+                    } else {
+                        $errorMessage = 'Could not accept order due to unknown error.';
+                    }
+                }
+                else {
+                    $errorMessage = 'Profile pin wrong.';
+
+                }
             }
             else {
-                $errorMessage = 'Could not accept order due to unknown error.';
+                $errorMessage = 'Not a valid bitcoin address (27-35 hex chars).';
+
             }
         }
         else {
-            $errorMessage = 'Profile pin wrong.';
+            $errorMessage = 'Not a valid bitcoin public key (compressed, 66 hex chars length).';
         }
 
         if($success) {
@@ -217,42 +252,6 @@ class OrdersController extends Controller {
 
         if($success) {
             $this->setFlash('success', 'Successfully declined order.');
-            $this->redirectTo('?c=orders');
-        }
-        else {
-            $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => $errorMessage]);
-        }
-    }
-
-    # accessible for: buyer
-    # valid states: only accepted
-    # buyer indicates that he has paid (will be automated via multisig)
-    public function paid() {
-        # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
-
-        # check that order belongs to user
-        $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['h'], $_SESSION['k']);
-        $this->notFoundUnless($order);
-
-        # only buyer allowed
-        $this->accessDeniedIf($this->user->is_vendor);
-        # only accepted orders
-        $this->accessDeniedUnless($order->state == \Scam\OrderModel::$STATES['accepted']);
-
-        $success = false;
-        $errorMessage = '';
-
-        if($orderModel->paid($order->id)) {
-            $success = true;
-        }
-        else {
-            $errorMessage = 'Could not set order to paid due to unknown error.';
-        }
-
-        if($success) {
-            $this->setFlash('success', 'Successfully marked order as paid.');
             $this->redirectTo('?c=orders');
         }
         else {

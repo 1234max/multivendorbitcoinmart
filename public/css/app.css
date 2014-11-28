@@ -170,3 +170,7 @@ div.product-description {
     font-size: 1rem;
     color:grey;
 }
+
+.bitcoin-value {
+    overflow-wrap: break-word;
+}

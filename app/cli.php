@@ -18,31 +18,23 @@ function getModel($modelName, $db) {
  * Saves all transactions in this blocks in the database for later processal (by 'run')
  * */
 function blockNotify($app, $block) {
-    $c = $app->getJsonRpcClient();
-
-    # return if no bitcoin server is running
-    if(!$c->getinfo()) {
-        die('No bitcoind running');
-    }
-
-    # get block infos (ie transactions) from bitcoind
-    $blockHash = $c->getblock($block);
-
-    if(!isset($blockHash['tx'])) {
-        die('Could not receive block info from bitcoind for block: ' . $block);
-    }
-
-    # todo: delegate to new transaction model and save to db (if orders need watching)
-    var_dump($blockHash['tx']);
+    $db = $app->openDatabaseConnection();
+    $bitcoinTransactionModel = getModel('BitcoinTransaction', $db);
+    $bitcoinTransactionModel->addNewBlock($block);
 }
 
 /* Gets called as a cronjob periodically.
  * Processes all new transactions (saved by blockNotify) and checks if:
  *  - a payment to a multisig address has been made (order is paid by buyer)
  *  - a payment from the multisig address to the vendor has been made (buyer signed & broadcasted transaction = order is finished)
+ * and then updates the order states accordingly.
  * */
 function run($app) {
-    # todo: delegate to new transaction model and handle transactions
+    # todo: locking
+    $db = $app->openDatabaseConnection();
+    $bitcoinTransactionModel = getModel('BitcoinTransaction', $db);
+    $bitcoinTransactionModel->checkTransactionsForOrderPayments();
+    $bitcoinTransactionModel->checkIfOrdersArePaid();
 }
 
 try {
