@@ -265,6 +265,7 @@ class OrdersController extends Controller {
     public function shipped() {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
+        $this->accessDeniedUnless(isset($this->post['partially_signed_transaction']) && is_string($this->post['partially_signed_transaction']));
 
         # check that order belongs to user
         $orderModel = $this->getModel('Order');
@@ -279,12 +280,17 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        # TODO: add signed transaction
-        if($orderModel->shipped($order->id)) {
-            $success = true;
+        # check if signed transaction is valid & partially signed
+        if($this->getModel('BitcoinTransaction')->isValidSignedTransaction($order->unsigned_transaction, $this->post['partially_signed_transaction'])) {
+            if($orderModel->shipped($order->id, $this->post['partially_signed_transaction'])) {
+                $success = true;
+            }
+            else {
+                $errorMessage = 'Could not set order to shipped due to unknown error.';
+            }
         }
         else {
-            $errorMessage = 'Could not set order to shipped due to unknown error.';
+            $errorMessage = 'Raw transaction is in invalid format or not signed.';
         }
 
         if($success) {
@@ -295,42 +301,6 @@ class OrdersController extends Controller {
             $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => $errorMessage]);
         }
 
-    }
-
-    # accessible for: buyer
-    # valid states: only dispatched
-    # buyer indicates that he has received the order, it is finished now; (will be automated via multisig)
-    public function received () {
-        # check for existence & format of input params
-        $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
-
-        # check that order belongs to user
-        $orderModel = $this->getModel('Order');
-        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['h'], $_SESSION['k']);
-        $this->notFoundUnless($order);
-
-        # only buyer allowed
-        $this->accessDeniedIf($this->user->is_vendor);
-        # only accepted orders
-        $this->accessDeniedUnless($order->state == \Scam\OrderModel::$STATES['shipped']);
-
-        $success = false;
-        $errorMessage = '';
-
-        if($orderModel->received($order)) {
-            $success = true;
-        }
-        else {
-            $errorMessage = 'Could not set order to received due to unknown error.';
-        }
-
-        if($success) {
-            $this->setFlash('success', 'Successfully marked order as received.');
-            $this->redirectTo('?c=orders');
-        }
-        else {
-            $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => $errorMessage]);
-        }
     }
 
     # accessible for: buyer

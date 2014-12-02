@@ -105,6 +105,15 @@ class OrderModel extends Model {
         return $order ? $order : null;
     }
 
+    public function getOne($orderId) {
+        $sql = 'SELECT * FROM orders WHERE id = :id LIMIT 1';
+        $q = $this->db->prepare($sql);
+
+        $q->execute(['id' => $orderId]);
+        $order = $q->fetch();
+        return $order ? $order : null;
+    }
+
     public function create($order) {
         $sql = 'INSERT INTO orders (title, price, amount, buyer_id, vendor_id, product_id, shipping_option_id, created_at, updated_at) '
             . 'VALUES (:title, :price, :amount, :buyer_id, :vendor_id, :product_id, :shipping_option_id, null, null)';
@@ -156,21 +165,41 @@ class OrderModel extends Model {
             throw new Exception('No bitcoind running');
         }
 
-        $adminPublicKey = '022710e6fd81b88079fa1f1ca969e4244ab50c64d6c96858a814b26a20ba58c610';
-
-        $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, $adminPublicKey]);
+        $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, BITCOIN_ADMIN_PK]);
         return [$ret['address'], $ret['redeemScript']];
     }
 
-    /* returns multisig address that we need to watch for incoming transactions:
-     * - orders that are accepted and need to be paid
+    /* returns transaction ids (and their order ids) that we need to watch for transactions FROM them:
      * - orders that are shipped and buyer signs & broadcasts the funding transaction
      */
-    public function getWatchedAddresses() {
-        $sql = 'SELECT multisig_address FROM orders WHERE state = :accepted OR state = :shipped';
+    public function getWatchedTransactionsForShippedOrders() {
+        # we dont only watch transaction for orders with state = shipped, but all payments that came to our multisig addresses.
+        # this way, we see any scam that happens before state was set to shipped (ie vendor & buyer pay the multisig funds early to another address)
+        $sql = 'SELECT o.id, p.tx_id FROM orders o JOIN bitcoin_payments p ON o.multisig_address = p.address WHERE state <> :finished';
         $q = $this->db->prepare($sql);
 
-        $q->execute([':accepted' => self::$STATES['accepted'], ':shipped' => self::$STATES['accepted']]);
+        $q->execute([':finished' => self::$STATES['finished']]);
+        $orders = $q->fetchAll();
+        if($orders)
+        {
+            # index by tx id for easier lookup (and that we have order id afterwards)
+            $indexed = [];
+            foreach($orders as $order){
+                $indexed[$order->tx_id] = $order;
+            }
+            return $indexed;
+        }
+        return [];
+    }
+
+    /* returns multisig address that we need to watch for transactions TO them:
+     * - orders that are accepted and need to be paid
+     */
+    public function getWatchedAddressesForAcceptedOrders() {
+        $sql = 'SELECT multisig_address FROM orders WHERE state = :accepted';
+        $q = $this->db->prepare($sql);
+
+        $q->execute([':accepted' => self::$STATES['accepted']]);
         $orders = $q->fetchAll();
         return $orders ? array_map(function($order){return $order->multisig_address;}, $orders) : [];
     }
@@ -213,52 +242,62 @@ class OrderModel extends Model {
             throw new Exception('No bitcoind running');
         }
 
-        # get all bit coin payments that went to the multisig address and construct the transaction paying the vendor
+        # get all bitcoin payments that went to the multisig address and construct the transaction paying the vendor
         $totalPrice = 0.0; # for now, we just pay the vendor all funds that were coming to the multisig address (even if it's more)
         $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
         foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
             $inputs[] = [
                 'txid' => $payment->tx_id,
                 'vout' => intval($payment->vout)];
-                # we could embed redeemscript & pk_script here, but it's not possible without
-                # manually decoding transaction since createrawtransaction cant take additional params.
+            # we could embed redeemscript & pk_script here, but it's not possible without
+            # manually building transaction since createrawtransaction cant take additional params.
             $totalPrice += $payment->value;
         }
         return $c->createrawtransaction($inputs, [$toAddress => $totalPrice]);
     }
 
-    public function shipped($orderId) {
-        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info WHERE id = :id';
+    /* when signing the transaction that releases the funds from the multisig to the vendor,
+     * the end users must sign not only the raw transaction, but must also provide all inputs and redeem scripts (
+     * (see https://bitcoin.org/en/developer-examples#p2sh-multisig in part with signrawtransaction)
+     */
+    public function getPaymentInputsForSigning($orderId, $redeemScript) {
+        $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
+        foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
+            $inputs[] = [
+                'txid' => $payment->tx_id,
+                'vout' => intval($payment->vout),
+                'scriptPubKey' => $payment->pk_script,
+                'redeemScript' => $redeemScript];
+        }
+        return $inputs;
+    }
+
+    public function shipped($orderId, $partiallySignedTransaction) {
+        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, partially_signed_transaction = :partially_signed_transaction WHERE id = :id';
         $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId, ':state' => self::$STATES['shipped'],
+        return $query->execute([':id' => $orderId,
+            ':state' => self::$STATES['shipped'],
+            ':partially_signed_transaction' => $partiallySignedTransaction,
             ':shipping_info' => "Wiped shipping info, shipped at: " . date(DATE_RFC850)]);
     }
 
-    public function received($order) {
-        $this->db->beginTransaction();
+    public function received($order, $txId, $isValid) {
+        $sql = 'UPDATE orders SET state = :state, finish_text = :finish_text WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $finishText = $isValid ? "Order successfully finished, funds released with transaction $txId at: " . date(DATE_RFC850) :
+            "Order finished but with an invalid transaction ($txId) at: " . date(DATE_RFC850);
+        $result = $query->execute([':id' => $order->id, ':state' => self::$STATES['finished'], ':finish_text' => $finishText]);
 
-        try {
-            $sql = 'UPDATE orders SET state = :state, finish_text = :finish_text WHERE id = :id';
-            $query = $this->db->prepare($sql);
-            $result = $query->execute([':id' => $order->id, ':state' => self::$STATES['finished'],
-                ':finish_text' => "Order successfully finished, funds released at: " . date(DATE_RFC850) ]);
-
-            # create (empty) feedback
-            if($result) {
+        # create (empty) feedback
+        if($result) {
+            if($isValid) {
                 if(!$this->getModel('VendorFeedback')->createForOrder($order)) {
                     throw new \Exception('Feedback couldnt be created');
                 }
             }
-            else {
-                throw new \Exception('Order couldnt be saved');
-            }
-
-            $this->db->commit();
-            return true;
         }
-        catch(\Exception $e){
-            $this->db->rollBack();
-            return false;
+        else {
+            throw new \Exception('Order couldnt be saved');
         }
     }
 

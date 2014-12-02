@@ -173,4 +173,17 @@ div.product-description {
 
 .bitcoin-value {
     overflow-wrap: break-word;
+    font-size:smaller;
+    display:block;
+}
+
+pre {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-weight: normal;
+    color: #333333;
+    background-color: #f8f8f8;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dfdfdf;
+    padding: 0.125rem 0.3125rem 0.0625rem;
 }

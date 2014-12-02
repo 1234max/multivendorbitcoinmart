@@ -24,6 +24,7 @@
         </div>
         <div class="small-8 columns end">
             <input name="public_key"
+                   autocomplete="false"
                    type="text"
                    placeholder="bitcoin public key, compressed (66 hex chars)"
                    required="true"

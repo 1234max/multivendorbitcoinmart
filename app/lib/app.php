@@ -29,7 +29,7 @@ class App {
             'destroyImage' => 'GET', 'destroy' => 'POST'],
         'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET', 'vendor' => 'GET'],
         'orders' => ['index' => 'GET', 'create' => 'POST', 'show' => 'GET', 'confirm' => 'POST', 'accept' => 'POST',
-            'decline' => 'POST', 'paid' => 'POST', 'shipped' => 'POST', 'received' => 'POST',
+            'decline' => 'POST', 'shipped' => 'POST',
             'feedback' => 'POST', 'destroy' => 'POST' ]
     ];
 
