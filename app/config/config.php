@@ -14,7 +14,10 @@ if(true) {
     ini_set("log_errors", 1);
 
     define('BITCOIND_URL', 'http://bitcoinrpc:1234@127.0.0.1:28332');
-    define('BITCOIN_ADMIN_PK', '022710e6fd81b88079fa1f1ca969e4244ab50c64d6c96858a814b26a20ba58c610');
+    # admin public key for bitcoin multisig
+    define('BITCOIN_ADMIN_PK', '03c4db68e3281ef10d0f7438bcf7e13a7a948829bddfb4fb6193d17ab5ec366853');
+    # address belonging to pk above (used for admin login)
+    define('BITCOIN_ADMIN_ADDRESS', 'miTsKkcrGnq9tmxJsf8cQHVT3mwPaidswx');
 
     define('DB_HOST', '127.0.0.1');
     define('DB_NAME', 'scam');
@@ -32,6 +35,7 @@ else {
 
     define('BITCOIND_URL', 'http://bitcoinrpc:HIGHSECURE@127.0.0.1:28332');
     define('BITCOIN_ADMIN_PK', 'INSERT_BITCOIN_ADMIN_PUBLIC_KEY_HERE');
+    define('BITCOIN_ADMIN_ADDRESS', 'INSERT_ADDRESS_OF_PK_ABOVE_HERE');
 
     define('DB_HOST', '127.0.0.1');
     define('DB_NAME', 'scam');

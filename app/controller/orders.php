@@ -113,6 +113,7 @@ class OrdersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
         $this->accessDeniedUnless(isset($this->post['shipping_info']) && is_string($this->post['shipping_info']) && mb_strlen($this->post['shipping_info']) >= 0);
         $this->accessDeniedUnless(isset($this->post['public_key']) && is_string($this->post['public_key']));
+        $this->accessDeniedUnless(isset($this->post['refund_address']) && is_string($this->post['refund_address']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
         # check that order belongs to user
@@ -130,17 +131,21 @@ class OrdersController extends Controller {
 
         # validate public key
         if($this->isValidBitcoinPublicKey(trim($this->post['public_key']))){
-            # check profile pin
-            if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-                if($orderModel->confirm($order->id, $this->post['shipping_info'], trim($this->post['public_key']))) {
-                    $success = true;
-                }
-                else {
-                    $errorMessage = 'Could not confirm order due to unknown error.';
+            # validate payout address
+            if ($this->isValidBitcoinAddress(trim($this->post['refund_address']))) {
+                # check profile pin
+                if ($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                    if ($orderModel->confirm($order->id, $this->post['shipping_info'], trim($this->post['public_key']), trim($this->post['refund_address']))) {
+                        $success = true;
+                    } else {
+                        $errorMessage = 'Could not confirm order due to unknown error.';
+                    }
+                } else {
+                    $errorMessage = 'Profile pin wrong.';
                 }
             }
             else {
-                $errorMessage = 'Profile pin wrong.';
+                $errorMessage = 'Refund address is not a valid bitcoin address (27-35 hex chars).';
             }
         }
         else {
@@ -198,7 +203,7 @@ class OrdersController extends Controller {
                 }
             }
             else {
-                $errorMessage = 'Not a valid bitcoin address (27-35 hex chars).';
+                $errorMessage = 'Payout address is not a valid bitcoin address (27-35 hex chars).';
 
             }
         }
@@ -368,6 +373,31 @@ class OrdersController extends Controller {
         }
     }
 
-    # todo: dispute (from accepted on)
-    # todo: autofinalize (from paid on)
+    # accessible for: buyer & vendor
+    # valid states: paid, shipped, dispute
+    # order is set to state 'dispute', admin can resolve the dispute by creating a new transaction
+    public function dispute() {
+        # check for existence & format of input params
+        $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
+        $this->accessDeniedUnless(isset($this->post['dispute_message']) && is_string($this->post['dispute_message']) && mb_strlen($this->post['dispute_message']) > 0);
+
+        # check that order belongs to user
+        $orderModel = $this->getModel('Order');
+        $order = $orderModel->getOneOfUser($this->user->id, $this->user->is_vendor, $this->post['h'], $_SESSION['k']);
+        $this->notFoundUnless($order);
+
+        # check order states
+        $this->accessDeniedUnless(in_array($order->state, [\Scam\OrderModel::$STATES['paid'], \Scam\OrderModel::$STATES['shipped'], \Scam\OrderModel::$STATES['dispute']]));
+
+        # append new message to already existing message
+        $message = $order->dispute_message . "User " . $this->user->name . " at " . date(DATE_RFC850). ": " . $this->post['dispute_message'] . "\n\n";
+
+        if($orderModel->dispute($order->id, $message)) {
+            $this->setFlash('success', 'Successfully disputed order.');
+            $this->redirectTo('?c=orders&a=show&h=' . $this->post['h']);
+        }
+        else {
+            $this->renderTemplate('orders/show.php', ['order' => $order, 'error' => 'Unknown error, could not dispute order.']);
+        }
+    }
 }

@@ -34,3 +34,5 @@
 <?php else: ?>
     <div class="callout panel">This order is paid. The vendor will now ship the goods and sign the transaction.</div>
 <?php endif ?>
+
+<?php require '../app/views/orders/_dispute_form.php'; ?>

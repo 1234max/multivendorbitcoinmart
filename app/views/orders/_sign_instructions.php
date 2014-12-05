@@ -1,7 +1,3 @@
-Import command:
-<pre class="bitcoin-value">
-    addmultisigaddress 2 '["<?= $this->e($order->vendor_public_key) ?>", "<?= $this->e($order->buyer_public_key) ?>", "<?= BITCOIN_ADMIN_PK ?>"]'</pre>
-<br/>
 Sign command:
 <pre class="bitcoin-value">
     signrawtransaction <?= $this->e($transaction) ?> '''

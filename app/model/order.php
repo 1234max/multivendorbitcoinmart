@@ -10,6 +10,7 @@ class OrderModel extends Model {
         'paid' => 3,
         'shipped' => 4,
         'finished' => 5,
+        'dispute' => 6,
     ];
 
     public static function stateDescription($state) {
@@ -24,6 +25,7 @@ class OrderModel extends Model {
         return in_array($state, [
             self::$STATES['confirmed'],
             self::$STATES['paid'],
+            self::$STATES['dispute'],
         ]);
     }
 
@@ -32,6 +34,7 @@ class OrderModel extends Model {
             self::$STATES['unconfirmed'],
             self::$STATES['accepted'],
             self::$STATES['shipped'],
+            self::$STATES['dispute'],
         ]);
     }
 
@@ -85,11 +88,41 @@ class OrderModel extends Model {
         return $orders ? $orders : [];
     }
 
+    public function getDisputesForAdmin() {
+        $sql = 'SELECT o.id, o.title, o.price, o.state, o.updated_at, o.buyer_id, o.vendor_id, ' .
+            'v.name AS vendor_name, b.name AS buyer_name FROM orders o ' .
+            'JOIN users v ON o.vendor_id = v.id '.
+            'JOIN users b ON o.buyer_id = b.id '.
+            'WHERE o.state = :dispute '.
+            'ORDER BY updated_at DESC';
+        $q = $this->db->prepare($sql);
+
+        $q->execute([':dispute' => self::$STATES['dispute']]);
+        $orders = $q->fetchAll();
+        return $orders ? $orders : [];
+    }
+
+    public function getDisputeForAdmin($orderId) {
+        $sql = 'SELECT o.*, ' .
+            'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price ' .
+            'FROM orders o ' .
+            'JOIN users v ON o.vendor_id = v.id '.
+            'JOIN users b ON o.buyer_id = b.id '.
+            'LEFT OUTER JOIN products p ON o.product_id = p.id ' .
+            'WHERE o.id = :id AND o.state = :dispute LIMIT 1';
+        $q = $this->db->prepare($sql);
+
+        $q->execute([':id' => $orderId, ':dispute' => self::$STATES['dispute']]);
+        $order = $q->fetch();
+        return $order ? $order : null;
+    }
+
     public function getOneOfUser($userId, $isVendor, $idHash, $sessionSecret) {
         $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, ' .
             'o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
-            'o.buyer_public_key, o.vendor_public_key, o.vendor_payout_address, o.multisig_address, o.redeem_script, ' .
+            'o.buyer_public_key, o.buyer_refund_address, o.vendor_public_key, o.vendor_payout_address, o.multisig_address, o.redeem_script, ' .
             'o.unsigned_transaction, o.partially_signed_transaction, ' .
+            'o.dispute_message, o.dispute_signed_transaction, ' .
             'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price, ' .
             'f.rating, f.comment, f.id AS feedback_id FROM orders o ' .
             'JOIN users v ON o.vendor_id = v.id '.
@@ -128,12 +161,13 @@ class OrderModel extends Model {
         return $req ? $this->db->lastInsertId() : false;
     }
 
-    public function confirm($orderId, $shippingInfo, $buyerPublicKey) {
-        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, buyer_public_key = :buyer_public_key WHERE id = :id';
+    public function confirm($orderId, $shippingInfo, $buyerPublicKey, $buyerRefundAddress) {
+        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, ' .
+            'buyer_public_key = :buyer_public_key, buyer_refund_address = :buyer_refund_address WHERE id = :id';
         $query = $this->db->prepare($sql);
         return $query->execute([':id' => $orderId,
             ':state' => self::$STATES['confirmed'],
-            ':shipping_info' => $shippingInfo, ':buyer_public_key' => $buyerPublicKey]);
+            ':shipping_info' => $shippingInfo, ':buyer_public_key' => $buyerPublicKey, ':buyer_refund_address' => $buyerRefundAddress]);
     }
 
     public function accept($orderId, $vendorPublicKey, $vendorPayoutAddress, $buyerPublicKey) {
@@ -171,8 +205,9 @@ class OrderModel extends Model {
 
     /* returns transaction ids (and their order ids) that we need to watch for transactions FROM them:
      * - orders that are shipped and buyer signs & broadcasts the funding transaction
+     * - orders that are being disputed and are resolved by a new transaction
      */
-    public function getWatchedTransactionsForShippedOrders() {
+    public function getWatchedTransactionsForFinishingOrders() {
         # we dont only watch transaction for orders with state = shipped, but all payments that came to our multisig addresses.
         # this way, we see any scam that happens before state was set to shipped (ie vendor & buyer pay the multisig funds early to another address)
         $sql = 'SELECT o.id, p.tx_id FROM orders o JOIN bitcoin_payments p ON o.multisig_address = p.address WHERE state <> :finished';
@@ -304,5 +339,46 @@ class OrderModel extends Model {
     public function delete($id) {
         $q = $this->db->prepare('DELETE FROM orders WHERE id = :id');
         return $q->execute([':id' => $id]);
+    }
+
+    public function dispute($orderId, $disputeMessage) {
+        $sql = 'UPDATE orders SET state = :state, dispute_message = :dispute_message WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute([':id' => $orderId,
+            ':state' => self::$STATES['dispute'],
+            ':dispute_message' => $disputeMessage]);
+    }
+
+    /* creates a new (unsigned) raw transaction that refunds buyer & vendor as specified in $recipients */
+    public function createNewTransactionForDispute($orderId, $disputeMessage, $recipients) {
+        $c = $this->getBitcoinClient();
+
+        # return if no bitcoin server is running
+        if(!$c->getinfo()) {
+            return false;
+        }
+
+        # get all bitcoin payments that went to the multisig address and construct the transaction paying as we specified
+        $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
+        foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
+            $inputs[] = [
+                'txid' => $payment->tx_id,
+                'vout' => intval($payment->vout)];
+        }
+        $disputeTransaction = $c->createrawtransaction($inputs, $recipients);
+
+        $sql = 'UPDATE orders SET dispute_message = :dispute_message, dispute_unsigned_transaction = :transaction WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute([':id' => $orderId,
+            ':dispute_message' => $disputeMessage, ':transaction' => $disputeTransaction]);
+    }
+
+    public function enterSignedTransactionForDispute($orderId, $transaction) {
+        $sql = 'UPDATE orders SET dispute_signed_transaction = :dispute_signed_transaction, ' .
+            'dispute_unsigned_transaction = NULL ' .
+            'WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute([':id' => $orderId,
+            ':dispute_signed_transaction' => $transaction]);
     }
 }

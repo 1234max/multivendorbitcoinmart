@@ -29,8 +29,9 @@ class App {
             'destroyImage' => 'GET', 'destroy' => 'POST'],
         'listings' => ['index' => 'GET', 'product' => 'GET', 'productImage' => 'GET', 'vendor' => 'GET'],
         'orders' => ['index' => 'GET', 'create' => 'POST', 'show' => 'GET', 'confirm' => 'POST', 'accept' => 'POST',
-            'decline' => 'POST', 'shipped' => 'POST',
-            'feedback' => 'POST', 'destroy' => 'POST' ]
+            'decline' => 'POST', 'shipped' => 'POST', 'dispute' => 'POST', 'feedback' => 'POST', 'destroy' => 'POST' ],
+        'admin' => ['index' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'disputes' => 'GET', 'showDispute' => 'GET',
+            'addDisputeMessage' => 'POST', 'createNewTransaction' => 'POST', 'enterSignedTransaction' => 'POST'],
     ];
 
     public function openDatabaseConnection() {

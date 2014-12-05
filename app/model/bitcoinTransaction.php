@@ -70,7 +70,7 @@ class BitcoinTransactionModel extends Model {
             $addressesToWatch = $this->getModel('Order')->getWatchedAddressesForAcceptedOrders();
 
             # get all transactions (that were used to pay to the multisig address) and are used to pay the vendor
-            $txIdsToWatch = $this->getModel('Order')->getWatchedTransactionsForShippedOrders();
+            $txIdsToWatch = $this->getModel('Order')->getWatchedTransactionsForFinishingOrders();
 
             print "Watching " . count($addressesToWatch) . " addresses for transactions to them, " . count($txIdsToWatch)  . " txids for transactions from them.\n";
 
@@ -127,7 +127,9 @@ class BitcoinTransactionModel extends Model {
                         print "It belongs to order " .$order->id . ", checking if valid\n";
                         # lookup complete order (to get unsigned transaction etc)
                         $order = $this->getModel('Order')->getOne($order->id);
-                        $isValid = $this->isValidSignedTransaction($order->unsigned_transaction, $transaction->raw_tx);
+                        # check transaction validity: we must compare with the unsigned_transaction (for normal orders) ore with the
+                        $baseTransaction = $order->state ==  \Scam\OrderModel::$STATES['dispute'] ? $order->dispute_signed_transaction : $order->unsigned_transaction;
+                        $isValid = $this->isValidSignedTransaction($baseTransaction, $transaction->raw_tx);
                         print "Transaction for order is: " . ($isValid ? 'valid' : 'invalid') .". Setting order to finished.\n";
                         $this->getModel('Order')->received($order, $transaction->tx_id, $isValid);
                     }
@@ -194,7 +196,7 @@ class BitcoinTransactionModel extends Model {
 
     /* checks if a given transaction (provided by the user -partially signed - or picked up in the blockchain - completely signed)
     is the signed equivalent of an unsigned one (that we created) */
-    public function isValidSignedTransaction($unsignedTransaction, $signedTransaction) {
+    public function isValidSignedTransaction($validTransaction, $signedTransaction) {
         try {
             $c = $this->getBitcoinClient();
 
@@ -204,14 +206,14 @@ class BitcoinTransactionModel extends Model {
             }
 
             # decode both first
-            $rawUnsigned = $c->decoderawtransaction($unsignedTransaction);
+            $rawValid = $c->decoderawtransaction($validTransaction);
             $rawSigned = $c->decoderawtransaction($signedTransaction);
 
             # now compare vins & vouts - should be exactly the same, only vin -> scriptSig should be given in signedTransaction
             $valid = true;
             foreach($rawSigned['vout'] as $i => $vout) {
                 foreach($vout as $k => $v) {
-                    if ($rawUnsigned['vout'][$i][$k] !== $v) {
+                    if ($rawValid['vout'][$i][$k] !== $v) {
                         $valid = false;
                     }
                 }
@@ -225,7 +227,7 @@ class BitcoinTransactionModel extends Model {
                         }
                     }
                     else {
-                        if($rawUnsigned['vin'][$i][$k] !== $v){
+                        if($rawValid['vin'][$i][$k] !== $v){
                             $valid = false;
                         }
                     }

@@ -7,6 +7,12 @@
         </div>
     <?php endif ?>
 
+    <?php if($this->fl('error')): ?>
+        <div data-alert class="alert-box alert">
+            <?= $this->fl('error') ?>
+        </div>
+    <?php endif ?>
+
     <div class="hide-for-small panel">
         <h3 class="subheader">Be safe using <abbr title="Scammer Can't Acquire Money">SCAM.</h3>
         <h5 class="subheader">

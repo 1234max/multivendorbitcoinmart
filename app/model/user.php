@@ -100,4 +100,20 @@ class UserModel extends Model {
         $query = $this->db->prepare($sql);
         return $query->execute([':id' => $userId]);
     }
+
+    public function checkAdminLogin($message, $signature) {
+        try {
+            $c = $this->getBitcoinClient();
+
+            # return if no bitcoin server is running
+            if(!$c->getinfo()) {
+                throw new Exception('No bitcoind running');
+            }
+
+            return $c->verifymessage(BITCOIN_ADMIN_ADDRESS, $signature, $message) == 'true';
+        }
+        catch(\Exception $e) {
+            return false;
+        }
+    }
 }

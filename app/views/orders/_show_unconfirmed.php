@@ -33,6 +33,22 @@
         </div>
     </div>
 
+    <div class="row order">
+        <div class="small-2 columns">
+            <label class="right">Bitcoin refund address</label>
+        </div>
+        <div class="small-6 columns end">
+            <input name="refund_address"
+                   type="text"
+                   maxlength="40"
+                   autocomplete="false"
+                   placeholder="bitcoin refund address (26-35 hex chars)"
+                   required="true"
+                   title="Please put your refund address (where the funds in case of dispute should be transferred)"
+                   value="<?= isset($this->post['refund_address']) ? $this->e($this->post['refund_address']) : '' ?>">
+        </div>
+    </div>
+
 
     <div class="row order">
         <div class="small-2 columns">

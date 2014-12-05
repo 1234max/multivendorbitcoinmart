@@ -19,7 +19,6 @@ class Controller {
     protected $get = [];
     protected $post = [];
     protected $files = [];
-    protected $isPost = false;
     protected $controller = '';
     protected $action = '';
     protected $user = null;
@@ -60,6 +59,16 @@ class Controller {
         if(!$this->isUserLoggedIn()) {
             $this->redirectTo('?c=users&a=login');
         }
+    }
+
+    protected function clearSession() {
+        # clean up session thoroughly (including session cookie)
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+        session_destroy();
     }
 
     /* shortcut to escape strings in template */
