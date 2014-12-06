@@ -116,4 +116,51 @@ class UserModel extends Model {
             return false;
         }
     }
+
+    public function isValidPGPPublicKey($pubKey) {
+        require_once '../app/lib/concurrentPgp.php';
+        $gpg = new ConcurrentPGP();
+        $info = $gpg->import($pubKey);
+        return isset($info['imported']) && $info['imported'] === 1;
+    }
+
+    public function isValidPGPSignatureOfMessage($pubKey, $signature, $clearMessage) {
+        require_once '../app/lib/concurrentPgp.php';
+        $gpg = new ConcurrentPGP();
+
+        $keyInfo = $gpg->import($pubKey);
+        if(!isset($keyInfo['imported']) || $keyInfo['imported'] !== 1) {
+            throw new \Exception('Invalid public key');
+        }
+
+        $signInfo = $gpg->verify($signature, false, $clearMessage);
+        return isset($signInfo[0]) && $signInfo[0]['fingerprint'] && $signInfo[0]['fingerprint'] === substr($keyInfo['fingerprint'], -strlen($signInfo[0]['fingerprint']));
+    }
+
+    public function setPGP($userId, $pubKey) {
+        $sql = 'UPDATE users SET pgp_public_key = :pgp_public_key WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute([':id' => $userId, ':pgp_public_key' => $pubKey]);
+    }
+
+    public function encryptMessageForUser($userId, $message) {
+        $user = $this->getUser($userId);
+        if($user == null || !$user->pgp_public_key) {
+            throw new \Exception('User or pgp public key not found');
+        }
+
+        require_once '../app/lib/concurrentPgp.php';
+        $gpg = new ConcurrentPGP();
+
+        $keyInfo = $gpg->import($user->pgp_public_key);
+        if(!isset($keyInfo['imported']) || $keyInfo['imported'] !== 1) {
+            throw new \Exception('Invalid public key');
+        }
+
+        if(!$gpg->addencryptkey($keyInfo['fingerprint'])) {
+            throw new \Exception('Invalid public key');
+        }
+
+        return $gpg->encrypt($message);
+    }
 }

@@ -40,5 +40,8 @@
         ?>
     <?php endif ?>
 
+    <h4 class="subheader">PGP public key</h4>
+    <pre class="alert-box secondary bitcoin-value"><?= $this->e($this->user->pgp_public_key) ?></pre>
+
     <a href="?">Back to listings</a>
 </div>

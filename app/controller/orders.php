@@ -135,7 +135,7 @@ class OrdersController extends Controller {
             if ($this->isValidBitcoinAddress(trim($this->post['refund_address']))) {
                 # check profile pin
                 if ($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-                    if ($orderModel->confirm($order->id, $this->post['shipping_info'], trim($this->post['public_key']), trim($this->post['refund_address']))) {
+                    if ($orderModel->confirm($order, $this->post['shipping_info'], trim($this->post['public_key']), trim($this->post['refund_address']))) {
                         $success = true;
                     } else {
                         $errorMessage = 'Could not confirm order due to unknown error.';

@@ -88,6 +88,15 @@ class OrderModel extends Model {
         return $orders ? $orders : [];
     }
 
+    public function hasOrdersAsBuyer($userId) {
+        $sql = 'SELECT id FROM orders WHERE buyer_id = :buyer_id LIMIT 1';
+        $q = $this->db->prepare($sql);
+
+        $q->execute([':buyer_id' => $userId]);
+        $order = $q->fetch();
+        return $order ? true : false;
+    }
+
     public function getDisputesForAdmin() {
         $sql = 'SELECT o.id, o.title, o.price, o.state, o.updated_at, o.buyer_id, o.vendor_id, ' .
             'v.name AS vendor_name, b.name AS buyer_name FROM orders o ' .
@@ -161,13 +170,23 @@ class OrderModel extends Model {
         return $req ? $this->db->lastInsertId() : false;
     }
 
-    public function confirm($orderId, $shippingInfo, $buyerPublicKey, $buyerRefundAddress) {
-        $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, ' .
-            'buyer_public_key = :buyer_public_key, buyer_refund_address = :buyer_refund_address WHERE id = :id';
-        $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId,
-            ':state' => self::$STATES['confirmed'],
-            ':shipping_info' => $shippingInfo, ':buyer_public_key' => $buyerPublicKey, ':buyer_refund_address' => $buyerRefundAddress]);
+    public function confirm($order, $shippingInfo, $buyerPublicKey, $buyerRefundAddress) {
+        try {
+            $encryptedShippingInfo = $this->getModel('User')->encryptMessageForUser($order->vendor_id, $shippingInfo);
+            if($encryptedShippingInfo === false) {
+                throw new \Exception('Could not encrypt');
+            }
+
+            $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, ' .
+                'buyer_public_key = :buyer_public_key, buyer_refund_address = :buyer_refund_address WHERE id = :id';
+            $query = $this->db->prepare($sql);
+            return $query->execute([':id' => $order->id,
+                ':state' => self::$STATES['confirmed'],
+                ':shipping_info' => $encryptedShippingInfo, ':buyer_public_key' => $buyerPublicKey, ':buyer_refund_address' => $buyerRefundAddress]);
+        }
+        catch(\Exception $e) {
+            return false;
+        }
     }
 
     public function accept($orderId, $vendorPublicKey, $vendorPayoutAddress, $buyerPublicKey) {

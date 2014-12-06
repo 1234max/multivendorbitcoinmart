@@ -11,10 +11,10 @@ chmod +x phpbrew
 sudo mv phpbrew /usr/bin/phpbrew
 ```
 
-install latest php 5.4 with minimal extensions (pdo, mysql and multibyte only required for now):
+install latest php 5.4 with minimal extensions (pdo, mysql, multibyte and PGP only required for now):
 
 ```bash
-phpbrew install 5.4 +pdo +mb +mysql
+phpbrew install 5.4 +pdo +mb +mysql +gnupg
 ```
 
 ### composer
