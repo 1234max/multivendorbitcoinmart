@@ -44,6 +44,8 @@ class AdminController extends Controller {
             $this->redirectTo('?c=admin&a=disputes');
         }
         else {
+            # new challenge
+            $_SESSION['random_str'] = $this->getModel('User')->getRandomStr();
             $this->renderTemplate('admin/index.php', ['error' => 'Verification failed.']);
         }
     }
