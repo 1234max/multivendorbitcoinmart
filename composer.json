@@ -16,6 +16,9 @@
     },
     "require": {
         "php": ">=5.4.34",
-        "ircmaxell/password-compat": "dev-master"
+        "ircmaxell/password-compat": "dev-master",
+        "bitwasp/bitcoin-lib": "dev-master",
+        "ext-gmp": "*",
+        "mdanter/ecc": "dev-master"
     }
 }

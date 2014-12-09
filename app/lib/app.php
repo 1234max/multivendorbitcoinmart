@@ -22,8 +22,7 @@ class App {
     private $routes = [
         'users' => ['login' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'register' => 'GET', 'doRegister' => 'POST'],
         'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'setPGP' => 'POST',
-            'resetProfilePin' => 'POST', 'multisig' => 'GET', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
-        'vendor' => ['multisig' => 'GET'],
+            'resetProfilePin' => 'POST', 'bip32' => 'GET', 'setBip32' => 'POST', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
         'shippingOptions' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
         'products' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST',
             'destroyImage' => 'GET', 'destroy' => 'POST'],

@@ -25,6 +25,8 @@ class ProductsController extends Controller {
     }
 
     public function create() {
+        $this->accessDeniedUnless($this->user->bip32_extended_public_key);
+
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']) && mb_strlen($this->post['name']) >= 3);
         $this->accessDeniedUnless(isset($this->post['description']) && is_string($this->post['description']) && mb_strlen($this->post['description']) >= 0);

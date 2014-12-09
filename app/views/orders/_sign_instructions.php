@@ -16,5 +16,5 @@ Sign command:
     ]
     ''' '''
     [
-      "PASTE_YOUR_PRIVATE_KEY_HERE"
+      "<strong>Paste your private key (m/k'/0/<?= $keyIndex ?>) here</strong>"
     ]'''</pre>

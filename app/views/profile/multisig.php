@@ -1,1 +1,0 @@
-<?php $title = 'Multisig configuration | SCAM' ?>

@@ -163,4 +163,35 @@ class UserModel extends Model {
 
         return $gpg->encrypt($message);
     }
+
+    /* parses and validates a BIP32 extended public key (returns false if invalid, or an array with infos if valid) */
+    public function parseBip32ExtendedPK($publicKey) {
+        require_once '../vendor/autoload.php';
+        return \BitWasp\BitcoinLib\BIP32::import($publicKey);
+    }
+
+    public function setBip32ExtendedPublicKey($userId, $pubKey) {
+        $sql = 'UPDATE users SET bip32_extended_public_key = :bip32_extended_public_key, bip32_key_index = 0 WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        return $query->execute([':id' => $userId, ':bip32_extended_public_key' => $pubKey]);
+    }
+
+    /* gets the next child key from a user's public key; should be wrapped in a transaction. */
+    public function getNextPublicKeyFromBip32($userId) {
+        # get user (pk and key index)
+        $user = $this->getUser($userId);
+        $keyIndex = intval($user->bip32_key_index);
+
+        # generate next key
+        require_once '../vendor/autoload.php';
+        $extendedKey = \BitWasp\BitcoinLib\BIP32::build_key($user->bip32_extended_public_key, $keyIndex);
+        $publicKey = \BitWasp\BitcoinLib\BIP32::extract_public_key($extendedKey);
+
+        # update key index in database
+        if(!$this->db->prepare('UPDATE users SET bip32_key_index = :bip32_key_index, bip32_key_index = :bip32_key_index WHERE id = :id')
+            ->execute([':id' => $userId, ':bip32_key_index' => $keyIndex + 1])) {
+            throw new \Exception('Error while saving');
+        }
+        return [$keyIndex, $publicKey];
+    }
 }

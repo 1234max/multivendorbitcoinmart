@@ -21,8 +21,10 @@ CREATE TABLE IF NOT EXISTS `orders` (
   FOREIGN KEY (shipping_option_id) REFERENCES shipping_options(id) ON DELETE SET NULL,
   # bitcoin stuff
   `buyer_public_key` varchar(66),
+  `buyer_key_index` int(9),
   `buyer_refund_address` varchar(35),
   `vendor_public_key` varchar(66),
+  `vendor_key_index` int(9),
   `vendor_payout_address` varchar(35),
   `multisig_address` varchar(35) UNIQUE,
   `redeem_script` varchar(500),

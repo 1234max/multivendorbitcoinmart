@@ -12,21 +12,6 @@
 
         <div class="row order">
             <div class="small-2 columns">
-                <label class="right">Bitcoin public key (compressed)</label>
-            </div>
-            <div class="small-8 columns end">
-                <input name="public_key"
-                       type="text"
-                       placeholder="bitcoin public key, compressed (66 hex chars)"
-                       required="true"
-                       autocomplete="false"
-                       title="Please put your compressed bitcoin public key here."
-                       value="<?= isset($this->post['public_key']) ? $this->e($this->post['public_key']) : '' ?>">
-            </div>
-        </div>
-
-        <div class="row order">
-            <div class="small-2 columns">
                 <label class="right">Bitcoin payout address</label>
             </div>
             <div class="small-6 columns end">

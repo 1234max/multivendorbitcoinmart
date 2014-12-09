@@ -4,20 +4,62 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8fa3ef251ac31d2093f59c69cbfdde0a",
+    "hash": "f9abb4c14b606d9207d8c55bc5793efd",
     "packages": [
+        {
+            "name": "bitwasp/bitcoin-lib",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Bit-Wasp/bitcoin-lib-php.git",
+                "reference": "5718ca0bd1dc4c2a28c8e9265c47b794e213cdf1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Bit-Wasp/bitcoin-lib-php/zipball/5718ca0bd1dc4c2a28c8e9265c47b794e213cdf1",
+                "reference": "5718ca0bd1dc4c2a28c8e9265c47b794e213cdf1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gmp": "*",
+                "mdanter/ecc": "dev-master",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BitWasp\\BitcoinLib\\": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "Unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Kerin",
+                    "email": "thomas.kerin@gmail.com"
+                }
+            ],
+            "description": "Bitcoin library",
+            "time": "2014-11-24 17:43:35"
+        },
         {
             "name": "ircmaxell/password-compat",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/password_compat.git",
-                "reference": "c91b1168bc53c26f56fc65f16958b5be45ca5dc9"
+                "reference": "92951ae05e988803fdc1cd49f7e4cd29ca7b75e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/c91b1168bc53c26f56fc65f16958b5be45ca5dc9",
-                "reference": "c91b1168bc53c26f56fc65f16958b5be45ca5dc9",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/92951ae05e988803fdc1cd49f7e4cd29ca7b75e9",
+                "reference": "92951ae05e988803fdc1cd49f7e4cd29ca7b75e9",
                 "shasum": ""
             },
             "require-dev": {
@@ -36,7 +78,7 @@
             "authors": [
                 {
                     "name": "Anthony Ferrara",
-                    "email": "ircmaxell@ircmaxell.com",
+                    "email": "ircmaxell@php.net",
                     "homepage": "http://blog.ircmaxell.com"
                 }
             ],
@@ -46,18 +88,79 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-03-21 11:47:21"
+            "time": "2014-11-20 19:18:29"
+        },
+        {
+            "name": "mdanter/ecc",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mdanter/phpecc.git",
+                "reference": "154c1c9dfcd8c530333fcbda88e7216f2021c364"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mdanter/phpecc/zipball/154c1c9dfcd8c530333fcbda88e7216f2021c364",
+                "reference": "154c1c9dfcd8c530333fcbda88e7216f2021c364",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.1",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "suggest": {
+                "ext-bcmath": "Required if GMP is not installed.",
+                "ext-gmp": "Improves drastically ECDSA library performance"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mdanter\\Ecc\\": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matyas Danter",
+                    "homepage": "http://matejdanter.com/",
+                    "role": "Author"
+                },
+                {
+                    "name": "Thibaud Fabre",
+                    "email": "thibaud@aztech.io",
+                    "homepage": "http://aztech.io",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Drak",
+                    "email": "drak@zikula.org",
+                    "homepage": "http://zikula.org",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP Elliptic Curve Cryptography library",
+            "homepage": "https://github.com/mdanter/phpecc",
+            "time": "2014-11-20 09:10:57"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ircmaxell/password-compat": 20
+        "ircmaxell/password-compat": 20,
+        "bitwasp/bitcoin-lib": 20,
+        "mdanter/ecc": 20
     },
     "prefer-stable": false,
     "platform": {
-        "php": ">=5.4.34"
+        "php": ">=5.4.34",
+        "ext-gmp": "*"
     },
     "platform-dev": []
 }

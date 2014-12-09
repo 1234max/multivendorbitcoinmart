@@ -187,3 +187,9 @@ pre {
     border-color: #dfdfdf;
     padding: 0.125rem 0.3125rem 0.0625rem;
 }
+
+/* make lists in alert boxes as small as normal text */
+.alert-box ol {
+    font-size: 0.8125rem;
+    margin-top:5px;
+}

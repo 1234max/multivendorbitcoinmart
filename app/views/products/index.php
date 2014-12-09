@@ -74,8 +74,12 @@
     </table>
 <?php endif ?>
 
-    <?php if($hasShippingOptions): ?>
+    <?php if($hasShippingOptions && $this->user->bip32_extended_public_key): ?>
         <a href="?c=products&a=build" class="button small success">New product</a>
+    <?php elseif($hasShippingOptions): ?>
+        <div data-alert class="alert-box warning">
+            Please configure <a href="?c=profile&a=bip32">BIP32</a> first.
+        </div>
     <?php else: ?>
         <div data-alert class="alert-box warning">
             No shipping options defined, please <a href="?c=shippingOptions">create one first</a>.

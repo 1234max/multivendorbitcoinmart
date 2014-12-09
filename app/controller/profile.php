@@ -184,12 +184,57 @@ class ProfileController extends Controller {
         }
     }
 
-    public function multisig() {
-        if($this->user->is_vendor) {
-            $this->redirectTo('?c=vendor&a=multisig');
+    public function bip32() {
+        $this->renderTemplate('profile/bip32.php');
+    }
+
+    public function setBip32() {
+        # refuse if key is already set
+        $this->accessDeniedIf($this->user->bip32_extended_public_key);
+
+        # check for existence & format of input params
+        $this->accessDeniedUnless(isset($this->post['bip32_extended_public_key']) && is_string($this->post['bip32_extended_public_key']) && mb_strlen($this->post['bip32_extended_public_key']) >= 0);
+        $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']));
+
+        $success = false;
+        $errorMessage = '';
+
+        $user = $this->getModel('User');
+
+        # validate BIP32 extended public key
+        $key = $user->parseBip32ExtendedPK($this->post['bip32_extended_public_key']);
+        if ($key) {
+            # check that M/0'/0 is provided
+            if ($key['depth'] == 2) {
+                # check profile pin
+                if($user->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                    if ($user->setBip32ExtendedPublicKey($this->user->id, trim($this->post['bip32_extended_public_key']))) {
+                        $success = true;
+                    } else {
+                        $errorMessage = 'Could not set PK due to unknown error.';
+                    }
+                }
+                else {
+                    $errorMessage = 'Profile pin wrong.';
+
+                }
+            }
+            else {
+                $errorMessage = "Key depth is wrong (not M/k'/0 was given)";
+
+            }
+        }
+        else {
+            $errorMessage = 'Not a valid BIP32 extended public key.';
         }
 
-        $this->renderTemplate('profile/multisig.php');
+        if($success) {
+            $this->setFlash('success', 'Successfully set BIP32 configuration.');
+            $this->redirectTo('?c=profile&a=bip32');
+        }
+        else {
+            $this->renderTemplate('profile/bip32.php', ['error' => $errorMessage]);
+        }
     }
 
     public function becomeVendor() {
@@ -209,7 +254,7 @@ class ProfileController extends Controller {
         $user = $this->getModel('User');
         if($user->becomeVendor($this->user->id)) {
             $this->setFlash('success', 'Successfully became vendor.');
-            $this->redirectTo('?c=vendor&a=multisig');
+            $this->redirectTo('?c=vendor&a=bip32');
         }
         else {
             $this->renderTemplate('profile/becomeVendor.php', ['error' => 'Could not become vendor due to unknown error.',

@@ -129,7 +129,9 @@ class OrderModel extends Model {
     public function getOneOfUser($userId, $isVendor, $idHash, $sessionSecret) {
         $sql = 'SELECT o.id, o.title, o.price, o.state, o.created_at, o.updated_at, o.buyer_id, o.vendor_id, ' .
             'o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
-            'o.buyer_public_key, o.buyer_refund_address, o.vendor_public_key, o.vendor_payout_address, o.multisig_address, o.redeem_script, ' .
+            'o.buyer_public_key, o.buyer_key_index, o.buyer_refund_address, ' .
+            'o.vendor_public_key, o.vendor_key_index, o.vendor_payout_address, ' .
+            'o.multisig_address, o.redeem_script, ' .
             'o.unsigned_transaction, o.partially_signed_transaction, ' .
             'o.dispute_message, o.dispute_signed_transaction, ' .
             'v.name AS vendor_name, b.name AS buyer_name, p.name AS product_name, p.code AS product_code, p.price AS product_price, ' .
@@ -170,44 +172,79 @@ class OrderModel extends Model {
         return $req ? $this->db->lastInsertId() : false;
     }
 
-    public function confirm($order, $shippingInfo, $buyerPublicKey, $buyerRefundAddress) {
+    public function confirm($order, $shippingInfo, $buyerRefundAddress) {
+        $this->db->beginTransaction();
+        $userModel = $this->getModel('User');
+
         try {
-            $encryptedShippingInfo = $this->getModel('User')->encryptMessageForUser($order->vendor_id, $shippingInfo);
+            # generate new pubkey from bip32 key of buyer
+            list($buyerKeyIndex, $buyerPublicKey) = $userModel->getNextPublicKeyFromBip32($order->buyer_id);
+
+            # encrypt shipping message
+            $encryptedShippingInfo = $userModel->encryptMessageForUser($order->vendor_id, $shippingInfo);
             if($encryptedShippingInfo === false) {
                 throw new \Exception('Could not encrypt');
             }
 
             $sql = 'UPDATE orders SET state = :state, shipping_info = :shipping_info, ' .
-                'buyer_public_key = :buyer_public_key, buyer_refund_address = :buyer_refund_address WHERE id = :id';
+                'buyer_public_key = :buyer_public_key, buyer_key_index = :buyer_key_index, ' .
+                'buyer_refund_address = :buyer_refund_address WHERE id = :id';
             $query = $this->db->prepare($sql);
-            return $query->execute([':id' => $order->id,
+            $ret = $query->execute([':id' => $order->id,
                 ':state' => self::$STATES['confirmed'],
-                ':shipping_info' => $encryptedShippingInfo, ':buyer_public_key' => $buyerPublicKey, ':buyer_refund_address' => $buyerRefundAddress]);
+                ':shipping_info' => $encryptedShippingInfo,
+                ':buyer_public_key' => $buyerPublicKey,
+                ':buyer_key_index' => $buyerKeyIndex,
+                ':buyer_refund_address' => $buyerRefundAddress]);
+            if(!$ret) {
+                throw new \Exception('Error while saving order');
+            }
+            else {
+                $this->db->commit();
+                return true;
+            }
         }
         catch(\Exception $e) {
+            $this->db->rollBack();
             return false;
         }
     }
 
-    public function accept($orderId, $vendorPublicKey, $vendorPayoutAddress, $buyerPublicKey) {
-        # create multisig address
+    public function accept($order, $vendorPayoutAddress) {
+        $this->db->beginTransaction();
+        $userModel = $this->getModel('User');
+
         try {
-            list($multisigAddress, $redeemScript) = $this->createMultisigAddress($vendorPublicKey, $buyerPublicKey);
+            # first, generate new pubkey from bip32 key of vendor
+            list($vendorKeyIndex, $vendorPublicKey) = $userModel->getNextPublicKeyFromBip32($order->vendor_id);
+
+            # then create multisig address
+            list($multisigAddress, $redeemScript) = $this->createMultisigAddress($vendorPublicKey, $order->buyer_public_key);
+
+            $sql = 'UPDATE orders SET state = :state, vendor_public_key = :vendor_public_key, ' .
+                'vendor_key_index = :vendor_key_index, vendor_payout_address = :vendor_payout_address,
+                multisig_address = :multisig_address, redeem_script = :redeem_script '.
+                'WHERE id = :id';
+            $query = $this->db->prepare($sql);
+            $ret = $query->execute([':id' => $order->id,
+                ':state' => self::$STATES['accepted'],
+                ':vendor_public_key' => $vendorPublicKey,
+                ':vendor_key_index' => $vendorKeyIndex,
+                ':vendor_payout_address' => $vendorPayoutAddress,
+                ':multisig_address' => $multisigAddress,
+                ':redeem_script' => $redeemScript]);
+            if(!$ret) {
+                throw new \Exception('Error while saving order');
+            }
+            else {
+                $this->db->commit();
+                return true;
+            }
         }
         catch(\Exception $e) {
+            $this->db->rollBack();
             return false;
         }
-
-        $sql = 'UPDATE orders SET state = :state, vendor_public_key = :vendor_public_key, ' .
-            'vendor_payout_address = :vendor_payout_address, multisig_address = :multisig_address, redeem_script = :redeem_script '.
-            'WHERE id = :id';
-        $query = $this->db->prepare($sql);
-        return $query->execute([':id' => $orderId,
-            ':state' => self::$STATES['accepted'],
-            ':vendor_public_key' => $vendorPublicKey,
-            ':vendor_payout_address' => $vendorPayoutAddress,
-            ':multisig_address' => $multisigAddress,
-            ':redeem_script' => $redeemScript]);
     }
 
     private function createMultisigAddress($vendorPublicKey, $buyerPublicKey) {

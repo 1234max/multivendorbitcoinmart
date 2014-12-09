@@ -61,18 +61,19 @@ class OrdersController extends Controller {
         $errorMessage = '';
         $orderId = 0;
 
-        if(!$this->user->is_vendor) {
-            if($orderId = $this->getModel('Order')->create($order)) {
-                $success = true;
+        if($this->user->bip32_extended_public_key) {
+            if (!$this->user->is_vendor) {
+                if ($orderId = $this->getModel('Order')->create($order)) {
+                    $success = true;
+                } else {
+                    $errorMessage = 'Could not create order due to unknown error.';
+                }
+            } else {
+                $errorMessage = 'Vendors are not allowed to order products.';
             }
-            else {
-                $errorMessage = 'Could not create order due to unknown error.';
-            }
+        } else {
+            $errorMessage = 'Please set up BIP32 configuration first.';
         }
-        else {
-            $errorMessage = 'Vendors are not allowed to order products.';
-        }
-
 
         # create in database
         if ($success) {
@@ -112,7 +113,6 @@ class OrdersController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
         $this->accessDeniedUnless(isset($this->post['shipping_info']) && is_string($this->post['shipping_info']) && mb_strlen($this->post['shipping_info']) >= 0);
-        $this->accessDeniedUnless(isset($this->post['public_key']) && is_string($this->post['public_key']));
         $this->accessDeniedUnless(isset($this->post['refund_address']) && is_string($this->post['refund_address']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
@@ -129,28 +129,21 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        # validate public key
-        if($this->isValidBitcoinPublicKey(trim($this->post['public_key']))){
-            # validate payout address
-            if ($this->isValidBitcoinAddress(trim($this->post['refund_address']))) {
-                # check profile pin
-                if ($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-                    if ($orderModel->confirm($order, $this->post['shipping_info'], trim($this->post['public_key']), trim($this->post['refund_address']))) {
-                        $success = true;
-                    } else {
-                        $errorMessage = 'Could not confirm order due to unknown error.';
-                    }
+        # validate payout address
+        if ($this->isValidBitcoinAddress(trim($this->post['refund_address']))) {
+            # check profile pin
+            if ($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                if ($orderModel->confirm($order, $this->post['shipping_info'], trim($this->post['refund_address']))) {
+                    $success = true;
                 } else {
-                    $errorMessage = 'Profile pin wrong.';
+                    $errorMessage = 'Could not confirm order due to unknown error.';
                 }
-            }
-            else {
-                $errorMessage = 'Refund address is not a valid bitcoin address (27-35 hex chars).';
+            } else {
+                $errorMessage = 'Profile pin wrong.';
             }
         }
         else {
-            $errorMessage = 'Not a valid bitcoin public key (compressed, 66 hex chars length).';
-
+            $errorMessage = 'Refund address is not a valid bitcoin address (27-35 hex chars).';
         }
 
         if($success) {
@@ -168,7 +161,6 @@ class OrdersController extends Controller {
     public function accept() {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['h']) && is_string($this->post['h']));
-        $this->accessDeniedUnless(isset($this->post['public_key']) && is_string($this->post['public_key']));
         $this->accessDeniedUnless(isset($this->post['payout_address']) && is_string($this->post['payout_address']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 0);
 
@@ -185,30 +177,24 @@ class OrdersController extends Controller {
         $success = false;
         $errorMessage = '';
 
-        # validate bitcoin pk
-        if ($this->isValidBitcoinPublicKey(trim($this->post['public_key']))) {
-            # validate payout address
-            if ($this->isValidBitcoinAddress(trim($this->post['payout_address']))) {
-                # check profile pin
-                if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
-                    if ($orderModel->accept($order->id, trim($this->post['public_key']), trim($this->post['payout_address']), $order->buyer_public_key)) {
-                        $success = true;
-                    } else {
-                        $errorMessage = 'Could not accept order due to unknown error.';
-                    }
-                }
-                else {
-                    $errorMessage = 'Profile pin wrong.';
-
+        # validate payout address
+        if ($this->isValidBitcoinAddress(trim($this->post['payout_address']))) {
+            # check profile pin
+            if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
+                if ($orderModel->accept($order, trim($this->post['payout_address']))) {
+                    $success = true;
+                } else {
+                    $errorMessage = 'Could not accept order due to unknown error.';
                 }
             }
             else {
-                $errorMessage = 'Payout address is not a valid bitcoin address (27-35 hex chars).';
+                $errorMessage = 'Profile pin wrong.';
 
             }
         }
         else {
-            $errorMessage = 'Not a valid bitcoin public key (compressed, 66 hex chars length).';
+            $errorMessage = 'Payout address is not a valid bitcoin address (27-35 hex chars).';
+
         }
 
         if($success) {

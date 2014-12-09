@@ -4,7 +4,15 @@
 <?php else: ?>
     <div class="callout panel">The vendor marked the order as shipped. <br/>
         Please sign & broadcast the multisig transaction with the instructions below, once you've received the goods. <br/>
-        This will release the funds and mark the order as finished (as soon as the payment shows up in the blockchain).</div>
+        This will release the funds and mark the order as finished (as soon as the payment shows up in the blockchain).
+
+        <br/><br/>
+
+        <strong>You can use <a href="http://bip32.org" target="_blank">bip32.org</a> to generate the private key m/k'/0/<?= $order->buyer_key_index ?>.</strong>
+
+        <br/><br/>
+        Then you can use bitcoin-cli/Debug console of bitcoin-qt and use the commands below:
+    </div>
 
     Import command:
     <pre class="bitcoin-value">
@@ -12,6 +20,7 @@
     <br/>
     <?php
     $transaction = $order->partially_signed_transaction;
+    $keyIndex = $order->buyer_key_index;
     require '../app/views/orders/_sign_instructions.php';
     ?>
     <br/>
