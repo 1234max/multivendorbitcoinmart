@@ -172,9 +172,10 @@ div.product-description {
 }
 
 .bitcoin-value {
-    overflow-wrap: break-word;
     font-size:smaller;
     display:block;
+    word-break:break-all;
+    word-wrap: break-word;
 }
 
 pre {
