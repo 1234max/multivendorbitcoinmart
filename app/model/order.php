@@ -259,7 +259,7 @@ class OrderModel extends Model {
 
         # return if no bitcoin server is running
         if(!$c->getinfo()) {
-            throw new Exception('No bitcoind running');
+            throw new \Exception('No bitcoind running');
         }
 
         $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, $adminPublicKey]);
@@ -337,7 +337,7 @@ class OrderModel extends Model {
 
         # return if no bitcoin server is running
         if(!$c->getinfo()) {
-            throw new Exception('No bitcoind running');
+            throw new \Exception('No bitcoind running');
         }
 
         # get all bitcoin payments that went to the multisig address and construct the transaction paying the vendor

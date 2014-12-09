@@ -107,7 +107,7 @@ class UserModel extends Model {
 
             # return if no bitcoin server is running
             if(!$c->getinfo()) {
-                throw new Exception('No bitcoind running');
+                throw new \Exception('No bitcoind running');
             }
 
             $adminAddress = $this->getModel('Config')->getAdminAddress();

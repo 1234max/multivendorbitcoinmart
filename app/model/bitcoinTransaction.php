@@ -8,7 +8,7 @@ class BitcoinTransactionModel extends Model {
 
         # return if no bitcoin server is running
         if(!$c->getinfo()) {
-            throw new Exception('No bitcoind running');
+            throw new \Exception('No bitcoind running');
         }
 
         # get block infos (ie transactions) from bitcoind
@@ -17,7 +17,7 @@ class BitcoinTransactionModel extends Model {
         print "-- Received block $blockId, start fetching transaction at " . date(DATE_RFC850) . "\n";
 
         if(!isset($blockHash['tx'])) {
-            throw new Exception('Could not receive block info from bitcoind for block: ' . $blockId);
+            throw new \Exception('Could not receive block info from bitcoind for block: ' . $blockId);
         }
 
         print "Found " . count($blockHash['tx']) . " transactions\n";
@@ -51,7 +51,7 @@ class BitcoinTransactionModel extends Model {
 
         # return if no bitcoin server is running
         if(!$c->getinfo()) {
-            throw new Exception('No bitcoind running');
+            throw new \Exception('No bitcoind running');
         }
 
         $this->db->beginTransaction();
@@ -200,7 +200,7 @@ class BitcoinTransactionModel extends Model {
 
             # return if no bitcoin server is running
             if(!$c->getinfo()) {
-                throw new Exception('No bitcoind running');
+                throw new \Exception('No bitcoind running');
             }
 
             # decode both first
