@@ -105,7 +105,7 @@ class AdminController extends Controller {
         $errorMessage = '';
 
         # check that new refunds match order price
-        if(floatval($this->post['vendor_refund']) + floatval($this->post['buyer_refund']) == $dispute->price) {
+        if($this->formatPrice(floatval($this->post['vendor_refund']) + floatval($this->post['buyer_refund'])) == $this->formatPrice($dispute->price)) {
             $disputeMessage = $dispute->dispute_message . "Admin at " . date(DATE_RFC850). ": new transaction, vendor: "
                 . $this->formatPrice($this->post['vendor_refund'])
                 . "; buyer: " . $this->formatPrice($this->post['buyer_refund'])
