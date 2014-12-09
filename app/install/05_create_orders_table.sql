@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `vendor_public_key` varchar(66),
   `vendor_key_index` int(9),
   `vendor_payout_address` varchar(35),
+  `admin_public_key` varchar(66),
+  `admin_key_index` int(9),
   `multisig_address` varchar(35) UNIQUE,
   `redeem_script` varchar(500),
   `unsigned_transaction` text,

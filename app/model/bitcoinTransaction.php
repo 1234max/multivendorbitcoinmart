@@ -239,4 +239,10 @@ class BitcoinTransactionModel extends Model {
             return false;
         }
     }
+
+    public function isValidBitcoinAddress($p) {
+        /* base58 encoded, 26-35 chars length
+        https://en.bitcoin.it/wiki/Address */
+        return preg_match('/^[a-km-zA-HJ-NP-Z0-9]{26,35}$/', $p);
+    }
 }

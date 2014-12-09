@@ -16,7 +16,7 @@
 
     Import command:
     <pre class="bitcoin-value">
-    addmultisigaddress 2 '["<?= $this->e($order->vendor_public_key) ?>", "<?= $this->e($order->buyer_public_key) ?>", "<?= BITCOIN_ADMIN_PK ?>"]'</pre>
+    addmultisigaddress 2 '["<?= $this->e($order->vendor_public_key) ?>", "<?= $this->e($order->buyer_public_key) ?>", "<?= $this->e($order->admin_public_key) ?>"]'</pre>
     <br/>
     <?php
     $transaction = $order->partially_signed_transaction;

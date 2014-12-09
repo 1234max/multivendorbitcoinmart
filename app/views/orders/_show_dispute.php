@@ -7,10 +7,11 @@
 
     Import command:
     <pre class="bitcoin-value">
-    addmultisigaddress 2 '["<?= $this->e($order->vendor_public_key) ?>", "<?= $this->e($order->buyer_public_key) ?>", "<?= BITCOIN_ADMIN_PK ?>"]'</pre>
+    addmultisigaddress 2 '["<?= $this->e($order->vendor_public_key) ?>", "<?= $this->e($order->buyer_public_key) ?>", "<?= $this->e($order->admin_public_key) ?>"]'</pre>
     <br/>
     <?php
     $transaction = $order->dispute_signed_transaction;
+    $keyIndex = $this->user->is_vendor ? $order->vendor_key_index : $order->buyer_key_index;
     require '../app/views/orders/_sign_instructions.php';
     ?>
     <br/>

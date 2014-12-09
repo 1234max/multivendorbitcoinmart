@@ -131,6 +131,7 @@ class OrderModel extends Model {
             'o.amount, o.product_id, o.shipping_info, o.finish_text, ' .
             'o.buyer_public_key, o.buyer_key_index, o.buyer_refund_address, ' .
             'o.vendor_public_key, o.vendor_key_index, o.vendor_payout_address, ' .
+            'o.admin_public_key, o.admin_key_index, ' .
             'o.multisig_address, o.redeem_script, ' .
             'o.unsigned_transaction, o.partially_signed_transaction, ' .
             'o.dispute_message, o.dispute_signed_transaction, ' .
@@ -218,12 +219,16 @@ class OrderModel extends Model {
             # first, generate new pubkey from bip32 key of vendor
             list($vendorKeyIndex, $vendorPublicKey) = $userModel->getNextPublicKeyFromBip32($order->vendor_id);
 
+            # generate new pubkey from bip32 key of admin
+            list($adminKeyIndex, $adminPublicKey) = $userModel->getNextPublicKeyFromBip32OfAdmin();
+
             # then create multisig address
-            list($multisigAddress, $redeemScript) = $this->createMultisigAddress($vendorPublicKey, $order->buyer_public_key);
+            list($multisigAddress, $redeemScript) = $this->createMultisigAddress($vendorPublicKey, $order->buyer_public_key, $adminPublicKey);
 
             $sql = 'UPDATE orders SET state = :state, vendor_public_key = :vendor_public_key, ' .
-                'vendor_key_index = :vendor_key_index, vendor_payout_address = :vendor_payout_address,
-                multisig_address = :multisig_address, redeem_script = :redeem_script '.
+                'vendor_key_index = :vendor_key_index, vendor_payout_address = :vendor_payout_address, ' .
+                'admin_public_key = :admin_public_key, admin_key_index = :admin_key_index, ' .
+                'multisig_address = :multisig_address, redeem_script = :redeem_script '.
                 'WHERE id = :id';
             $query = $this->db->prepare($sql);
             $ret = $query->execute([':id' => $order->id,
@@ -231,6 +236,8 @@ class OrderModel extends Model {
                 ':vendor_public_key' => $vendorPublicKey,
                 ':vendor_key_index' => $vendorKeyIndex,
                 ':vendor_payout_address' => $vendorPayoutAddress,
+                ':admin_public_key' => $adminPublicKey,
+                ':admin_key_index' => $adminKeyIndex,
                 ':multisig_address' => $multisigAddress,
                 ':redeem_script' => $redeemScript]);
             if(!$ret) {
@@ -247,7 +254,7 @@ class OrderModel extends Model {
         }
     }
 
-    private function createMultisigAddress($vendorPublicKey, $buyerPublicKey) {
+    private function createMultisigAddress($vendorPublicKey, $buyerPublicKey, $adminPublicKey) {
         $c = $this->getBitcoinClient();
 
         # return if no bitcoin server is running
@@ -255,7 +262,7 @@ class OrderModel extends Model {
             throw new Exception('No bitcoind running');
         }
 
-        $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, BITCOIN_ADMIN_PK]);
+        $ret = $c->createmultisig(2, [$vendorPublicKey, $buyerPublicKey, $adminPublicKey]);
         return [$ret['address'], $ret['redeemScript']];
     }
 

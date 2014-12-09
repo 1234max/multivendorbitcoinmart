@@ -91,6 +91,7 @@
     <?php if($dispute->dispute_unsigned_transaction): ?>
         <?php
         $transaction = $order->dispute_unsigned_transaction;
+        $keyIndex = $order->admin_key_index;
         require '../app/views/orders/_sign_instructions.php';
         ?>
         <br/><br/>

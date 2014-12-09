@@ -14,6 +14,29 @@ function getModel($modelName, $db) {
     return new $className($db);
 }
 
+
+/* used to initialize the database with admin bip32 key (used for multsig addresses)
+ * and admin address (bitcoin auth for admin backend */
+function setAdmin($app, $bip32Key, $adminAddress) {
+    $db = $app->openDatabaseConnection();
+
+    # validate bip32 key
+    $key = getModel('User', $db)->parseBip32ExtendedPK($bip32Key);
+    if(!$key || $key['depth'] != "2") {
+        die("BIP32 key is not a valid bip32 key or not M/'k/0.\n");
+    }
+
+    # validate admin addresss
+    if(!getModel('BitcoinTransaction', $db)->isValidBitcoinAddress($adminAddress)) {
+        die("Address $adminAddress is not a valid bitcoin address.\n");
+    }
+
+    $configModel = getModel('Config', $db);
+    if(!$configModel->setAdmin($bip32Key, $adminAddress)) {
+        die("Error while saving to database.\n");
+    }
+}
+
 /* Gets called by bitcoind everytime a new block is added.
  * Saves all transactions in this blocks in the database for later processal (by 'run')
  * */
@@ -50,6 +73,14 @@ try {
             }
             else {
                 throw new Exception('block-notify without argument (block) called.');
+            }
+        }
+        elseif($argv[1] == 'set-admin') {
+            if(isset($argv[2]) && isset($argv[3])) {
+                setAdmin($app, $argv[2], $argv[3]);
+            }
+            else {
+                throw new Exception('set-admin without all arguments (extended public key, admin address) called.');
             }
         }
         else {

@@ -202,6 +202,20 @@
     </div>
 <?php endif ?>
 
+<?php if($order->admin_public_key): ?>
+    <div class="row order">
+        <div class="small-3 columns">
+            <label class="right">Admin public key</label>
+        </div>
+        <div class="small-9 columns">
+            <code class="bitcoin-value">
+                <?= $this->e($order->admin_public_key) ?>
+            </code>
+        </div>
+    </div>
+<?php endif ?>
+
+
 <?php if($order->multisig_address): ?>
     <div class="row order">
         <div class="small-3 columns">

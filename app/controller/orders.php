@@ -3,18 +3,6 @@
 namespace Scam;
 
 class OrdersController extends Controller {
-    private function isValidBitcoinAddress($p) {
-        /* base58 encoded, 26-35 chars length
-        https://en.bitcoin.it/wiki/Address */
-        return preg_match('/^[a-km-zA-HJ-NP-Z0-9]{26,35}$/', $p);
-    }
-
-    private function isValidBitcoinPublicKey($p) {
-        /* base58 encoded, 66 chars length (compressed),
-        http://bitcoin.stackexchange.com/questions/3041/what-is-a-130-hex-character-public-key#3057 */
-        return preg_match('/^[a-km-zA-HJ-NP-Z0-9]{66}$/', $p);
-    }
-
     public function index() {
         $orderModel = $this->getModel('Order');
 
@@ -130,7 +118,7 @@ class OrdersController extends Controller {
         $errorMessage = '';
 
         # validate payout address
-        if ($this->isValidBitcoinAddress(trim($this->post['refund_address']))) {
+        if ($this->getModel('BitcoinTransaction')->isValidBitcoinAddress(trim($this->post['refund_address']))) {
             # check profile pin
             if ($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
                 if ($orderModel->confirm($order, $this->post['shipping_info'], trim($this->post['refund_address']))) {
@@ -178,7 +166,7 @@ class OrdersController extends Controller {
         $errorMessage = '';
 
         # validate payout address
-        if ($this->isValidBitcoinAddress(trim($this->post['payout_address']))) {
+        if ($this->getModel('BitcoinTransaction')->isValidBitcoinAddress(trim($this->post['payout_address']))) {
             # check profile pin
             if($this->getModel('User')->checkProfilePin($this->user->id, $this->post['profile_pin'])) {
                 if ($orderModel->accept($order, trim($this->post['payout_address']))) {

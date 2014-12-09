@@ -110,7 +110,8 @@ class UserModel extends Model {
                 throw new Exception('No bitcoind running');
             }
 
-            return $c->verifymessage(BITCOIN_ADMIN_ADDRESS, $signature, $message) == 'true';
+            $adminAddress = $this->getModel('Config')->getAdminAddress();
+            return $c->verifymessage($adminAddress, $signature, $message) == 'true';
         }
         catch(\Exception $e) {
             return false;
@@ -193,5 +194,22 @@ class UserModel extends Model {
             throw new \Exception('Error while saving');
         }
         return [$keyIndex, $publicKey];
+    }
+
+    /* gets the next child key from the admin's public key; should be wrapped in a transaction. */
+    public function getNextPublicKeyFromBip32OfAdmin() {
+        # get admin pk and key index
+        $configModel = $this->getModel('Config');
+        $adminExtendedPK = $configModel->getValueOrThrowException('admin_bip32_extended_public_key');
+        $adminKeyIndex = intval($configModel->getValueOrThrowException('admin_bip32_key_index'));
+
+        # generate next key
+        require_once '../vendor/autoload.php';
+        $extendedKey = \BitWasp\BitcoinLib\BIP32::build_key($adminExtendedPK, $adminKeyIndex);
+        $publicKey = \BitWasp\BitcoinLib\BIP32::extract_public_key($extendedKey);
+
+        # update key index in database
+        $configModel->setValue('admin_bip32_key_index', $adminKeyIndex + 1);
+        return [$adminKeyIndex, $publicKey];
     }
 }
