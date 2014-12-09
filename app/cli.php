@@ -53,11 +53,20 @@ function blockNotify($app, $block) {
  * and then updates the order states accordingly.
  * */
 function run($app) {
-    # todo: locking
     $db = $app->openDatabaseConnection();
-    $bitcoinTransactionModel = getModel('BitcoinTransaction', $db);
-    $bitcoinTransactionModel->checkTransactionsForOrderPayments();
-    $bitcoinTransactionModel->checkIfOrdersArePaid();
+    $configModel = getModel('Config', $db);
+    # implement locking so no more than one cronjob processes the transactions at a time
+    $configModel->tryLock();
+    try {
+        $bitcoinTransactionModel = getModel('BitcoinTransaction', $db);
+        $bitcoinTransactionModel->checkTransactionsForOrderPayments();
+        $bitcoinTransactionModel->checkIfOrdersArePaid();
+        $configModel->releaseLock();
+    }
+    catch(\Exception $e) {
+        $configModel->releaseLock();
+        throw $e;
+    }
 }
 
 try {
@@ -92,5 +101,7 @@ try {
     }
 }
 catch(\Exception $e){
-    die("Error: " . $e->getMessage() . "\n");
+    print "Error: " . $e->getMessage() ."\n";
+    print $e->getTraceAsString();
+    exit(1);
 }

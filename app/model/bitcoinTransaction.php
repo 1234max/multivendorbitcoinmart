@@ -144,8 +144,6 @@ class BitcoinTransactionModel extends Model {
         }
         catch(\Exception $e){
             $this->db->rollBack();
-            print "Error: " . $e->getMessage() ."\n";
-            print $e->getTraceAsString();
             return false;
         }
     }

@@ -40,4 +40,14 @@ class ConfigModel extends Model {
         }
         return true;
     }
+
+    public function tryLock(){
+        # try insert, will throw an exception if lock is already there
+        $sql = 'INSERT INTO config (name, value) VALUES (:name, :value)';
+        return $this->db->prepare($sql)->execute([':name' => 'transaction_lock', ':value' => 'true']);
+    }
+
+    public function releaseLock() {
+        return $this->db->prepare('DELETE FROM config WHERE name = :name')->execute([':name' => 'transaction_lock']);
+    }
 }
