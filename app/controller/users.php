@@ -16,6 +16,17 @@ class UsersController extends Controller {
         $this->renderTemplate('users/login.php');
     }
 
+    public function captcha() {
+        if($this->isUserLoggedIn()) {
+            $this->redirectTo('?');
+        }
+
+        list($code, $image) = $this->getModel('Captcha')->get();
+        $_SESSION['captcha_code'] = $code;
+        header('Content-type: image/png');
+        echo $image;
+    }
+
     public function doLogin() {
         if($this->isUserLoggedIn()) {
             $this->redirectTo('?');
@@ -24,9 +35,26 @@ class UsersController extends Controller {
         # check for existence & format of input params
         $this->accessDeniedUnless(isset($this->post['name']) && is_string($this->post['name']));
         $this->accessDeniedUnless(isset($this->post['password']) && is_string($this->post['password']));
+        $this->accessDeniedUnless(isset($this->post['captcha']) && is_string($this->post['captcha']));
+        $this->accessDeniedUnless(isset($_SESSION['captcha_code']));
 
-        # check for username & pw
-        $user = $this->getModel('User')->checkLogin($this->post['name'], $this->post['password']);
+        $user = null;
+        $errorMessage = '';
+
+        # check captcha
+        if($this->getModel('Captcha')->check($this->post['captcha'], $_SESSION['captcha_code'])) {
+            unset($_SESSION['captcha_code']);
+
+            # check for username & pw
+            $user =  $this->getModel('User')->checkLogin($this->post['name'], $this->post['password']);
+            if(!$user) {
+                $errorMessage = 'Login failed.';
+            }
+        }
+        else {
+            $errorMessage = 'Captcha wrong.';
+        }
+
         if($user) {
             $_SESSION['user_id'] = $user->id;
             session_regenerate_id(true);
@@ -38,7 +66,7 @@ class UsersController extends Controller {
             $this->redirectTo('?');
         }
         else {
-            $this->renderTemplate('users/login.php', ['error' => 'Login failed.']);
+            $this->renderTemplate('users/login.php', ['error' => $errorMessage]);
         }
     }
 
@@ -70,39 +98,48 @@ class UsersController extends Controller {
         $this->accessDeniedUnless(isset($this->post['password_confirmation']) && is_string($this->post['password_confirmation']));
         $this->accessDeniedUnless(isset($this->post['profile_pin']) && is_string($this->post['profile_pin']) && mb_strlen($this->post['profile_pin']) >= 8);
         $this->accessDeniedUnless(isset($this->post['profile_pin_confirmation']) && is_string($this->post['profile_pin_confirmation']));
+        $this->accessDeniedUnless(isset($this->post['captcha']) && is_string($this->post['captcha']));
+        $this->accessDeniedUnless(isset($_SESSION['captcha_code']));
 
         $success = false;
         $errorMessage = '';
 
         $user = $this->getModel('User');
 
-        # check that name is not emtpy or taken...
-        if($user->isNameFree($this->post['name'])) {
-            # ... that password match
-            if($this->post['password'] === $this->post['password_confirmation']) {
-                # ... profile pins match
-                if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
-                    # save in database
-                    if ($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
-                        $success = true;
-                    } else {
-                        $errorMessage = 'Could not register due to unknown error.';
+        # check captcha
+        if($this->getModel('Captcha')->check($this->post['captcha'], $_SESSION['captcha_code'])) {
+            unset($_SESSION['captcha_code']);
+
+            # check that name is not emtpy or taken...
+            if($user->isNameFree($this->post['name'])) {
+                # ... that password match
+                if($this->post['password'] === $this->post['password_confirmation']) {
+                    # ... profile pins match
+                    if($this->post['profile_pin'] === $this->post['profile_pin_confirmation']) {
+                        # save in database
+                        if ($user->register($this->post['name'], $this->post['password'], $this->post['profile_pin'])) {
+                            $success = true;
+                        } else {
+                            $errorMessage = 'Could not register due to unknown error.';
+                        }
+                    }
+                    else {
+                        $errorMessage = 'Profile PINs did not match.';
                     }
                 }
                 else {
-                    $errorMessage = 'Profile PINs did not match.';
+                    $errorMessage = 'Password did not match.';
                 }
             }
             else {
-                $errorMessage = 'Password did not match.';
+                $errorMessage = 'Name already taken.';
             }
         }
         else {
-            $errorMessage = 'Name already taken.';
+            $errorMessage = 'Captcha wrong.';
         }
 
         if($success) {
-            $this->session['user_id'] = $user;
             session_regenerate_id(true);
             $this->setFlash('success', 'Successfully registered.');
             $this->redirectTo('?c=users&a=login');

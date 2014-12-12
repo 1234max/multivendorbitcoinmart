@@ -22,7 +22,8 @@
                        required="true"
                        autocomplete="off"
                        pattern=".{3,}"
-                       title="3 characters minimum">
+                       title="3 characters minimum"
+                       value="<?= isset($this->post['name']) ? $this->e($this->post['name']) : '' ?>">
             </div>
         </div>
 
@@ -81,6 +82,15 @@
                        autocomplete="off"
                        pattern=".{8,}"
                        title="8 characters minimum">
+            </div>
+        </div>
+
+        <div class="row collapse">
+            <div class="large-3 large-offset-2 columns">
+                <img src="?c=users&a=captcha" class="captcha-img"/>
+            </div>
+            <div class="large-5 columns end">
+                <input type="text" name="captcha" placeholder="captcha" required="true" autocomplete="off" class="captcha" maxlength="5">
             </div>
         </div>
 

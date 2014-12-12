@@ -194,3 +194,15 @@ pre {
     font-size: 0.8125rem;
     margin-top:5px;
 }
+
+.captcha-img {
+    line-height: 0;
+    display: inline-block;
+    border: solid 4px white;
+    max-width: 100%;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+    margin-bottom:10px;
+}
+input.captcha {
+    height: 58px;
+}

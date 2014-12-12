@@ -20,7 +20,7 @@ class App {
      *            is used to lookup the responsible controller via controller = $_GET['c'], action = $_GET['a']
      */
     private $routes = [
-        'users' => ['login' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'register' => 'GET', 'doRegister' => 'POST'],
+        'users' => ['login' => 'GET', 'captcha' => 'GET', 'doLogin' => 'POST', 'logout' => 'GET', 'register' => 'GET', 'doRegister' => 'POST'],
         'profile' => ['settings' => 'GET', 'updatePassword' => 'POST', 'updateProfilePin' => 'POST', 'setPGP' => 'POST',
             'resetProfilePin' => 'POST', 'bip32' => 'GET', 'setBip32' => 'POST', 'becomeVendor' => 'GET', 'doBecomeVendor' => 'POST'],
         'shippingOptions' => ['index' => 'GET', 'build' => 'GET', 'create' => 'POST', 'edit' => 'GET', 'update' => 'POST', 'destroy' => 'POST'],
