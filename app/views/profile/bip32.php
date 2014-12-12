@@ -20,6 +20,7 @@
             You have specified the following extend public key (M/k'/0):
         </div>
         <pre class="bitcoin-value"><?= $this->e($this->user->bip32_extended_public_key) ?></pre>
+        <br/>
     <?php else: ?>
         <div data-alert class="alert-box secondary">
             You need to create a bitcoin BIP32 extended public key and submit it here.<br/>
