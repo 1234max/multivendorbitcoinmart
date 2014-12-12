@@ -68,7 +68,7 @@
                                 <li<?= $this->controller == 'profile' && $this->action == 'settings' ? ' class="active"' : ''?>>
                                     <a href="?c=profile&a=settings">Settings</a>
                                 </li>
-                                <li<?= $this->action == 'multisig' ? ' class="active"' : ''?>>
+                                <li<?= $this->action == 'bip32' ? ' class="active"' : ''?>>
                                     <a href="?c=profile&a=bip32">BIP32 configuration</a>
                                 </li>
                                 <li class="divider"></li>
