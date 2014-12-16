@@ -3,7 +3,7 @@ Secure bitcoin market built on PHP.
 
 ![SCAM listings](https://github.com/MatthiasWinzeler/scam/wiki/images/scam.png)
 
-It offers only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions)
+It provides only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions)
 which would be required when run as a darknet market.
 
 Plus, its bitcoin integration avoid the use of live wallets by using multisig transactions and BIP32 hierarchical keys. 
@@ -30,8 +30,10 @@ See [Features](https://github.com/MatthiasWinzeler/scam/wiki/Features) for more.
 * Bitcoind
 
 ## Quickstart
-For more thorough installation instructions or if you're planning to run it in a productive environment, 
-please see [Installation](https://github.com/MatthiasWinzeler/scam/wiki/Installation) in the wiki.
+*These instructions are only suited for a quick & dirty setup for developers!*
+
+*If you're planning to run it in a productive environment, 
+please see [Installation](https://github.com/MatthiasWinzeler/scam/wiki/Installation) in the wiki.*
 
 ### phpbrew (install php 5.4)
 install phpbrew itself:
