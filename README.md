@@ -8,19 +8,20 @@ Why PHP? We use a custom, tiny MVC framework on top of a stripped-down php-core 
 See [Security & design decisions - PHP](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions#php) for more.
 
 ## Features
-*Basic 'shop' features (create products, shipping options, order lifecycle)
-*Bitcoin multisig transactions & BIP32 keys
-*PGP encryption of shipping info
-*Simple admin interface (disputes etc.)
 
+* Basic 'shop' features (create products, shipping options, order lifecycle)
+* Bitcoin multisig transactions & BIP32 keys
+* PGP encryption of shipping info
+* Simple admin interface (disputes etc.)
 See [Features](https://github.com/MatthiasWinzeler/scam/wiki/Features) for more.
 
 ## Requirements
-*Tested only on '''Linux''' for now, MAC OS X & other unices should work, too
-*PHP 5.4+ (see Quickstart below) & MySQL 5+
-*PHP dependencies as mentioned below (gnupg etc.) must compile on your platform
-*ImageMagick (convert & mogrify executables must be in path)
-*Bitcoind
+
+* Tested only on Linux for now, MAC OS X & other unices should work, too
+* PHP 5.4+ (see Quickstart below) & MySQL 5+
+* PHP dependencies as mentioned below (gnupg etc.) must compile on your platform
+* ImageMagick (convert & mogrify executables must be in path)
+* Bitcoind
 
 ## Quickstart
 For more thorough installation instructions or if you're planning to run it in a productive environment, 
