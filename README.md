@@ -111,9 +111,11 @@ define('DB_PASS', 'your_mysql_password');
 ```
 
 At last, you have to define the admin bitcoin BIP32 extended public key M/k'/0 (used for multisig transactions - you can use [bip32.org](http://bip32.org/)) and a bitcoin address, whose private key you own (used for admin auth):
+
 `php /path/to/scam/app/cli.php set-admin <BIP32_Extended_Public_Key_M/k'/0> <bitcoin-address>`
 
 For example:
+
 `php /path/to/scam/app/cli.php set-admin tpubDBvoSTTAJmqmqjkq5dPZLkk3rxMe4bdsJ1ZiKp4NkHh9xEf3yHqsNUfCZacdWLyejpFfqgRGQX1Moyd3xz2tpvfpYpRjeMbBwdiUKL6ccZi mpbbzJjE58afUMyS7MXnN9T4XaLQFM7dqX`
 
 Now, you can run the server:
