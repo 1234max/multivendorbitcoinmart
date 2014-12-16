@@ -4,6 +4,9 @@ Secure bitcoin market built on PHP.
 It offers only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions)
 which would be required when run as a darknet market.
 
+Plus, its bitcoin integration avoid the use of live wallets by using multisig transactions and BIP32 hierarchical keys. 
+Neither valuable bitcoins nor user private keys are stored on the marketplace. 
+
 Why PHP? We use a custom, tiny MVC framework on top of a stripped-down php-core to keep the attack surface minimal.
 See [Security & design decisions - PHP](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions#php) for more.
 
