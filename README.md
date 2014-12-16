@@ -59,7 +59,7 @@ install composer
 phpbrew install-composer
 ```
 
-### application
+### Application
 clone repo from github (requires git):
 
 ```bash
@@ -100,7 +100,7 @@ Now run bitcoind:
 bitcoind
 ```
 
-### configuration
+### Configuration
 Set the connection details for MySQL and bitcoind in `app/config/config.php`:
 ```
 define('BITCOIND_URL', 'http://bitcoinrpc:yourbitcoinpassword@127.0.0.1:28332');
@@ -109,6 +109,12 @@ define('DB_NAME', 'scam');
 define('DB_USER', 'your_mysql_user');
 define('DB_PASS', 'your_mysql_password');
 ```
+
+At last, you have to define the admin bitcoin BIP32 extended public key M/k'/0 (used for multisig transactions - you can use [bip32.org](http://bip32.org/)) and a bitcoin address, whose private key you own (used for admin auth):
+`php /path/to/scam/app/cli.php set-admin <BIP32_Extended_Public_Key_M/k'/0> <bitcoin-address>`
+
+For example:
+`php /path/to/scam/app/cli.php set-admin tpubDBvoSTTAJmqmqjkq5dPZLkk3rxMe4bdsJ1ZiKp4NkHh9xEf3yHqsNUfCZacdWLyejpFfqgRGQX1Moyd3xz2tpvfpYpRjeMbBwdiUKL6ccZi mpbbzJjE58afUMyS7MXnN9T4XaLQFM7dqX`
 
 Now, you can run the server:
 
