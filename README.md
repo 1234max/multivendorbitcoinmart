@@ -13,6 +13,7 @@ See [Security & design decisions - PHP](https://github.com/MatthiasWinzeler/scam
 * Bitcoin multisig transactions & BIP32 keys
 * PGP encryption of shipping info
 * Simple admin interface (disputes etc.)
+
 See [Features](https://github.com/MatthiasWinzeler/scam/wiki/Features) for more.
 
 ## Requirements
@@ -20,7 +21,7 @@ See [Features](https://github.com/MatthiasWinzeler/scam/wiki/Features) for more.
 * Tested only on Linux for now, MAC OS X & other unices should work, too
 * PHP 5.4+ (see Quickstart below) & MySQL 5+
 * PHP dependencies as mentioned below (gnupg etc.) must compile on your platform
-* ImageMagick (convert & mogrify executables must be in path)
+* ImageMagick (`convert` & `mogrify` executables must be in `PATH`)
 * Bitcoind
 
 ## Quickstart
