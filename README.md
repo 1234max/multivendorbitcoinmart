@@ -1,7 +1,7 @@
 # SCAM (Scammers Can't Acquire Money)
 Secure bitcoin market built on PHP.
 
-![SCAM listings](https://raw.githubusercontent.com/wiki/MatthiasWinzeler/scam/images/scam.png)
+![SCAM listings](https://github.com/MatthiasWinzeler/scam/wiki/images/scam.png)
 
 It offers only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/MatthiasWinzeler/scam/wiki/Security-&-Design-decisions)
 which would be required when run as a darknet market.
