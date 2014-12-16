@@ -72,13 +72,44 @@ install dependencies using composer
 composer install
 ```
 
-install mysql, then init database with the provided scripts:
+install MySQL (add a dedicated user for scam), then init database with the provided scripts:
 
 ```bash
 for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
 ```
 
-run server:
+### bitcoind
+Install [Bitcoind](https://bitcoin.org/en/download) and modify the bitcoin.conf to contain at least:
+```
+rpcuser=bitcoinrpc
+rpcpassword=set a password here
+# scam is currently only tested on bitcoin testnet:
+testnet=1
+blocknotify=/path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/scam/app/cli.php block-notify %s
+server=1
+daemon=1
+txindex=1
+checkblocks=5
+rpcport=28332
+rpcconnect=127.0.0.1
+```
+
+Now run bitcoind:
+```
+bitcoind
+```
+
+### configuration
+Set the connection details for MySQL and bitcoind in `app/config/config.php`:
+```
+define('BITCOIND_URL', 'http://bitcoinrpc:yourbitcoinpassword@127.0.0.1:28332');
+define('DB_HOST', '127.0.0.1');
+define('DB_NAME', 'scam');
+define('DB_USER', 'your_mysql_user');
+define('DB_PASS', 'your_mysql_password');
+```
+
+Now, you can run the server:
 
 ```bash
 php -S localhost:3000
