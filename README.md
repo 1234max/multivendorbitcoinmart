@@ -117,7 +117,7 @@ bitcoind
 
 ### Configuration
 Set the connection details for MySQL and bitcoind in `app/config/config.php`:
-```
+```php
 define('BITCOIND_URL', 'http://bitcoinrpc:yourbitcoinpassword@127.0.0.1:28332');
 define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'scam');
