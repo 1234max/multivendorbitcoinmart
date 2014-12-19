@@ -139,7 +139,7 @@ Now, you can run the server:
 php -S localhost:3000
 ```
 
-Access it with your webbrowser pointing to http://localhost:3000
+Access it with your webbrowser pointing to http://localhost:3000 or http://localhost:3000/?c=admin (admin interface)
 
 ## Developer notes
 To debug, install xdebug and configure it for your favorite IDE:
