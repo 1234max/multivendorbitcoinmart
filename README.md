@@ -106,7 +106,7 @@ rpcconnect=127.0.0.1
 SCAM stores the received transactions of the block in the database for later handling (checking for payments etc.).  
 This handling of transactions is done by another script that should be done periodically, i.e. with cron. Insert in your crontab:
 
-```*/10 * * * * /path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/scam/app/run.php```  
+```*/10 * * * * /path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/scam/app/cli.php run```  
 
 Or run the script manually to check the transactions.
 
