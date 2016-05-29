@@ -1,7 +1,7 @@
 # MultiVendorBitcoinMart - Secure Online Bitcoin Market place
 Secure bitcoin market built on PHP (developed as part of my bachelor studies about hidden marketplaces).
 
-![MultiVendorBitcoinMart listings](https://github.com/1234max/MultiVendorBitcoinMart/wiki/images/scam.png)
+![MultiVendorBitcoinMart listings](https://github.com/1234max/MultiVendorBitcoinMart/public/img/som.png)
 
 It provides only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/1234max/MultiVendorBitcoinMart/wiki/Security-&-Design-decisions)
 which would protect against a very strong adversary.
