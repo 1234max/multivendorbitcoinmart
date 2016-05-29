@@ -1,4 +1,4 @@
-<?php $title = 'Order view | SCAM' ?>
+<?php $title = 'Order view | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
