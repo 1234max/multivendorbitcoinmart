@@ -1,4 +1,4 @@
-<?php $title = 'Register | '.$_SERVER['HOST'] ?>
+<?php $title = 'Register | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-8 large-offset-2 columns">
     <?php if(isset($error)): ?>
