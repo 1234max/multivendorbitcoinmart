@@ -1,4 +1,4 @@
-<?php $title = 'Settings | SCAM' ?>
+<?php $title = 'Settings | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
