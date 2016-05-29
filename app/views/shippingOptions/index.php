@@ -1,4 +1,4 @@
-<?php $title = 'Shipping options | '.$_SERVER['HOST'] ?>
+<?php $title = 'Shipping options | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">Shipping options</h3>
