@@ -1,4 +1,4 @@
-<?php $title = 'Register | SCAM' ?>
+<?php $title = 'Register | '.$_SERVER['HOST'] ?>
 
 <div class="large-8 large-offset-2 columns">
     <?php if(isset($error)): ?>
