@@ -1,4 +1,5 @@
-USE scam;
+USE mvbm;
+
 
 CREATE TABLE IF NOT EXISTS `captchas` (
   `code` varchar(5) NOT NULL PRIMARY KEY,
