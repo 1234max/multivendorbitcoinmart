@@ -1,5 +1,4 @@
-<?php $title = 'Listings | SCAM' ?>
-
+<?php $title = 'Listings | '.$_SERVER['HTTP_HOST'] ?>
 <div class="large-4 small-12 columns">
     <?php if($this->fl('success')): ?>
         <div data-alert class="alert-box success">
