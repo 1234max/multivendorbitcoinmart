@@ -1,4 +1,5 @@
-USE scam;
+USE mvbm;
+
 
 CREATE TABLE IF NOT EXISTS `bitcoin_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
