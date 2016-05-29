@@ -97,7 +97,7 @@ try {
         }
     }
     else {
-        throw new Exception('No action given.');
+        throw new Exception('No action given !');
     }
 }
 catch(\Exception $e){
