@@ -1,4 +1,5 @@
-USE scam;
+USE mvbm;
+
 
 CREATE TABLE IF NOT EXISTS `bitcoin_payments` (
   `address` varchar(35) NOT NULL,
