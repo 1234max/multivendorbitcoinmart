@@ -1,4 +1,5 @@
-USE scam;
+USE mvbm;
+
 
 CREATE TABLE IF NOT EXISTS `config` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
