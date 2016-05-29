@@ -24,7 +24,7 @@
     <?php else: ?>
         <div data-alert class="alert-box secondary">
             You need to create a bitcoin BIP32 extended public key and submit it here.<br/>
-            Using this master public key, SCAM derives a unique public key for every order. <br/>
+            Using this master public key, we derive a unique public key for every order. <br/>
             You will then sign the transaction locally with the corresponding private key (of the derived public key).
             <br/><br/>
             <strong>You can use <a href="http://bip32.1234max.com/" target="_blank">bip32.1234max.com</a> to generate your extended public key:</strong>
