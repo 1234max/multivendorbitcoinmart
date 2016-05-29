@@ -116,7 +116,7 @@
         <hr>
         <div class="row">
             <div class="large-6 columns">
-                <p>© 20113-2016 Max Knorr @ 1234Max Consultants.</p>
+                <p>© 2013-2016 Copyright by Max Knorr and 1234Max Consultants.</p>
             </div>
             <div class="large-6 columns">
                 <ul class="inline-list right">
