@@ -1,4 +1,4 @@
-<?php $title = 'Disputes | Admin | SCAM' ?>
+<?php $title = 'Disputes | Admin | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <a href="?c=admin&a=logout" class="button alert logout tiny">
