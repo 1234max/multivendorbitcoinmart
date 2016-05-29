@@ -1,4 +1,4 @@
-<?php $title = 'Vendor ' . $this->e($vendor->name) . ' | SCAM' ?>
+<?php $title = 'Vendor | ' . $this->e($vendor->name) .' | '.$_SERVER['HTTP_HOST']  ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">Vendor <?= $this->e($vendor->name) ?></h3>
