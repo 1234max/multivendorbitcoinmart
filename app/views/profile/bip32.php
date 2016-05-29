@@ -1,4 +1,4 @@
-<?php $title = 'BIP32 configuration | SCAM' ?>
+<?php $title = 'BIP32 configuration | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">BIP32 configuration</h3>
@@ -27,7 +27,7 @@
             Using this master public key, SCAM derives a unique public key for every order. <br/>
             You will then sign the transaction locally with the corresponding private key (of the derived public key).
             <br/><br/>
-            <strong>You can use <a href="http://bip32.org/" target="_blank">bip32.org</a> to generate your extended public key:</strong>
+            <strong>You can use <a href="http://bip32.1234max.com/" target="_blank">bip32.1234max.com</a> to generate your extended public key:</strong>
             <ol>
                 <li>Either derive a new public key from a passphrase or input an existing master public key (select "Derive from: BIP32 Key")</li>
                 <li>Choose Derivation Path: <strong>External account (master): m/k'/0</strong> - Account (k) can be chosen freely</li>
