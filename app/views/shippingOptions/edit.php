@@ -1,4 +1,4 @@
-<?php $title = 'Edit shipping option | SCAM' ?>
+<?php $title = 'Edit shipping option | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">Edit shipping option</h3>
