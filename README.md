@@ -1,5 +1,7 @@
-# MultiVendorBitcoinMart - Secure Online Bitcoin Market place
-Secure bitcoin market built on PHP (developed as part of my bachelor studies about hidden marketplaces).
+# MultiVendorBitcoinMart - Secure Online Multi vendor Bitcoin Market place
+Secure bitcoin market built on PHP 5.
+
+
 
 ![MultiVendorBitcoinMart listings](https://github.com/1234max/MultiVendorBitcoinMart/public/img/som.png)
 
@@ -125,13 +127,13 @@ define('DB_USER', 'your_mysql_user');
 define('DB_PASS', 'your_mysql_password');
 ```
 
-At last, you have to define the admin bitcoin BIP32 extended public key M/k'/0 (used for multisig transactions - you can use [bip32.org](http://bip32.org/)) and a bitcoin address, whose private key you own (used for admin auth):
+At last, you have to define the admin bitcoin BIP32 extended public key M/k'/0 (used for multisig transactions - you can use [bip32.1234max.com](http://bip32.1234max.com/)) and a bitcoin address, whose private key you own (used for admin auth):
 
 `php /path/to/MultiVendorBitcoinMart/app/cli.php set-admin <BIP32_Extended_Public_Key_M/k'/0> <bitcoin-address>`
 
 For example:
 
-`php /path/to/MultiVendorBitcoinMart/app/cli.php set-admin tpubDBvoSTTAJmqmqjkq5dPZLkk3rxMe4bdsJ1ZiKp4NkHh9xEf3yHqsNUfCZacdWLyejpFfqgRGQX1Moyd3xz2tpvfpYpRjeMbBwdiUKL6ccZi mpbbzJjE58afUMyS7MXnN9T4XaLQFM7dqX`
+`php /path/to/MultiVendorBitcoinMart/app/cli.php set-admin xpub661MyMwAqRbcEbqhv4d3h7Ly1yLGH7PEYfdsnyT7aHMoJo5MFZxPmSku1qDSkYSz252ZDrkNYkwAeHcY5eEGvtw2JVJqYEr1m4Key77hUSu 1Mza1rMdL84coX4JBrzrGK9c612vsswcy9`
 
 Now, you can run the server:
 
@@ -148,3 +150,4 @@ To debug, install xdebug and configure it for your favorite IDE:
 phpbrew ext install xdebug stable
 ```
 ### Donations are welcome at 1KF8mSUQM4MoauiaoEa9AeWfQvZYujmGHr ###
+
