@@ -1,16 +1,16 @@
-# SOM - Secure Online Bitcoin Market place
+# MultiVendorBitcoinMart - Secure Online Bitcoin Market place
 Secure bitcoin market built on PHP (developed as part of my bachelor studies about hidden marketplaces).
 
-![SOM listings](https://github.com/1234max/som/wiki/images/scam.png)
+![SOM listings](https://github.com/1234max/MultiVendorBitcoinMart/wiki/images/scam.png)
 
-It provides only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/1234max/som/wiki/Security-&-Design-decisions)
+It provides only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/1234max/MultiVendorBitcoinMart/wiki/Security-&-Design-decisions)
 which would protect against a very strong adversary.
 
 Plus, its bitcoin integration avoid the use of live wallets by using multisig transactions and BIP32 hierarchical keys. 
 Neither valuable bitcoins nor user private keys are stored on the marketplace. 
 
 Why PHP? We use a custom, tiny MVC framework on top of a stripped-down php-core to keep the attack surface minimal.
-See [Security & design decisions - PHP](https://github.com/1234Max/som/wiki/Security-&-Design-decisions#php) for more.
+See [Security & design decisions - PHP](https://github.com/1234Max/MultiVendorBitcoinMart/wiki/Security-&-Design-decisions#php) for more.
 
 ## Features
 
@@ -19,7 +19,7 @@ See [Security & design decisions - PHP](https://github.com/1234Max/som/wiki/Secu
 * PGP encryption of shipping info
 * Simple admin interface (disputes etc.)
 
-See [Features](https://github.com/1234max/som/wiki/Features) for more.
+See [Features](https://github.com/1234max/MultiVendorBitcoinMart/wiki/Features) for more.
 
 ## Requirements
 
@@ -33,7 +33,7 @@ See [Features](https://github.com/1234max/som/wiki/Features) for more.
 *These instructions are only suited for a quick & dirty setup for developers!*
 
 *If you're planning to run it in a productive environment, 
-please see [Installation](https://github.com/1234max/som/wiki/Installation) in the wiki.*
+please see [Installation](https://github.com/1234max/MultiVendorBitcoinMart/wiki/Installation) in the wiki.*
 
 ### phpbrew (install php 5.4)
 install phpbrew itself:
@@ -70,8 +70,8 @@ phpbrew install-composer
 clone repo from github (requires git):
 
 ```bash
-git clone https://github.com/1234max/scam.git
-cd scam
+git clone https://github.com/1234max/MultiVendorBitcoinMart.git
+cd MultiVendorBitcoinMart
 ```
 
 install dependencies using composer
@@ -106,7 +106,7 @@ rpcconnect=127.0.0.1
 SCAM stores the received transactions of the block in the database for later handling (checking for payments etc.).  
 This handling of transactions is done by another script that should be done periodically, i.e. with cron. Insert in your crontab:
 
-```*/10 * * * * /path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/scam/app/cli.php run```  
+```*/10 * * * * /path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/MultiVendorBitcoinMart/app/cli.php run```  
 
 Or run the script manually to check the transactions.
 
