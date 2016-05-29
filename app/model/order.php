@@ -349,7 +349,7 @@ class OrderModel extends Model {
                 'vout' => intval($payment->vout)];
             # we could embed redeemscript & pk_script here, but it's not possible without
             # manually building transaction since createrawtransaction cant take additional params.
-            $totalPrice += $payment->value;
+            $totalPrice += $payment->value*0.95;
         }
         return $c->createrawtransaction($inputs, [$toAddress => $totalPrice]);
     }
