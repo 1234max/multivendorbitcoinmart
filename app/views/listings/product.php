@@ -1,4 +1,4 @@
-<?php $title = "Product '" . $this->e($product->name) ."' | ".$_SERVER['HOST'] ?>
+<?php $title = "Product '" . $this->e($product->name) ."' | ".$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <?php if(isset($error)): ?>
