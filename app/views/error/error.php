@@ -1,4 +1,4 @@
-<?php $title = 'Error | '.$_SERVER['HOST'] ?>
+<?php $title = 'Error | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <div data-alert class="alert-box secondary">
