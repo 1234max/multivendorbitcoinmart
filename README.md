@@ -80,7 +80,7 @@ install dependencies using composer
 composer install
 ```
 
-install MySQL (add a dedicated user for scam), then init database with the provided scripts:
+install MySQL (add a dedicated user for MultiVendorBitcoinMart), then init database with the provided scripts:
 
 ```bash
 for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
@@ -91,9 +91,9 @@ Install [Bitcoind](https://bitcoin.org/en/download) and modify the bitcoin.conf 
 ```
 rpcuser=bitcoinrpc
 rpcpassword=set a password here
-# scam is currently only tested on bitcoin testnet:
+# MultiVendorBitcoinMart is currently only tested on bitcoin testnet:
 testnet=1
-blocknotify=/path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/scam/app/cli.php block-notify %s
+blocknotify=/path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/MultiVendorBitcoinMart/app/cli.php block-notify %s
 server=1
 daemon=1
 txindex=1
@@ -102,8 +102,8 @@ rpcport=28332
 rpcconnect=127.0.0.1
 ```
 
-```bitcoind``` will now notify SCAM for every new block seen on **testnet**. 
-SCAM stores the received transactions of the block in the database for later handling (checking for payments etc.).  
+```bitcoind``` will now notify MultiVendorBitcoinMart for every new block seen on **testnet**. 
+MultiVendorBitcoinMart stores the received transactions of the block in the database for later handling (checking for payments etc.).  
 This handling of transactions is done by another script that should be done periodically, i.e. with cron. Insert in your crontab:
 
 ```*/10 * * * * /path/to/.phpbrew/php/php-5.4.34/bin/php /path/to/MultiVendorBitcoinMart/app/cli.php run```  
@@ -120,18 +120,18 @@ Set the connection details for MySQL and bitcoind in `app/config/config.php`:
 ```php
 define('BITCOIND_URL', 'http://bitcoinrpc:yourbitcoinpassword@127.0.0.1:28332');
 define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'scam');
+define('DB_NAME', 'MultiVendorBitcoinMart');
 define('DB_USER', 'your_mysql_user');
 define('DB_PASS', 'your_mysql_password');
 ```
 
 At last, you have to define the admin bitcoin BIP32 extended public key M/k'/0 (used for multisig transactions - you can use [bip32.org](http://bip32.org/)) and a bitcoin address, whose private key you own (used for admin auth):
 
-`php /path/to/scam/app/cli.php set-admin <BIP32_Extended_Public_Key_M/k'/0> <bitcoin-address>`
+`php /path/to/MultiVendorBitcoinMart/app/cli.php set-admin <BIP32_Extended_Public_Key_M/k'/0> <bitcoin-address>`
 
 For example:
 
-`php /path/to/scam/app/cli.php set-admin tpubDBvoSTTAJmqmqjkq5dPZLkk3rxMe4bdsJ1ZiKp4NkHh9xEf3yHqsNUfCZacdWLyejpFfqgRGQX1Moyd3xz2tpvfpYpRjeMbBwdiUKL6ccZi mpbbzJjE58afUMyS7MXnN9T4XaLQFM7dqX`
+`php /path/to/MultiVendorBitcoinMart/app/cli.php set-admin tpubDBvoSTTAJmqmqjkq5dPZLkk3rxMe4bdsJ1ZiKp4NkHh9xEf3yHqsNUfCZacdWLyejpFfqgRGQX1Moyd3xz2tpvfpYpRjeMbBwdiUKL6ccZi mpbbzJjE58afUMyS7MXnN9T4XaLQFM7dqX`
 
 Now, you can run the server:
 
