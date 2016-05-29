@@ -341,7 +341,8 @@ class OrderModel extends Model {
         }
 
         # get all bitcoin payments that went to the multisig address and construct the transaction paying the vendor
-        $totalPrice = 0.001; # for now, we just pay the vendor all funds that were coming to the multisig address (even if it's more)
+        $totalPrice = -0.001; # for now, we just pay the vendor all funds that were coming to the multisig address 
+        # (even if it's more)
         $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
         foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
             $inputs[] = [
