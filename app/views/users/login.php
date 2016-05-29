@@ -1,4 +1,4 @@
-<?php $title = 'Login | '.$_SERVER['HOST'] ?>
+<?php $title = 'Login | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-8 large-offset-2 columns">
     <?php if(isset($error)): ?>
