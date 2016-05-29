@@ -1,6 +1,4 @@
---
--- Table structure for table `currency`
---
+USE mvbm;
 
 CREATE TABLE IF NOT EXISTS `currency` (
   `iso` char(3) CHARACTER SET utf8 NOT NULL DEFAULT '',
