@@ -1,4 +1,4 @@
-<?php $title = 'Become vendor | '.$_SERVER['HOST'] ?>
+<?php $title = 'Become vendor | '.$_SERVER['HTTP_HOST'] ?>
 <div class="large-12 columns">
     <h3 class="subheader">Become a vendor</h3>
     <?php if(isset($error)): ?>
