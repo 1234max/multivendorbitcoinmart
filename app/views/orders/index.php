@@ -1,4 +1,4 @@
-<?php $title = 'Orders | '.$_SERVER['HOST'] ?>
+<?php $title = 'Orders | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
