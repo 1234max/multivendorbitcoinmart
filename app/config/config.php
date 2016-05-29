@@ -12,9 +12,8 @@ if(true) {
     ini_set("display_errors", 1);
     ini_set("display_startup_errors", 1);
     ini_set("log_errors", 1);
-
+    define('Commission', '5');
     define('BITCOIND_URL', 'http://bitcoinrpc:1234@127.0.0.1:28332');
-
     define('DB_HOST', '127.0.0.1');
     define('DB_NAME', 'scam');
     define('DB_USER', 'root');
@@ -28,9 +27,8 @@ else {
     ini_set("display_errors", 0);
     ini_set("display_startup_errors", 0);
     ini_set("log_errors", 1);
-
+    define('Commission', '5');
     define('BITCOIND_URL', 'http://bitcoinrpc:HIGHSECURE@127.0.0.1:28332');
-
     define('DB_HOST', '127.0.0.1');
     define('DB_NAME', 'scam');
     define('DB_USER', 'not-root');
