@@ -1,4 +1,4 @@
-USE scam;
+USE mvbm;
 
 CREATE TABLE IF NOT EXISTS `products` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
