@@ -1,4 +1,4 @@
-<?php $title = "Product '" . $this->e($product->name) ."' | SCAM" ?>
+<?php $title = "Product '" . $this->e($product->name) ."' | ".$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <?php if(isset($error)): ?>
