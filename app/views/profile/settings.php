@@ -1,4 +1,4 @@
-<?php $title = 'Settings | '.$_SERVER['HOST'] ?>
+<?php $title = 'Settings | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
