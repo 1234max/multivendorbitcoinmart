@@ -10,7 +10,7 @@
         <?php if (isset($title)): ?>
             <?= $title ?>
         <?php else: ?>
-            SCAM
+            $_SERVER['HTTP_HOST']
         <?php endif ?>
     </title>
 
