@@ -116,12 +116,12 @@
         <hr>
         <div class="row">
             <div class="large-6 columns">
-                <p>© Matthias Winzeler @ Berne University of Applied Sciences.</p>
+                <p>© 20113-2016 Max Knorr @ 1234Max Consultants.</p>
             </div>
             <div class="large-6 columns">
                 <ul class="inline-list right">
                     <li>
-                        <a href="https://github.com/MatthiasWinzeler/scam" target="_blank">Github repo</a>
+                        <a href="https://github.com/1234max/MultiVendorBitcoinMart" target="_blank">Github repo</a>
                     </li>
                 </ul>
             </div>
