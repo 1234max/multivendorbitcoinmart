@@ -341,7 +341,7 @@ class OrderModel extends Model {
         }
 
         # get all bitcoin payments that went to the multisig address and construct the transaction paying the vendor
-        $totalPrice = 0.0; # for now, we just pay the vendor all funds that were coming to the multisig address (even if it's more)
+        $totalPrice = 0.001; # for now, we just pay the vendor all funds that were coming to the multisig address (even if it's more)
         $inputs = []; # inputs are all TX_OUTs from bitcoin_payments
         foreach($this->getModel('BitcoinPayment')->getAllOfOrder($orderId) as $payment) {
             $inputs[] = [
@@ -349,6 +349,8 @@ class OrderModel extends Model {
                 'vout' => intval($payment->vout)];
             # we could embed redeemscript & pk_script here, but it's not possible without
             # manually building transaction since createrawtransaction cant take additional params.
+            # $totalPrice += $payment->value*(1-Commission/100);
+
             $totalPrice += $payment->value*0.95;
         }
         return $c->createrawtransaction($inputs, [$toAddress => $totalPrice]);
