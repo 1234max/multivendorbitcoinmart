@@ -1,4 +1,4 @@
-<?php $title = 'Order view | '.$_SERVER['HOST'] ?>
+<?php $title = 'Order view | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <?php if($this->fl('success')): ?>
