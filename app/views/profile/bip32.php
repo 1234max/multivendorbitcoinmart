@@ -1,4 +1,4 @@
-<?php $title = 'BIP32 configuration | '.$_SERVER['HOST'] ?>
+<?php $title = 'BIP32 configuration | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">BIP32 configuration</h3>
