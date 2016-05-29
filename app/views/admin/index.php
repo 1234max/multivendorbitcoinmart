@@ -1,4 +1,4 @@
-<?php $title = 'Login | Admin | SCAM' ?>
+<?php $title = 'Login | Admin | '.$_SERVER['HOST'] ?>
 
 <div class="large-8 large-offset-2 columns">
     <?php if(isset($error)): ?>
