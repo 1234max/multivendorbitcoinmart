@@ -1,4 +1,4 @@
-<?php $title = 'Edit product | SCAM' ?>
+<?php $title = 'Edit product | '.$_SERVER['HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">Edit product</h3>
