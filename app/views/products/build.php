@@ -1,4 +1,4 @@
-<?php $title = 'New product | '.$_SERVER['HOST'] ?>
+<?php $title = 'New product | '.$_SERVER['HTTP_HOST'] ?>
 
 <div class="large-12 columns">
     <h3 class="subheader">New product</h3>
