@@ -1,18 +1,18 @@
 {
-    "name": "MatthiasWinzeler/scam",
+    "name": "1234max/MultiVendorBitcoinMart",
     "type": "project",
     "description": "secure bitcoin market built on php",
-    "homepage": "https://github.com/MatthiasWinzeler/scam",
+    "homepage": "https://github.com/1234max/MultiVendorBitcoinMart",
     "authors": [
         {
-            "name": "Matthias Winzeler",
-            "homepage": "https://github.com/MatthiasWinzeler",
+            "name": "Max Knorr",
+            "homepage": "https://github.com/1234max",
             "role": "Developer"
         }
     ],
     "support": {
-        "issues": "https://github.com/MatthiasWinzeler/scam/issues",
-        "source": "https://github.com/MatthiasWinzeler/scam"
+        "issues": "https://github.com/1234max/MultiVendorBitcoinMart/issues",
+        "source": "https://github.com/1234max/MultiVendorBitcoinMart"
     },
     "require": {
         "php": ">=5.4.34",
