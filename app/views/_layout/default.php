@@ -31,12 +31,12 @@
             <ul class="title-area">
                 <li class="name">
                     <h1><a href="?">
-                            <i class="fi-shield"></i>
+                            <i class="fi-bitcoin"></i>
                                 <span class="title">
-                                    <span class="first">S</span>cammers
-                                    <span class="first">C</span>an't
-                                    <span class="first">A</span>cquire
-                                    <span class="first">M</span>oney
+                                    <span class="first">M</span>ulti
+                                    <span class="first">V</span>ondor
+                                    <span class="first">B</span>itcoin
+                                    <span class="first">M</span>arket
                                 </span>
                         </a></h1>
                 </li>
