@@ -1,17 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: May 29, 2016 at 02:45 PM
--- Server version: 5.5.49-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.16
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
---
+use mvbm;
 
 CREATE TABLE IF NOT EXISTS `fees` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
