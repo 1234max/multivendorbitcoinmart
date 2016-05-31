@@ -1,4 +1,4 @@
-CREATE DATABASE mvbm2 DEFAULT CHARACTER SET utf8mb4;
+CREATE DATABASE mvbm DEFAULT CHARACTER SET utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `bitcoin_payments` (
   `address` varchar(35) NOT NULL,
@@ -9,11 +9,6 @@ CREATE TABLE IF NOT EXISTS `bitcoin_payments` (
   PRIMARY KEY (`address`,`tx_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `bitcoin_transactions`
---
 
 CREATE TABLE IF NOT EXISTS `bitcoin_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -23,23 +18,12 @@ CREATE TABLE IF NOT EXISTS `bitcoin_transactions` (
   UNIQUE KEY `tx_id` (`tx_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `captchas`
---
 
 CREATE TABLE IF NOT EXISTS `captchas` (
   `code` varchar(5) NOT NULL,
   `image` mediumblob,
   PRIMARY KEY (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `config`
---
 
 CREATE TABLE IF NOT EXISTS `config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -49,11 +33,6 @@ CREATE TABLE IF NOT EXISTS `config` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `currency`
---
 
 CREATE TABLE IF NOT EXISTS `currency` (
   `iso` char(3) CHARACTER SET utf8 NOT NULL DEFAULT '',
@@ -62,9 +41,7 @@ CREATE TABLE IF NOT EXISTS `currency` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `currency`
---
+
 
 INSERT INTO `currency` (`iso`, `name`) VALUES
 ('KRW', '(South) Korean Won'),
@@ -223,11 +200,6 @@ INSERT INTO `currency` (`iso`, `name`) VALUES
 ('ZMK', 'Zambian Kwacha'),
 ('ZWD', 'Zimbabwe Dollar');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `exchange_rates`
---
 
 CREATE TABLE IF NOT EXISTS `exchange_rates` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
@@ -240,11 +212,7 @@ CREATE TABLE IF NOT EXISTS `exchange_rates` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `fees`
---
 
 CREATE TABLE IF NOT EXISTS `fees` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
@@ -263,11 +231,7 @@ INSERT INTO `fees` (`id`, `low`, `high`, `rate`) VALUES
 (2, 0.50000000, 5.00000000, 0.750),
 (3, 5.00000000, 500.00000000, 0.500);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `messages`
---
 
 CREATE TABLE IF NOT EXISTS `messages` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
@@ -286,11 +250,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores encrypted/plaintext messages.' AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `orders`
---
 
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -329,11 +289,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `shipping_option_id` (`shipping_option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `products`
---
 
 CREATE TABLE IF NOT EXISTS `products` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -351,11 +307,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `products_shipping_options`
---
 
 CREATE TABLE IF NOT EXISTS `products_shipping_options` (
   `product_id` int(11) NOT NULL,
@@ -364,11 +316,6 @@ CREATE TABLE IF NOT EXISTS `products_shipping_options` (
   KEY `shipping_option_id` (`shipping_option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `product_categories`
---
 
 CREATE TABLE IF NOT EXISTS `product_categories` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
@@ -381,11 +328,6 @@ CREATE TABLE IF NOT EXISTS `product_categories` (
   KEY `hash_2` (`hash`,`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `registration_tokens`
---
 
 CREATE TABLE IF NOT EXISTS `registration_tokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -398,11 +340,6 @@ CREATE TABLE IF NOT EXISTS `registration_tokens` (
   KEY `token_content` (`token_content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shipping_options`
---
 
 CREATE TABLE IF NOT EXISTS `shipping_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -413,11 +350,7 @@ CREATE TABLE IF NOT EXISTS `shipping_options` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `users`
---
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -433,11 +366,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `vendor_feedbacks`
---
 
 CREATE TABLE IF NOT EXISTS `vendor_feedbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -452,52 +381,32 @@ CREATE TABLE IF NOT EXISTS `vendor_feedbacks` (
   KEY `vendor_id` (`vendor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
---
--- Constraints for dumped tables
---
 
---
--- Constraints for table `bitcoin_payments`
---
 ALTER TABLE `bitcoin_payments`
   ADD CONSTRAINT `bitcoin_payments_ibfk_1` FOREIGN KEY (`address`) REFERENCES `orders` (`multisig_address`) ON DELETE CASCADE;
 
---
--- Constraints for table `orders`
---
+
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`vendor_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `orders_ibfk_4` FOREIGN KEY (`shipping_option_id`) REFERENCES `shipping_options` (`id`) ON DELETE SET NULL;
 
---
--- Constraints for table `products`
---
+
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
---
--- Constraints for table `products_shipping_options`
---
+
 ALTER TABLE `products_shipping_options`
   ADD CONSTRAINT `products_shipping_options_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `products_shipping_options_ibfk_2` FOREIGN KEY (`shipping_option_id`) REFERENCES `shipping_options` (`id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shipping_options`
---
+
 ALTER TABLE `shipping_options`
   ADD CONSTRAINT `shipping_options_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
---
--- Constraints for table `vendor_feedbacks`
---
 ALTER TABLE `vendor_feedbacks`
   ADD CONSTRAINT `vendor_feedbacks_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `vendor_feedbacks_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `vendor_feedbacks_ibfk_3` FOREIGN KEY (`vendor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
