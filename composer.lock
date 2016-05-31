@@ -2,7 +2,7 @@
     "_readme": [
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "This file is @generated automatically "
     ],
     "hash": "f9abb4c14b606d9207d8c55bc5793efd",
     "packages": [
