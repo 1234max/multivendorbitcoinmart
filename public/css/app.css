@@ -36,7 +36,7 @@
 }
 
 /* logo styling */
-.top-bar .name h1 a i.fi-shield {
+.top-bar .name h1 a i.fi-bitcoin {
     font-size:3rem;
     color:orange;
 }
@@ -69,7 +69,7 @@ hr {
 #login-logo-wrapper {
     text-align:center;
 }
-#login-logo-wrapper i.fi-shield {
+#login-logo-wrapper i.fi-bitcoin {
     font-size:10rem;
     color:#FFA500;
     line-height: 12rem;
