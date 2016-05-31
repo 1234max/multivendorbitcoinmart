@@ -1,4 +1,4 @@
-# MultiVendorBitcoinMart - Secure Online Multi vendor Bitcoin Market place
+# Multi Vendor Bitcoin Market - Secure Online Multi vendor Bitcoin Market place
 Secure bitcoin market built on PHP 5.
 
 Visit these sites to get an idea how good this really is !!!!
