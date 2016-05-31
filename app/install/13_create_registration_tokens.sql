@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS `registration_tokens` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `token_content` (`token_content`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 
 
