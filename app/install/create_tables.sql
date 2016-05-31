@@ -1,5 +1,6 @@
 CREATE DATABASE mvbm DEFAULT CHARACTER SET utf8mb4;
 
+use mvbm;
 CREATE TABLE IF NOT EXISTS `bitcoin_payments` (
   `address` varchar(35) NOT NULL,
   `tx_id` varchar(64) NOT NULL,
