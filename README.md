@@ -88,7 +88,8 @@ composer install
 ```
 
 install MySQL (add a dedicated user for MultiVendorBitcoinMart)
-Then initialize the database with the scripts available at:[1234max.co.uk](http://1234max.co.uk)
+
+initialize and install the database with the scripts available at:[1234max.co.uk](https://1234max.co.uk/product/database-scripts-for-multi-vendor-bitcoin-market/)
 
 
 ### bitcoind
