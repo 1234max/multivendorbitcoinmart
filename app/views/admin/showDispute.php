@@ -119,7 +119,7 @@
                               rows="6"
                               placeholder="Raw multisig transaction"
                               required="true"
-                              title="Please put the raw multisig transaction - signed by you - here."><?= isset($this->post['partially_signed_transaction']) ? $this->e($this->post['partially_signed_transaction']) : '' ?></textarea>
+                              title="Please paste the raw multisig transaction signed by you here."><?= isset($this->post['partially_signed_transaction']) ? $this->e($this->post['partially_signed_transaction']) : '' ?></textarea>
                 </div>
             </div>
 
