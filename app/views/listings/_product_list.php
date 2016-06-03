@@ -6,8 +6,8 @@
                     <?php $url ="?c=listings&a=product&code=" . $product->code ?>
                     <a href="<?= $url ?>">
                         <img src="?c=listings&a=productImage&code=<?= $product->code ?>"
-                             alt="Picture of product <?= $this->e($product->name) ?>"
-                             title="Picture of product <?= $this->e($product->name) ?>"/>
+                             alt="Product Image <?= $this->e($product->name) ?>"
+                             title="Product Image <?= $this->e($product->name) ?>"/>
                     </a>
                     <div class="panel">
                         <a href="<?= $url ?>">
