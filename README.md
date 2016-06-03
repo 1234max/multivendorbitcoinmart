@@ -7,6 +7,8 @@ http://som.tor4.biz
 
 https://cnpi7tv5e3spbhd2.onion/
 
+http://multivendorbitcoinmarket.1234max.com
+
 ![MultiVendorBitcoinMart listings](https://1234max.co.uk/wp-content/uploads/2016/05/som.png)
 
 The entry version provides only a basic set of marketplace features, but offers a significant higher level of [security](https://github.com/1234max/MultiVendorBitcoinMart/wiki/Security-&-Design-decisions)
@@ -155,3 +157,6 @@ phpbrew ext install xdebug stable
 ```
 ### Donations are welcome at 1KF8mSUQM4MoauiaoEa9AeWfQvZYujmGHr ###
 
+Please do consult, if you want to set up or have this framwork setup by us.
+
+Please goto http://1234max.co.uk/som to contact me and an up to date version of this software !
