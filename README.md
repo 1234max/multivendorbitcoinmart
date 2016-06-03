@@ -87,7 +87,8 @@ install dependencies using composer
 composer install
 ```
 
-install MySQL (add a dedicated user for MultiVendorBitcoinMart), then init database with the provided scripts:
+install MySQL (add a dedicated user for MultiVendorBitcoinMart)
+Then initialize the database with the scripts available at:[1234max.co.uk](http://1234max.co.uk)
 
 ```bash
 for sql_file in app/install/*.sql; do mysql -uroot -p < $sql_file; done
