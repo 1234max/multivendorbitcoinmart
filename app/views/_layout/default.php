@@ -10,7 +10,7 @@
         <?php if (isset($title)): ?>
             <?= $title ?>
         <?php else: ?>
-            $_SERVER['HTTP_HOST']
+           <?php  $_SERVER['HTTP_HOST'] ?>
         <?php endif ?>
     </title>
 
@@ -121,7 +121,7 @@
             <div class="large-6 columns">
                 <ul class="inline-list right">
                     <li>
-                        <a href="https://github.com/1234max/MultiVendorBitcoinMart" target="_blank">Github repo</a>
+                        <a href="https://1234Max.co.uk/som" target="_blank">1234Max</a>
                     </li>
                 </ul>
             </div>
