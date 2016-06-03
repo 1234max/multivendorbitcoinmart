@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `MultiVendorBitcoinMart` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `MultiVendorBitcoinMart`;
+CREATE DATABASE IF NOT EXISTS `mvbm` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `mvbm`;
 
 
 
