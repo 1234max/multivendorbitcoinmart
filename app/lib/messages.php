@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Bw_messages {
+class messages {
 	/**
 	 * Message Password
 	 * 
