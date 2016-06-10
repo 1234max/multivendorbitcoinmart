@@ -1,16 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * Messages Model
- *
- * This class handles the database queries relating to messages.
- * 
- * @package		BitWasp
- * @subpackage	Models
- * @category	Messages
- * @author		BitWasp
- * 
- */
-class Messages_model extends CI_Model {
+
+class Messages_model extends scam {
 	
 	/**
 	 * Constructor
@@ -20,7 +10,7 @@ class Messages_model extends CI_Model {
 	 * @see		Libraries/Bw_Messages
 	 */		
 	public function __construct() {	
-		$this->load->library('bw_messages');
+		$this->load->library('messages');
 		parent::__construct();
 	}
 	
@@ -186,4 +176,4 @@ class Messages_model extends CI_Model {
 		return ($this->db->update('messages', $update)) ? TRUE : FALSE;
 	}
 };
-/* End of File: Messages_Model.php */
+
