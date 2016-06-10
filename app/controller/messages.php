@@ -1,4 +1,4 @@
-
+<?php
 class Messages extends scam {
 	
 	/**
@@ -327,3 +327,4 @@ class Messages extends scam {
 	}
 };
 
+?>
