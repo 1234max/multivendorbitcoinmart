@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Messages_model extends scam {
+class Messages_model extends Model {
 	
 	/**
 	 * Constructor
