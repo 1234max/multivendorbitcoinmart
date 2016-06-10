@@ -1,4 +1,15 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Messages Controller
+ *
+ * This class handles sending, reading, displaying of messages.
+ * 
+ * @package		BitWasp
+ * @subpackage	Controllers
+ * @category	Messages
+ * @author		BitWasp
+ * 
+ */
 class Messages extends Controller {
 	
 	/**
@@ -8,13 +19,13 @@ class Messages extends Controller {
 	 *
 	 * @access	public
 	 * @see		Models/Currencies_Model
-	 * @see		Libraries/Messages
+	 * @see		Libraries/Bw_Messages
 	 * @see		Libraries/OpenSSL
 	 */
 	public function __construct() {
 		parent::__construct();
 	
-		$this->load->model('messages_model');
+		$this->load->model('messages');
 		$this->load->library('messages');
 		$this->load->library('openssl');
 	
@@ -32,7 +43,7 @@ class Messages extends Controller {
 	 * 
 	 * @access	public
 	 * @see		Models/Messages_Model
-	 * @see		Libraries/Messages
+	 * @see		Libraries/Bw_Messages
 	 * 
 	 * @return	void
 	 * @param
@@ -326,5 +337,4 @@ class Messages extends Controller {
 		return ($user['block_non_pgp'] == '1' && $encrypted == '0') ? FALSE : TRUE;
 	}
 };
-
-?>
+/* End of file Messages.php */
