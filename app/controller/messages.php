@@ -8,14 +8,14 @@ class Messages extends scam {
 	 *
 	 * @access	public
 	 * @see		Models/Currencies_Model
-	 * @see		Libraries/Bw_Messages
+	 * @see		Libraries/Messages
 	 * @see		Libraries/OpenSSL
 	 */
 	public function __construct() {
 		parent::__construct();
 	
 		$this->load->model('messages_model');
-		$this->load->library('bw_messages');
+		$this->load->library('messages');
 		$this->load->library('openssl');
 	
 		// Automatically check if a PIN is required.
@@ -32,7 +32,7 @@ class Messages extends scam {
 	 * 
 	 * @access	public
 	 * @see		Models/Messages_Model
-	 * @see		Libraries/Bw_Messages
+	 * @see		Libraries/Messages
 	 * 
 	 * @return	void
 	 * @param
@@ -326,4 +326,4 @@ class Messages extends scam {
 		return ($user['block_non_pgp'] == '1' && $encrypted == '0') ? FALSE : TRUE;
 	}
 };
-/* End of file Messages.php */
+
