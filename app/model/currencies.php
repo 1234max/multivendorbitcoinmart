@@ -1,16 +1,6 @@
 <?php 
-/**
- * Currencies Model
- *
- * This class handles handles database queries regarding currencies.
- * 
- * @package		BitWasp
- * @subpackage	Models
- * @category	Currencies
- * @author		BitWasp
- * 
- */
-class Currencies_model extends Scam {
+
+class Currencies_model extends Model {
 	/**
 	 * Constructor
 	 *
