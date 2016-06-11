@@ -10,7 +10,7 @@
         <?php if (isset($title)): ?>
             <?= $title ?>
         <?php else: ?>
-           <?php  $_SERVER['HTTP_HOST'] ?>
+           <?php  echo $_SERVER['HTTP_HOST']; ?>
         <?php endif ?>
     </title>
 
