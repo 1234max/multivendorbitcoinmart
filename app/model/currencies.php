@@ -1,5 +1,8 @@
 <?php 
 
+
+namespace Scam;
+
 class Currencies_model extends Model {
 	/**
 	 * Constructor
