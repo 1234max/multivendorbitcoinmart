@@ -1,6 +1,7 @@
 <?php 
 
 
+namespace Scam;
 
 class Messages_model extends Model {
 	
