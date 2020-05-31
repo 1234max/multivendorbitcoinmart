@@ -4,8 +4,7 @@ Secure bitcoin market built on PHP 5.
 Visit these sites to get an idea how good this really is !!!!
 
 
-https://cnpi7tv5e3spbhd2.onion/
-
+https://p7eh5edklvpsqiya.onion
 http://multivendorbitcoinmarket.1234max.com
 
 ![MultiVendorBitcoinMart listings](https://1234max.co.uk/wp-content/uploads/2016/05/som.png)
